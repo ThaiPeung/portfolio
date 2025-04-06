@@ -157,10 +157,10 @@ const Earth = () => {
     lensflare.addElement(
       new LensflareElement(textureFlare0, 350, 0, light.color)
     );
-    lensflare.addElement(new LensflareElement(textureFlare1, 30, 0.5));
-    lensflare.addElement(new LensflareElement(textureFlare1, 35, 0.10));
-    lensflare.addElement(new LensflareElement(textureFlare1, 60, 0.15));
-    lensflare.addElement(new LensflareElement(textureFlare1, 35, 0.25));
+    lensflare.addElement(new LensflareElement(textureFlare1, 30, 0.6));
+    lensflare.addElement(new LensflareElement(textureFlare1, 35, 0.7));
+    lensflare.addElement(new LensflareElement(textureFlare1, 60, 0.9));
+    lensflare.addElement(new LensflareElement(textureFlare1, 35, 1));
     return lensflare;
   }, [textureFlare0, textureFlare1]);
 
@@ -218,7 +218,7 @@ const Earth = () => {
       <Stars
         radius={100}
         depth={50}
-        count={5000}
+        count={10000}
         factor={4}
         saturation={0}
         fade

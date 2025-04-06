@@ -7,7 +7,7 @@ import { OrbitControls, Sky, Stars } from "@react-three/drei";
 const HomePage = () => {
   return (
     <>
-      <OrbitControls />
+      <OrbitControls minDistance={8} maxDistance={20} enablePan={false}/>
 
       <Earth />
 
