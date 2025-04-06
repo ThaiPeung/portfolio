@@ -2,6 +2,8 @@
 
 import {
   shaderMaterial,
+  Stage,
+  Stars,
   Texture,
   useAnimations,
   useGLTF,
@@ -18,6 +20,8 @@ import earthFragmentShader from "./earthShaders/fragment.glsl";
 
 import atmosphereVertexShader from "./atmosphereShaders/vertex.glsl";
 import atmosphereFragmentShader from "./atmosphereShaders/fragment.glsl";
+
+import { Lensflare, LensflareElement } from "three/addons/objects/Lensflare.js";
 
 type earthParametersType = {
   atmosphereDayColor: string;
@@ -106,8 +110,7 @@ const Earth = () => {
         vertexShader: atmosphereVertexShader,
         fragmentShader: atmosphereFragmentShader,
       }),
-    [
-      earthParameters,]
+    [earthParameters]
   );
 
   // ------------------------------ Sun ------------------------------
@@ -133,15 +136,49 @@ const Earth = () => {
       },
     });
 
+  // ------------------------------ lensflares ------------------------------
+  const pointLightRef = useRef<THREE.Mesh>(null);
+
+  const textureLoader = new THREE.TextureLoader();
+
+  const textureFlare0 = textureLoader.load(
+    "./models/Earth/lenses/lensflare0.png"
+  );
+  const textureFlare1 = textureLoader.load(
+    "./models/Earth/lenses/lensflare1.png"
+  );
+
+  // Create the Lensflare instance with multiple elements.
+  const lensflare = useMemo(() => {
+    const light = new THREE.PointLight(0xffffff, 1.5, 2000, 0);
+    light.color.setHSL(1, 1, 1);
+
+    const lensflare = new Lensflare();
+    lensflare.addElement(
+      new LensflareElement(textureFlare0, 350, 0, light.color)
+    );
+    lensflare.addElement(new LensflareElement(textureFlare1, 30, 0.5));
+    lensflare.addElement(new LensflareElement(textureFlare1, 35, 0.10));
+    lensflare.addElement(new LensflareElement(textureFlare1, 60, 0.15));
+    lensflare.addElement(new LensflareElement(textureFlare1, 35, 0.25));
+    return lensflare;
+  }, [textureFlare0, textureFlare1]);
+
   useFrame((state, delta) => {
-    // - rotate earth
+    // - Rotate earth
     earthRef!.current!.rotation.y += delta * 0.05;
 
     // - Debug sun
     const sunSpherical = new THREE.Spherical(1, phi, theta);
     const sunDirection = new THREE.Vector3().setFromSpherical(sunSpherical);
 
+    // - Sun position
     debugSunRef.current?.position.copy(sunDirection).multiplyScalar(15);
+
+    // - Lensflare position
+    pointLightRef.current?.position.copy(sunDirection).multiplyScalar(14.9);
+    pointLightRef.current?.translateY(0.1);
+
 
     // - Uniform
     earthMaterial.uniforms.uSunDirection.value.copy(sunDirection);
@@ -155,18 +192,38 @@ const Earth = () => {
 
   return (
     <>
-      <mesh ref={earthRef} material={earthMaterial}>
-        <sphereGeometry args={[2, 64, 64]} />
-      </mesh>
+      <color args={["#000000"]} attach={"background"} />
+      <Stage intensity={0}>
+        <pointLight ref={pointLightRef}>
+          <primitive object={lensflare} />
+        </pointLight>
 
-      <mesh material={atmosphereMaterial} scale={[1.04, 1.04, 1.04]}>
-        <sphereGeometry args={[2, 64, 64]} />
-      </mesh>
+        {/* Earth */}
+        <mesh ref={earthRef} material={earthMaterial}>
+          <sphereGeometry args={[2, 64, 64]} />
+        </mesh>
 
-      <mesh ref={debugSunRef}>
-        <icosahedronGeometry args={[0.1, 2]} />
-        <meshBasicMaterial />
-      </mesh>
+        {/* Atmosphere */}
+        <mesh material={atmosphereMaterial} scale={[1.04, 1.04, 1.04]}>
+          <sphereGeometry args={[2, 64, 64]} />
+        </mesh>
+
+        {/* Sun */}
+        <mesh ref={debugSunRef}>
+          <icosahedronGeometry args={[0.1, 2]} />
+          <meshBasicMaterial />
+        </mesh>
+      </Stage>
+
+      <Stars
+        radius={100}
+        depth={50}
+        count={5000}
+        factor={4}
+        saturation={0}
+        fade
+        speed={1}
+      />
     </>
   );
 };
