@@ -21,6 +21,9 @@ import earthFragmentShader from "./earthShaders/fragment.glsl";
 import atmosphereVertexShader from "./atmosphereShaders/vertex.glsl";
 import atmosphereFragmentShader from "./atmosphereShaders/fragment.glsl";
 
+import moonVertexShader from "./moonShaders/vertex.glsl";
+import moonFragmentShader from "./moonShaders/fragment.glsl";
+
 import { Lensflare, LensflareElement } from "three/addons/objects/Lensflare.js";
 
 type earthParametersType = {
@@ -39,14 +42,14 @@ const Earth = () => {
 
   const earthDayTexture = useLoader(
     TextureLoader,
-    "./models/Earth/textures/day.jpg"
+    "./models/Earth/textures/8k_earth_daymap.jpg"
   );
   earthDayTexture.colorSpace = THREE.SRGBColorSpace;
   earthDayTexture.anisotropy = 8;
 
   const earthNightTexture = useLoader(
     TextureLoader,
-    "./models/Earth/textures/night.jpg"
+    "./models/Earth/textures/8k_earth_nightmap.jpg"
   );
   earthNightTexture.colorSpace = THREE.SRGBColorSpace;
   earthNightTexture.anisotropy = 8;
@@ -116,25 +119,73 @@ const Earth = () => {
   // ------------------------------ Sun ------------------------------
   const debugSunRef = useRef<THREE.Mesh>(null);
 
-  const { phi, theta, atmosphereDayColor, atmosphereTwilightColor } =
-    useControls({
-      phi: {
-        value: Math.PI * 0.5,
-        min: 0,
-        max: Math.PI,
-      },
-      theta: {
-        value: 0,
-        min: -Math.PI,
-        max: Math.PI,
-      },
-      atmosphereDayColor: {
-        value: "#00aaff",
-      },
-      atmosphereTwilightColor: {
-        value: "#ff6600",
-      },
-    });
+  const {
+    phi,
+    theta,
+    moonPhi,
+    moonTheta,
+    atmosphereDayColor,
+    atmosphereTwilightColor,
+  } = useControls({
+    phi: {
+      value: Math.PI * 0.5,
+      min: 0,
+      max: Math.PI,
+    },
+    theta: {
+      value: 0,
+      min: -Math.PI,
+      max: Math.PI,
+    },
+    moonPhi: {
+      value: Math.PI * 0.5,
+      min: 0,
+      max: Math.PI,
+    },
+    moonTheta: {
+      value: -Math.PI * 0.5,
+      min: -Math.PI,
+      max: Math.PI,
+    },
+    atmosphereDayColor: {
+      value: "#00aaff",
+    },
+    atmosphereTwilightColor: {
+      value: "#ff6600",
+    },
+  });
+
+  // ------------------------------ Moon ------------------------------
+  const debugMoonRef = useRef<THREE.Mesh>(null);
+
+  const moonTexture = useLoader(
+    TextureLoader,
+    "./models/Moon/textures/moon.jpg"
+  );
+  moonTexture.colorSpace = THREE.SRGBColorSpace;
+  moonTexture.anisotropy = 8;
+
+  const moonDarkTexture = useLoader(
+    TextureLoader,
+    "./models/Moon/textures/Dark.jpg"
+  );
+  moonTexture.colorSpace = THREE.SRGBColorSpace;
+
+  const moonMaterial = useMemo(
+    () =>
+      new ShaderMaterial({
+        uniforms: {
+          uMoonTexture: { value: moonTexture },
+          uMoonDarkTexture: { value: moonDarkTexture },
+          uSunDirection: {
+            value: new THREE.Vector3(0, 0, 1),
+          },
+        },
+        vertexShader: moonVertexShader,
+        fragmentShader: moonFragmentShader,
+      }),
+    [moonTexture, moonDarkTexture]
+  );
 
   // ------------------------------ lensflares ------------------------------
   const pointLightRef = useRef<THREE.Mesh>(null);
@@ -157,10 +208,10 @@ const Earth = () => {
     lensflare.addElement(
       new LensflareElement(textureFlare0, 350, 0, light.color)
     );
-    lensflare.addElement(new LensflareElement(textureFlare1, 30, 0.6));
-    lensflare.addElement(new LensflareElement(textureFlare1, 35, 0.7));
-    lensflare.addElement(new LensflareElement(textureFlare1, 60, 0.9));
-    lensflare.addElement(new LensflareElement(textureFlare1, 35, 1));
+    lensflare.addElement(new LensflareElement(textureFlare1, 30, 0.1));
+    lensflare.addElement(new LensflareElement(textureFlare1, 35, 0.15));
+    lensflare.addElement(new LensflareElement(textureFlare1, 60, 0.25));
+    lensflare.addElement(new LensflareElement(textureFlare1, 35, 0.3));
     return lensflare;
   }, [textureFlare0, textureFlare1]);
 
@@ -173,16 +224,23 @@ const Earth = () => {
     const sunDirection = new THREE.Vector3().setFromSpherical(sunSpherical);
 
     // - Sun position
-    debugSunRef.current?.position.copy(sunDirection).multiplyScalar(15);
+    debugSunRef.current?.position.copy(sunDirection).multiplyScalar(30);
+
+    // - Debug moon
+    const moonSpherical = new THREE.Spherical(1, moonPhi, moonTheta);
+    const moonDirection = new THREE.Vector3().setFromSpherical(moonSpherical);
+
+    // - Moon position
+    debugMoonRef.current?.position.copy(moonDirection).multiplyScalar(15);
 
     // - Lensflare position
-    pointLightRef.current?.position.copy(sunDirection).multiplyScalar(14.9);
+    pointLightRef.current?.position.copy(sunDirection).multiplyScalar(29.9);
     pointLightRef.current?.translateY(0.1);
-
 
     // - Uniform
     earthMaterial.uniforms.uSunDirection.value.copy(sunDirection);
     atmosphereMaterial.uniforms.uSunDirection.value.copy(sunDirection);
+    moonMaterial.uniforms.uSunDirection.value.copy(sunDirection);
 
     setEarthParameters({
       atmosphereDayColor: atmosphereDayColor,
@@ -212,6 +270,11 @@ const Earth = () => {
         <mesh ref={debugSunRef}>
           <icosahedronGeometry args={[0.1, 2]} />
           <meshBasicMaterial />
+        </mesh>
+
+        {/* Moon */}
+        <mesh ref={debugMoonRef} material={moonMaterial}>
+          <sphereGeometry args={[0.24, 32, 32]} />
         </mesh>
       </Stage>
 
