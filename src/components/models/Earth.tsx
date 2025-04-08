@@ -158,6 +158,9 @@ const Earth = () => {
   // ------------------------------ Moon ------------------------------
   const debugMoonRef = useRef<THREE.Mesh>(null);
 
+  //- for animate moon rotating around
+  const moonThetaRef = useRef(-Math.PI * 0.5);
+
   const moonTexture = useLoader(
     TextureLoader,
     "./models/Moon/textures/moon.jpg"
@@ -227,7 +230,8 @@ const Earth = () => {
     debugSunRef.current?.position.copy(sunDirection).multiplyScalar(30);
 
     // - Debug moon
-    const moonSpherical = new THREE.Spherical(1, moonPhi, moonTheta);
+    moonThetaRef.current -= delta * 0.03;
+    const moonSpherical = new THREE.Spherical(1, moonPhi, moonThetaRef.current);
     const moonDirection = new THREE.Vector3().setFromSpherical(moonSpherical);
 
     // - Moon position
