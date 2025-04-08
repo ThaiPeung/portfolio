@@ -221,6 +221,7 @@ const Earth = () => {
   useFrame((state, delta) => {
     // - Rotate earth
     earthRef!.current!.rotation.y += delta * 0.05;
+    debugMoonRef!.current!.rotation.y += delta * 0.05;
 
     // - Debug sun
     const sunSpherical = new THREE.Spherical(1, phi, theta);
@@ -230,7 +231,7 @@ const Earth = () => {
     debugSunRef.current?.position.copy(sunDirection).multiplyScalar(30);
 
     // - Debug moon
-    moonThetaRef.current -= delta * 0.03;
+    moonThetaRef.current += delta * 0.03;
     const moonSpherical = new THREE.Spherical(1, moonPhi, moonThetaRef.current);
     const moonDirection = new THREE.Vector3().setFromSpherical(moonSpherical);
 
