@@ -35,4 +35,6 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-"EARTH" (https://skfb.ly/6DxnV) by Stéphane Agullo is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+CREDITS
+
+"R.E.P.O "Realistic" Character *FREE DOWNLOAD*" (https://skfb.ly/puRIt) by Tijmen Zwaneveld is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
