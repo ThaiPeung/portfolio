@@ -10,7 +10,7 @@ import {
   useTexture,
 } from "@react-three/drei";
 import { extend, useFrame, useLoader } from "@react-three/fiber";
-import { useControls } from "leva";
+import { Leva, useControls } from "leva";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { ShaderMaterial, TextureLoader } from "three";
@@ -119,41 +119,48 @@ const Earth = () => {
   // ------------------------------ Sun ------------------------------
   const debugSunRef = useRef<THREE.Mesh>(null);
 
-  const {
-    phi,
-    theta,
-    moonPhi,
-    moonTheta,
-    atmosphereDayColor,
-    atmosphereTwilightColor,
-  } = useControls({
-    phi: {
-      value: Math.PI * 0.5,
-      min: 0,
-      max: Math.PI,
-    },
-    theta: {
-      value: 0,
-      min: -Math.PI,
-      max: Math.PI,
-    },
-    moonPhi: {
-      value: Math.PI * 0.5,
-      min: 0,
-      max: Math.PI,
-    },
-    moonTheta: {
-      value: -Math.PI * 0.5,
-      min: -Math.PI,
-      max: Math.PI,
-    },
-    atmosphereDayColor: {
-      value: "#00aaff",
-    },
-    atmosphereTwilightColor: {
-      value: "#ff6600",
-    },
-  });
+  let phi = Math.PI * 0.5;
+  let theta = 0;
+  let moonPhi = Math.PI * 0.5;
+  let moonTheta = -Math.PI * 0.5;
+  let atmosphereDayColor = "#00aaff";
+  let atmosphereTwilightColor = "#ff6600";
+
+  // const {
+  //   phi,
+  //   theta,
+  //   moonPhi,
+  //   moonTheta,
+  //   atmosphereDayColor,
+  //   atmosphereTwilightColor,
+  // } = useControls({
+  //   phi: {
+  //     value: Math.PI * 0.5,
+  //     min: 0,
+  //     max: Math.PI,
+  //   },
+  //   theta: {
+  //     value: 0,
+  //     min: -Math.PI,
+  //     max: Math.PI,
+  //   },
+  //   moonPhi: {
+  //     value: Math.PI * 0.5,
+  //     min: 0,
+  //     max: Math.PI,
+  //   },
+  //   moonTheta: {
+  //     value: -Math.PI * 0.5,
+  //     min: -Math.PI,
+  //     max: Math.PI,
+  //   },
+  //   atmosphereDayColor: {
+  //     value: "#00aaff",
+  //   },
+  //   atmosphereTwilightColor: {
+  //     value: "#ff6600",
+  //   },
+  // });
 
   // ------------------------------ Moon ------------------------------
   const debugMoonRef = useRef<THREE.Mesh>(null);
@@ -211,10 +218,10 @@ const Earth = () => {
     lensflare.addElement(
       new LensflareElement(textureFlare0, 350, 0, light.color)
     );
-    lensflare.addElement(new LensflareElement(textureFlare1, 30, 0.1));
-    lensflare.addElement(new LensflareElement(textureFlare1, 35, 0.15));
-    lensflare.addElement(new LensflareElement(textureFlare1, 60, 0.25));
-    lensflare.addElement(new LensflareElement(textureFlare1, 35, 0.3));
+    lensflare.addElement(new LensflareElement(textureFlare1, 30, 0.6));
+    lensflare.addElement(new LensflareElement(textureFlare1, 35, 0.7));
+    lensflare.addElement(new LensflareElement(textureFlare1, 60, 0.9));
+    lensflare.addElement(new LensflareElement(textureFlare1, 35, 1));
     return lensflare;
   }, [textureFlare0, textureFlare1]);
 

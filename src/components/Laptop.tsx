@@ -1,3 +1,5 @@
+"use client";
+
 import {
   ContactShadows,
   Environment,
@@ -8,7 +10,7 @@ import {
 import React from "react";
 import MacBook from "./models/MacBook";
 
-const SimplePortfolio = () => {
+const Laptop = () => {
   return (
     <>
       <color args={["#214a1a"]} attach="background" />
@@ -41,4 +43,4 @@ const SimplePortfolio = () => {
   );
 };
 
-export default SimplePortfolio;
+export default Laptop;
