@@ -1,6 +1,5 @@
 "use client";
 
-import Earth from "@/components/models/Earth";
 import Laptop from "@/components/Laptop";
 import { Loader, OrbitControls } from "@react-three/drei";
 import { CameraProps, Canvas } from "@react-three/fiber";
