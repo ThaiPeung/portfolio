@@ -1,12 +1,19 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 // Mui
-import { styled, useTheme, Theme, CSSObject, createTheme, ThemeProvider } from "@mui/material/styles";
+import {
+  styled,
+  useTheme,
+  Theme,
+  CSSObject,
+  createTheme,
+  ThemeProvider,
+} from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
@@ -24,6 +31,9 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { MenuItems } from "./menuItems";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import NightsStayIcon from "@mui/icons-material/NightsStay";
+import { Grid } from "@mui/material";
 
 // Project
 
@@ -111,12 +121,6 @@ const Drawer = styled(MuiDrawer, {
   ],
 }));
 
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-  },
-});
-
 const layout = ({
   children,
 }: Readonly<{
@@ -125,7 +129,8 @@ const layout = ({
   const theme = useTheme();
   const router = useRouter();
   const pathname = usePathname();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [mode, setMode] = useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -135,6 +140,16 @@ const layout = ({
     setOpen(false);
   };
 
+  const handleChangeMode = () => {
+    setMode(!mode);
+  };
+
+  const darkTheme = createTheme({
+    palette: {
+      mode: mode ? "dark" : "light",
+    },
+  });
+
   return (
     <>
       <ThemeProvider theme={darkTheme}>
@@ -142,23 +157,38 @@ const layout = ({
           <CssBaseline />
           <AppBar position="fixed" open={open}>
             <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={handleDrawerOpen}
-                edge="start"
-                sx={[
-                  {
-                    marginRight: 5,
-                  },
-                  open && { display: "none" },
-                ]}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography variant="h6" noWrap component="div">
-                Thai
-              </Typography>
+              <Grid container>
+                <Grid size="auto">
+                  <IconButton
+                    color="inherit"
+                    aria-label="open drawer"
+                    onClick={handleDrawerOpen}
+                    edge="start"
+                    sx={[
+                      {
+                        marginRight: 5,
+                      },
+                      open && { display: "none" },
+                    ]}
+                  >
+                    <MenuIcon />
+                  </IconButton>
+                </Grid>
+              </Grid>
+              <Grid size="grow">
+                <Typography variant="h6" noWrap component="div">
+                  Thai
+                </Typography>
+              </Grid>
+              <Grid size="auto">
+                <IconButton onClick={handleChangeMode}>
+                  {mode ? (
+                    <NightsStayIcon />
+                  ) : (
+                    <LightModeIcon sx={{ color: "white" }} />
+                  )}
+                </IconButton>
+              </Grid>
             </Toolbar>
           </AppBar>
           <Drawer variant="permanent" open={open}>

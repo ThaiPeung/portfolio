@@ -8,7 +8,19 @@ import React, { Suspense } from "react";
 const LaptopPage = () => {
   return (
     <>
-      <Canvas className="r3f" flat shadows style={{ height: "100vh" }}>
+      <Canvas
+        className="r3f"
+        flat
+        shadows
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          display: "block", // - removes canvas inline-block whitespace
+        }}
+      >
         {/* <Suspense fallback={<Loader />}> */}
         <Laptop />
         {/* </Suspense> */}
