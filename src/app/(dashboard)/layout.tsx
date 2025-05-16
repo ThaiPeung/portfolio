@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-// Mui
+// -| Mui
 import {
   styled,
   useTheme,
@@ -14,8 +14,11 @@ import {
   createTheme,
   ThemeProvider,
 } from "@mui/material/styles";
+import {
+  Drawer as MuiDrawer,
+  DrawerProps as MuiDrawerProps,
+} from "@mui/material";
 import Box from "@mui/material/Box";
-import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
@@ -23,7 +26,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
@@ -31,11 +33,14 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { MenuItems } from "./menuItems";
-import LightModeIcon from "@mui/icons-material/LightMode";
-import NightsStayIcon from "@mui/icons-material/NightsStay";
 import { Grid } from "@mui/material";
 
-// Project
+// -| Mui Icon(s)
+import MenuIcon from "@mui/icons-material/Menu";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import NightsStayIcon from "@mui/icons-material/NightsStay";
+
+// -| Project
 
 const drawerWidth = 240;
 
@@ -96,29 +101,30 @@ const AppBar = styled(MuiAppBar, {
   ],
 }));
 
+// 1. Define your own DrawerProps extending the MUI ones
+interface DrawerProps extends MuiDrawerProps {
+  open?: boolean;
+}
+
+// 2. Tell styled about your prop type, and use a single style callback
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
-})(({ theme }) => ({
+})<DrawerProps>(({ theme, open }) => ({
   width: drawerWidth,
   flexShrink: 0,
   whiteSpace: "nowrap",
   boxSizing: "border-box",
-  variants: [
-    {
-      props: ({ open }) => open,
-      style: {
+
+  // 3. Merge in the open vs closed mixins directly
+  ...(open
+    ? {
         ...openedMixin(theme),
         "& .MuiDrawer-paper": openedMixin(theme),
-      },
-    },
-    {
-      props: ({ open }) => !open,
-      style: {
+      }
+    : {
         ...closedMixin(theme),
         "& .MuiDrawer-paper": closedMixin(theme),
-      },
-    },
-  ],
+      }),
 }));
 
 const layout = ({
@@ -206,7 +212,7 @@ const layout = ({
               {MenuItems.map((item, index) => (
                 <Box
                   sx={{
-                    backgroundImage: pathname.includes(item.path)
+                    backgroundImage: pathname.includes(item.path!)
                       ? "linear-gradient(-45deg, grey, blue)"
                       : "",
                   }}
@@ -227,7 +233,7 @@ const layout = ({
                         },
                       ]}
                       onClick={() => {
-                        router.push(item.path);
+                        router.push(item.path!);
                       }}
                     >
                       <ListItemIcon
@@ -236,7 +242,7 @@ const layout = ({
                             minWidth: 0,
                             justifyContent: "center",
                             mr: open ? 3 : "auto",
-                            color: pathname.includes(item.path) ? "white" : "",
+                            color: pathname.includes(item.path!) ? "white" : "",
                           },
                         ]}
                       >
@@ -247,7 +253,7 @@ const layout = ({
                         sx={[
                           {
                             opacity: open ? 1 : 0,
-                            color: pathname.includes(item.path) ? "white" : "",
+                            color: pathname.includes(item.path!) ? "white" : "",
                           },
                         ]}
                       />

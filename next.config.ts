@@ -1,13 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  experimental: {
-    turbo: {
-      rules: {
-        "*.glsl": {
-          loaders: ["raw-loader"],
-          as: "*.js",
-        },
+  turbopack: {
+    rules: {
+      "*.glsl": {
+        loaders: ["raw-loader"],
+        as: "*.js",
       },
     },
   },

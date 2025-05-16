@@ -2,10 +2,10 @@ import { Html, useGLTF } from "@react-three/drei";
 import React from "react";
 
 const MacBook = () => {
-  const computer = useGLTF("./models/MacBook.gltf");
+  const { scene } = useGLTF("./models/MacBook.gltf");
   return (
     <>
-      <primitive object={computer.scene} position-y={-1.2}>
+      <primitive object={scene} position-y={-1.2}>
         <Html
           transform
           wrapperClass="htmlScreen"

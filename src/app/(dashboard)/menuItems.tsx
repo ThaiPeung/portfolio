@@ -8,8 +8,8 @@ import InfoIcon from '@mui/icons-material/Info';
 
 type menuItemsType = {
   title: string;
-  path: string,
-  icon: JSX.Element;
+  path?: string,
+  icon?: JSX.Element;
 };
 
 export const MenuItems: menuItemsType[] = [
@@ -21,6 +21,11 @@ export const MenuItems: menuItemsType[] = [
   {
     title: "Earth",
     path: "earth",
+    icon: <PublicIcon />,
+  },
+  {
+    title: "Game",
+    path: "game",
     icon: <PublicIcon />,
   },
   {

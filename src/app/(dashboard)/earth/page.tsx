@@ -1,6 +1,6 @@
 "use client";
 
-import Earth from "@/components/models/Earth";
+import Earth from "@/components/earth/Earth";
 import { Box } from "@mui/material";
 import { Loader, OrbitControls } from "@react-three/drei";
 import { CameraProps, Canvas } from "@react-three/fiber";
