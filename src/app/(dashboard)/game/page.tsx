@@ -41,7 +41,6 @@ const GamePage = () => {
       >
         <Perf position="top-left" />
         {/* <Suspense fallback={<Loader />}> */}
-        <OrbitControls makeDefault />
         <Physics>
           <Lights />
           <Level />

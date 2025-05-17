@@ -5,13 +5,18 @@ import {
   useRapier,
   type RapierRigidBody,
 } from "@react-three/rapier";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 const Player = () => {
   const body = useRef<any>(null);
   const [subscribeKeys, getKeys] = useKeyboardControls();
   const { rapier, world } = useRapier();
+
+  const [smoothedCameraPosition] = useState(
+    () => new THREE.Vector3(10, 10, 10)
+  );
+  const [smoothedCameraTarget] = useState(() => new THREE.Vector3());
 
   const jumb = () => {
     // -| get current position of the ball
@@ -21,7 +26,7 @@ const Player = () => {
 
     const direction = { x: 0, y: -1, z: 0 };
 
-    // -| Cast ray from bottom of the ball downward to check the distance between the ball and the floor
+    // -| Cast ray from bottom of the ball downward to check the distance between the ball and the floor (think of Sonar)
     const ray = new rapier.Ray(origin, direction);
     // -| When we cast ray to "hit" (check the distance between ball and other object) something
     // -| (in this case, the whole world [every other object])
@@ -29,7 +34,7 @@ const Player = () => {
 
     // -| In case of ball is bouncing so we don't have to wait until the ball stop bouncing to jump again
     if (hit!.timeOfImpact < 0.15) {
-      body.current.applyImpulse({ x: 0, y: 0.5, z: 0 });
+      body.current.applyImpulse({ x: 0, y: 0.25, z: 0 });
     }
   };
 
@@ -44,8 +49,8 @@ const Player = () => {
     );
 
     return () => {
-      unsubscribeJump
-    }
+      unsubscribeJump;
+    };
   }, []);
 
   useFrame((state, delta) => {
@@ -81,6 +86,25 @@ const Player = () => {
       body.current.applyImpulse(impulse);
       body.current.applyTorqueImpulse(torque);
     }
+
+    // -| Camera
+    const bodyPosition = body.current.translation();
+
+    const cameraPosition = new THREE.Vector3();
+    cameraPosition.copy(bodyPosition);
+    cameraPosition.z += 2.25;
+    cameraPosition.y += 0.65;
+
+    const cameraTarget = new THREE.Vector3();
+    cameraTarget.copy(bodyPosition);
+    cameraTarget.y += 0.25;
+
+    // -| Make camera move smooter
+    smoothedCameraPosition.lerp(cameraPosition, 5 * delta);
+    smoothedCameraTarget.lerp(cameraTarget, 5 * delta);
+
+    state.camera.position.copy(smoothedCameraPosition);
+    state.camera.lookAt(smoothedCameraTarget);
   });
 
   return (
