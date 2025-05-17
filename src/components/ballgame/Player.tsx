@@ -19,22 +19,24 @@ const Player = () => {
   const [smoothedCameraTarget] = useState(() => new THREE.Vector3());
 
   const jumb = () => {
-    // -| get current position of the ball
-    const origin = body.current.translation();
-    // -| "origin" is position of center of the ball -0.31 to move it to around bellow of the ball
-    origin.y -= 0.31;
+    if (body.current) {
+      // -| get current position of the ball
+      const origin = body.current.translation();
+      // -| "origin" is position of center of the ball -0.31 to move it to around bellow of the ball
+      origin.y -= 0.31;
 
-    const direction = { x: 0, y: -1, z: 0 };
+      const direction = { x: 0, y: -1, z: 0 };
 
-    // -| Cast ray from bottom of the ball downward to check the distance between the ball and the floor (think of Sonar)
-    const ray = new rapier.Ray(origin, direction);
-    // -| When we cast ray to "hit" (check the distance between ball and other object) something
-    // -| (in this case, the whole world [every other object])
-    const hit = world.castRay(ray, 10, true);
+      // -| Cast ray from bottom of the ball downward to check the distance between the ball and the floor (think of Sonar)
+      const ray = new rapier.Ray(origin, direction);
+      // -| When we cast ray to "hit" (check the distance between ball and other object) something
+      // -| (in this case, the whole world [every other object])
+      const hit = world.castRay(ray, 10, true);
 
-    // -| In case of ball is bouncing so we don't have to wait until the ball stop bouncing to jump again
-    if (hit!.timeOfImpact < 0.15) {
-      body.current.applyImpulse({ x: 0, y: 0.25, z: 0 });
+      // -| In case of ball is bouncing so we don't have to wait until the ball stop bouncing to jump again
+      if (hit!.timeOfImpact < 0.15) {
+        body.current.applyImpulse({ x: 0, y: 0.25, z: 0 });
+      }
     }
   };
 

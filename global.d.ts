@@ -4,3 +4,4 @@ declare global {
     export default content;
   }
 }
+declare module "*.glsl"

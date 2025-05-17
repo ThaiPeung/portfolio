@@ -10,6 +10,7 @@ import { Perf } from "r3f-perf";
 import Lights from "@/components/ballgame/Lights";
 import { Level } from "@/components/ballgame/Level";
 import Player from "@/components/ballgame/Player";
+import Interface from "@/components/ballgame/Interface";
 
 const GamePage = () => {
   const cameraSetting: CameraProps = {
@@ -48,6 +49,7 @@ const GamePage = () => {
         </Physics>
         {/* </Suspense> */}
       </Canvas>
+      <Interface />
     </KeyboardControls>
   );
 };

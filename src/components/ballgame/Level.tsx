@@ -84,13 +84,15 @@ export const BlockLimbo = ({ position = [0, 0, 0] }) => {
 
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
-
-    const y = Math.sin(time + timeOffset) + 1.15;
-    obstacle.current.setNextKinematicTranslation({
-      x: position[0],
-      y: position[1] + y,
-      z: position[2],
-    });
+    
+    if (obstacle.current) {
+      const y = Math.sin(time + timeOffset) + 1.15;
+      obstacle.current.setNextKinematicTranslation({
+        x: position[0],
+        y: position[1] + y,
+        z: position[2],
+      });
+    }
   });
 
   return (
@@ -132,12 +134,14 @@ export const BlockAxe = ({ position = [0, 0, 0] }) => {
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
 
-    const x = Math.sin(time + timeOffset) * 1.25;
-    obstacle.current.setNextKinematicTranslation({
-      x: position[0] + x,
-      y: position[1] + 0.75,
-      z: position[2],
-    });
+    if (obstacle.current) {
+      const x = Math.sin(time + timeOffset) * 1.25;
+      obstacle.current.setNextKinematicTranslation({
+        x: position[0] + x,
+        y: position[1] + 0.75,
+        z: position[2],
+      });
+    }
   });
 
   return (
