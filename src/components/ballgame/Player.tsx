@@ -1,3 +1,4 @@
+import useGame from "@/stores/useGame";
 import { useKeyboardControls } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import {
@@ -9,16 +10,29 @@ import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 const Player = () => {
+  // -| Ref(s)
   const body = useRef<any>(null);
+
+  // -| useKeyboardControls
   const [subscribeKeys, getKeys] = useKeyboardControls();
+
+  // -| useRapier
   const { rapier, world } = useRapier();
 
+  // -| Smoothed cameras setup
   const [smoothedCameraPosition] = useState(
     () => new THREE.Vector3(10, 10, 10)
   );
   const [smoothedCameraTarget] = useState(() => new THREE.Vector3());
 
-  const jumb = () => {
+  // -| useGame stages from (zustand)
+  const start = useGame((state) => state.start);
+  const end = useGame((state) => state.end);
+  const restart = useGame((state) => state.restart);
+  const blocksCount = useGame((state) => state.blocksCount);
+
+  // -| Jump function
+  const jump = () => {
     if (body.current) {
       // -| get current position of the ball
       const origin = body.current.translation();
@@ -40,22 +54,54 @@ const Player = () => {
     }
   };
 
+  const reset = () => {
+    // -| Reset ball position
+    body.current.setTranslation({ x: 0, y: 1, z: 0 });
+    // -| Reset ball velocities
+    body.current.setLinvel({ x: 0, y: 0, z: 0 });
+    body.current.setAngvel({ x: 0, y: 0, z: 0 });
+  };
+
+  // -| Handle keyboard event
   useEffect(() => {
-    const unsubscribeJump = subscribeKeys(
-      (state) => state.jump,
-      (value) => {
-        if (value) {
-          jumb();
+    // -|
+    const unsubscribeReset = useGame.subscribe(
+      // -| Selector: pick the "state.phase" to watch
+      (state) => state.phase,
+      // -| Listener: called whenever that slice changes; receives the new phase value
+      (phaseVal) => {
+        if (phaseVal === "ready") {
+          reset();
         }
       }
     );
 
+    // -| Handle player jump (when press spacebar)
+    const unsubscribeJump = subscribeKeys(
+      // -| Selector: pick the "state.jump" to watch
+      (state) => state.jump,
+      // -| Listener: called whenever that slice changes; receives the new phase value
+      (jumpVal) => {
+        if (jumpVal) {
+          jump();
+        }
+      }
+    );
+
+    // -| Handle player start playing the game (when press any [W, A, S, D, spacebar])
+    const unsubscribeAny = subscribeKeys(() => {
+      start();
+    });
+
     return () => {
+      unsubscribeReset;
       unsubscribeJump;
+      unsubscribeAny;
     };
   }, []);
 
   useFrame((state, delta) => {
+    // -| Handle the ball movement.
     const { forward, backward, leftward, rightward } = getKeys();
 
     const impulse = { x: 0, y: 0, z: 0 };
@@ -89,24 +135,37 @@ const Player = () => {
       body.current.applyTorqueImpulse(torque);
     }
 
-    // -| Camera
-    const bodyPosition = body.current.translation();
+    // -| Camera.
+    if (body.current) {
+      const bodyPosition = body.current.translation();
 
-    const cameraPosition = new THREE.Vector3();
-    cameraPosition.copy(bodyPosition);
-    cameraPosition.z += 2.25;
-    cameraPosition.y += 0.65;
+      const cameraPosition = new THREE.Vector3();
+      cameraPosition.copy(bodyPosition);
+      cameraPosition.z += 2.25;
+      cameraPosition.y += 0.65;
 
-    const cameraTarget = new THREE.Vector3();
-    cameraTarget.copy(bodyPosition);
-    cameraTarget.y += 0.25;
+      const cameraTarget = new THREE.Vector3();
+      cameraTarget.copy(bodyPosition);
+      cameraTarget.y += 0.25;
 
-    // -| Make camera move smooter
-    smoothedCameraPosition.lerp(cameraPosition, 5 * delta);
-    smoothedCameraTarget.lerp(cameraTarget, 5 * delta);
+      // -| Make camera move smooter.
+      smoothedCameraPosition.lerp(cameraPosition, 5 * delta);
+      smoothedCameraTarget.lerp(cameraTarget, 5 * delta);
 
-    state.camera.position.copy(smoothedCameraPosition);
-    state.camera.lookAt(smoothedCameraTarget);
+      state.camera.position.copy(smoothedCameraPosition);
+      state.camera.lookAt(smoothedCameraTarget);
+
+      // -| Phases.
+      // -| Check if player is at the end of stage.
+      if (bodyPosition.z < -(blocksCount * 4 + 2)) {
+        end();
+      }
+
+      // -| Check if player is fall out of stage.
+      if (bodyPosition.y < -4) {
+        restart();
+      }
+    }
   });
 
   return (

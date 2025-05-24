@@ -11,11 +11,15 @@ import Lights from "@/components/ballgame/Lights";
 import { Level } from "@/components/ballgame/Level";
 import Player from "@/components/ballgame/Player";
 import Interface from "@/components/ballgame/Interface";
+import useGame from "@/stores/useGame";
 
 const GamePage = () => {
-  const cameraSetting: CameraProps = {
-    position: [12, 5, 4],
-  };
+  const blocksCount = useGame((state) => {
+    return state.blocksCount;
+  });
+  const blocksSeed = useGame((state) => {
+    return state.blocksSeed;
+  });
 
   return (
     <KeyboardControls
@@ -28,7 +32,6 @@ const GamePage = () => {
       ]}
     >
       <Canvas
-        camera={cameraSetting}
         flat
         shadows
         style={{
@@ -40,11 +43,13 @@ const GamePage = () => {
           display: "block", // - removes canvas inline-block whitespace
         }}
       >
-        <Perf position="top-left" />
+        <Perf position="top-right" />
+        <color args={["#bdedfc"]} attach={"background"} />
+
         {/* <Suspense fallback={<Loader />}> */}
         <Physics>
           <Lights />
-          <Level />
+          <Level count={blocksCount} seed={blocksSeed} />
           <Player />
         </Physics>
         {/* </Suspense> */}

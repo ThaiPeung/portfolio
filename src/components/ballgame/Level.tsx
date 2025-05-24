@@ -1,4 +1,4 @@
-import { useGLTF } from "@react-three/drei";
+import { Float, Text, useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { CuboidCollider, RigidBody } from "@react-three/rapier";
 import React, { useMemo, useRef, useState } from "react";
@@ -16,6 +16,19 @@ export const BlockStart = ({ position = [0, 0, 0] }) => {
   let vecPos = new Vector3(position[0], position[1], position[2]);
   return (
     <group position={vecPos}>
+      <Float floatIntensity={0.25} rotationIntensity={0.25}>
+        <Text
+          scale={0.5}
+          maxWidth={0.25}
+          lineHeight={0.75}
+          textAlign="right"
+          position={[0.75, 0.65, 0]}
+          rotation-y={-0.25}
+        >
+          MARBLE RACE
+          <meshBasicMaterial toneMapped={false} />
+        </Text>
+      </Float>
       <mesh
         geometry={boxGeometry}
         material={floor1Material}
@@ -84,7 +97,7 @@ export const BlockLimbo = ({ position = [0, 0, 0] }) => {
 
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
-    
+
     if (obstacle.current) {
       const y = Math.sin(time + timeOffset) + 1.15;
       obstacle.current.setNextKinematicTranslation({
@@ -185,6 +198,12 @@ export const BlockEnd = ({ position = [0, 0, 0] }) => {
 
   return (
     <group position={vecPos}>
+      <Float floatIntensity={0.25} rotationIntensity={0.25}>
+        <Text scale={1} position={[0, 2.25, 2]}>
+          FINISH
+          <meshBasicMaterial toneMapped={false} />
+        </Text>
+      </Float>
       <mesh
         geometry={boxGeometry}
         material={floor1Material}
@@ -245,6 +264,7 @@ const Bounds = ({ length = 1 }) => {
 export const Level = ({
   count = 5,
   types = [BlockSpiner, BlockAxe, BlockLimbo],
+  seed = 0,
 }) => {
   const blocks = useMemo(() => {
     const blocks: any[] = [];
@@ -255,7 +275,7 @@ export const Level = ({
     }
 
     return blocks;
-  }, [count, types]);
+  }, [count, types, seed]);
 
   return (
     <>
