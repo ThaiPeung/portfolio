@@ -35,7 +35,7 @@ export const MenuItems: menuItemsType[] = [
   },
   {
     title: "CRUD",
-    path: "crud",
+    path: "crud/login",
     icon: <ArticleIcon />,
   },
 ];

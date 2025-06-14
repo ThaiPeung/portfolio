@@ -5,7 +5,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Typography>Welcome to Portfolio!</Typography>
+      <Typography>Portfolio</Typography>
     </>
   );
 }

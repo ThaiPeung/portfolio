@@ -41,4 +41,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 "R.E.P.O "Realistic" Character *FREE DOWNLOAD*" (https://skfb.ly/puRIt) by Tijmen Zwaneveld is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 
+"Medieval Fantasy Book" (https://skfb.ly/69Qty) by Pixel is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+
 "MacBook" Created by: sriniwasjha

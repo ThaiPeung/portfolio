@@ -159,7 +159,12 @@ const layout = ({
   return (
     <>
       <ThemeProvider theme={darkTheme}>
-        <Box sx={{ display: "flex" }}>
+        <Box
+          sx={{
+            display: "flex",
+            height: `calc(100vh - ${64}px)`,
+          }}
+        >
           <CssBaseline />
           <AppBar position="fixed" open={open}>
             <Toolbar>
@@ -263,7 +268,11 @@ const layout = ({
               ))}
             </List>
           </Drawer>
-          <Box component="main" sx={{ flexGrow: 1 }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+            }}
+          >
             <DrawerHeader />
             {children}
           </Box>
