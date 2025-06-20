@@ -1,5 +1,9 @@
+"use client"
+
+import { Provider } from "react-redux";
 import "./globals.css";
 import React from "react";
+import { store } from "@/stores/redux";
 
 // Mui
 
@@ -12,7 +16,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body style={{ height: "100vh" }}>{children}</body>
+      <Provider store={store}>
+        <body style={{ height: "100vh" }}>{children}</body>
+      </Provider>
     </html>
   );
 }

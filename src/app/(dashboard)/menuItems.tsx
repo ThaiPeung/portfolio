@@ -15,27 +15,27 @@ type menuItemsType = {
 export const MenuItems: menuItemsType[] = [
   {
     title: "About",
-    path: "about",
+    path: "/about",
     icon: <InfoIcon />,
   },
   {
     title: "Earth",
-    path: "earth",
+    path: "/earth",
     icon: <PublicIcon />,
   },
   {
     title: "Game",
-    path: "game",
+    path: "/game",
     icon: <PublicIcon />,
   },
   {
     title: "Laptop",
-    path: "laptop",
+    path: "/laptop",
     icon: <LaptopMacIcon />,
   },
   {
     title: "CRUD",
-    path: "crud/login",
+    path: "/crud/login",
     icon: <ArticleIcon />,
   },
 ];

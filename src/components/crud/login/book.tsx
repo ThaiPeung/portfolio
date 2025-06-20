@@ -3,6 +3,8 @@
 import {
   Float,
   OrbitControls,
+  Sky,
+  Stage,
   useAnimations,
   useGLTF,
 } from "@react-three/drei";
@@ -35,7 +37,7 @@ const MedievalBook = () => {
   return (
     <>
       <OrbitControls
-        minDistance={100}
+        minDistance={65}
         maxDistance={150}
         enablePan={false}
         onChange={() => {
@@ -49,11 +51,19 @@ const MedievalBook = () => {
       />
       <directionalLight castShadow position={[4, 4, 1]} intensity={4.5} />
       <ambientLight intensity={1} />
-      <color args={["#fff"]} attach={"background"} />
-
-      <Float floatIntensity={1} rotationIntensity={0.25}>
-        <primitive object={MedievalFantasyBook.scene} position-y={20} />
-      </Float>
+      <Stage>
+        <Float floatIntensity={1} rotationIntensity={0.25}>
+          <primitive object={MedievalFantasyBook.scene} position-y={20} />
+        </Float>
+      </Stage>
+      <Sky
+        distance={450000}
+        sunPosition={[1, 1, -1040]}
+        inclination={0}
+        mieCoefficient={0.029}
+        mieDirectionalG={0.73}
+        // turbidity={}
+      />
     </>
   );
 };

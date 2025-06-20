@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Provider, useDispatch, useSelector } from "react-redux";
 
 // -| Mui
 import {
@@ -39,6 +40,8 @@ import { Grid } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import NightsStayIcon from "@mui/icons-material/NightsStay";
+import { AppDispatch, store } from "@/stores/redux";
+import { darkModeAction, darkModeType } from "@/stores/redux/darkMode";
 
 // -| Project
 
@@ -132,11 +135,14 @@ const layout = ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
+  // -| Redux
+  const dispatch = useDispatch<AppDispatch>();
+  const darkMode: darkModeType = useSelector((configureStoreReducer: any) => configureStoreReducer.darkMode.val);
+
   const theme = useTheme();
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [mode, setMode] = useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -147,12 +153,17 @@ const layout = ({
   };
 
   const handleChangeMode = () => {
-    setMode(!mode);
+    dispatch(darkModeAction.switchMode());
   };
 
   const darkTheme = createTheme({
     palette: {
-      mode: mode ? "dark" : "light",
+      mode: darkMode ? "dark" : "light",
+    },
+    typography: {
+      allVariants: {
+        color: darkMode ? "#fff" : "#000",
+      },
     },
   });
 
@@ -162,7 +173,9 @@ const layout = ({
         <Box
           sx={{
             display: "flex",
-            height: `calc(100vh - ${64}px)`,
+            // height: `calc(100vh - ${64}px)`,
+            height: "100%",
+            paddingTop: "64px",
           }}
         >
           <CssBaseline />
@@ -187,13 +200,13 @@ const layout = ({
                 </Grid>
               </Grid>
               <Grid size="grow">
-                <Typography variant="h6" noWrap component="div">
+                <Typography variant="h6" noWrap component="div" color="#fff">
                   Thai
                 </Typography>
               </Grid>
               <Grid size="auto">
                 <IconButton onClick={handleChangeMode}>
-                  {mode ? (
+                  {darkMode ? (
                     <NightsStayIcon />
                   ) : (
                     <LightModeIcon sx={{ color: "white" }} />
@@ -216,6 +229,7 @@ const layout = ({
             <List>
               {MenuItems.map((item, index) => (
                 <Box
+                  key={index}
                   sx={{
                     backgroundImage: pathname.includes(item.path!)
                       ? "linear-gradient(-45deg, grey, blue)"
@@ -223,7 +237,6 @@ const layout = ({
                   }}
                 >
                   <ListItem
-                    key={index}
                     disablePadding
                     sx={{
                       display: "block",
@@ -268,14 +281,7 @@ const layout = ({
               ))}
             </List>
           </Drawer>
-          <Box
-            sx={{
-              flexGrow: 1,
-            }}
-          >
-            <DrawerHeader />
-            {children}
-          </Box>
+          {children}
         </Box>
       </ThemeProvider>
     </>
