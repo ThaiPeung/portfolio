@@ -1,11 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { CameraProps, Canvas } from "@react-three/fiber";
 
 // -| Mui
 import { Box } from "@mui/material";
-import { Stage, Stars } from "@react-three/drei";
+import { OrbitControls, Stage, Stars } from "@react-three/drei";
 import { darkModeType } from "@/stores/redux/darkMode";
 import { useSelector } from "react-redux";
 
@@ -19,20 +19,18 @@ export default function layout({ children }: { children: React.ReactNode }) {
     (configureStoreReducer: any) => configureStoreReducer.darkMode.val
   );
 
-  const cameraSetting: CameraProps = {
-    fov: 25,
-    near: 0.1,
-    far: 100,
-    position: [12, 5, 4],
-  };
+  // -| useState
+
   return (
     <>
       {darkMode && (
         <Canvas
           className="r3f"
-          camera={cameraSetting}
-          flat
-          shadows
+          camera={{
+            fov: 75,
+            near: 0.5,
+            far: 1000,
+          }}
           style={{
             outline: "none",
             position: "fixed",
@@ -41,12 +39,10 @@ export default function layout({ children }: { children: React.ReactNode }) {
             width: "100%",
             height: "100%",
             overflow: "hidden",
-            display: "block", // -| removes canvas inline-block whitespace
-            zIndex: "-10",
           }}
         >
-          <color args={["#000000"]} attach={"background"} />
-          <Stage intensity={0}></Stage>
+          {/* <OrbitControls /> */}
+
 
           <Stars
             radius={100}

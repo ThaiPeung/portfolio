@@ -286,7 +286,7 @@ const Earth = () => {
 
         {/* Moon */}
         <mesh ref={debugMoonRef} material={moonMaterial}>
-          <sphereGeometry args={[0.24, 32, 32]} />
+          <sphereGeometry args={[0.48, 32, 32]} />
         </mesh>
       </Stage>
 

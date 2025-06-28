@@ -30,6 +30,8 @@ import LoginIcon from "@mui/icons-material/Login";
 import { AppDispatch } from "@/stores/redux";
 import { darkModeType } from "@/stores/redux/darkMode";
 import { useDispatch, useSelector } from "react-redux";
+import CustomCard from "@/components/customCard";
+import { apiURL } from "@/env";
 
 // -| Projects
 
@@ -66,7 +68,7 @@ const LoginCard = () => {
 
   const login = async () => {
     try {
-      const response = await axios.post("http://localhost:8080/api/login", {
+      const response = await axios.post(apiURL + "/login", {
         username: username,
         password: password,
       });
@@ -74,6 +76,7 @@ const LoginCard = () => {
       let token: string = response.data;
       const decoded = jwtDecode(token);
       router.push("home");
+      localStorage.setItem("token", token);
       console.log(decoded);
     } catch (error) {
       console.log(error);
@@ -93,58 +96,14 @@ const LoginCard = () => {
     setPassword(e.target.value);
   };
 
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    let start: number | null = null;
-    const duration = 5000; // 2 seconds per full rotation
-
-    const step = (timestamp: number) => {
-      if (start === null) start = timestamp;
-      const elapsed = timestamp - start;
-      // 0 → 360deg over `duration` ms, then loop
-      const angle = ((elapsed % duration) / duration) * 360;
-      ref.current?.style.setProperty("--deg", `${angle}deg`);
-      requestAnimationFrame(step);
-    };
-
-    const rafId = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(rafId);
-  }, []);
-
   return (
-    <Box
-      ref={ref}
-      sx={{
-        position: "relative",
-        height: "100%",
-        width: "400px",
-        padding: "20px",
-        borderRadius: "10px",
-        border: darkMode ? "" : "1px solid #212121",
-        boxShadow: darkMode ? "" : "3px 3px 3px #bdbdbd",
-        backgroundImage: darkMode
-          ? "linear-gradient(135deg, #212121, #616161)"
-          : "linear-gradient(#fff)",
-        "&::before, &::after": {
-          content: '""',
-          width: "calc(100% + 8px)",
-          height: "calc(100% + 8px)",
-          top: "50%",
-          left: "50%",
-          translate: "-50% -50%",
-          position: "absolute",
-          borderRadius: "inherit",
-          backgroundImage: darkMode
-            ? "conic-gradient(from var(--deg),#ff4545, #00ff49, #006aff, #ff0095, #ff4545)"
-            : "",
-          zIndex: "-1",
-        },
-        "&::before": {
-          filter: "blur(1.5rem)",
-          opacity: 0.5,
-        },
-      }}
+    <CustomCard
+      animation={true}
+      height={"100%"}
+      width={"400px"}
+      backgroundDark={"linear-gradient(135deg, #212121, #616161)"}
+      styledBorderDark={"#ff4545, #00ff49, #006aff, #ff0095, #ff4545"}
+      backgroundLight={"linear-gradient(#fff)"}
     >
       <Grid container columns={1} spacing={3}>
         <Grid size={1}>
@@ -195,14 +154,15 @@ const LoginCard = () => {
           <Button
             variant="contained"
             size="small"
-            onClick={() => router.push("home")}
+            onClick={login}
+            // onClick={() => router.push("home")}
             endIcon={<LoginIcon />}
           >
             Login
           </Button>
         </Grid>
       </Grid>
-    </Box>
+    </CustomCard>
   );
 };
 

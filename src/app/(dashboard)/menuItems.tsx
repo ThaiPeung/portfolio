@@ -5,6 +5,7 @@ import PublicIcon from "@mui/icons-material/Public";
 import LaptopMacIcon from '@mui/icons-material/LaptopMac';
 import ArticleIcon from '@mui/icons-material/Article';
 import InfoIcon from '@mui/icons-material/Info';
+import SportsSoccerIcon from '@mui/icons-material/SportsSoccer';
 
 type menuItemsType = {
   title: string;
@@ -26,7 +27,7 @@ export const MenuItems: menuItemsType[] = [
   {
     title: "Game",
     path: "/game",
-    icon: <PublicIcon />,
+    icon: <SportsSoccerIcon />,
   },
   {
     title: "Laptop",

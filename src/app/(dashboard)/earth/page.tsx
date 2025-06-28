@@ -22,12 +22,13 @@ const EarthPage = () => {
       flat
       shadows
       style={{
-        position: "absolute",
+        outline: "none",
+        position: "fixed",
         top: 0,
         left: 0,
         width: "100%",
         height: "100%",
-        display: "block", // - removes canvas inline-block whitespace
+        overflow: "hidden",
       }}
       // gl={{ antialias: true }}
       // onCreated={({ camera, gl, size }) => {
