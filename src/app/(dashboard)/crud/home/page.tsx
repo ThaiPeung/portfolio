@@ -11,6 +11,7 @@ import CustomCard from "@/components/customCard";
 import Slider from "@/components/crud/home/slider";
 import axios from "axios";
 import { apiURL } from "@/env";
+import SectionHeader from "@/components/crud/home/sectionHeader";
 
 // -| Mui icon(s)
 
@@ -146,6 +147,7 @@ const page = () => {
 
   return (
     <>
+      <SectionHeader title="Top rating" sectionVariant="neon" />
       <Slider />
       <Box
         sx={{

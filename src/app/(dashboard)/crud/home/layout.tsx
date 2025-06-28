@@ -43,7 +43,6 @@ export default function layout({ children }: { children: React.ReactNode }) {
         >
           {/* <OrbitControls /> */}
 
-
           <Stars
             radius={100}
             depth={50}
@@ -63,7 +62,10 @@ export default function layout({ children }: { children: React.ReactNode }) {
           minHeight: "max-content",
           display: "grid",
           placeItems: "center",
-          padding: "min(150px, 8%)",
+          paddingTop: "min(50px, 4%)",
+          paddingLeft: "min(150px, 8%)",
+          paddingRight: "min(150px, 8%)",
+          paddingBottom: "min(150px, 8%)",
         }}
       >
         {children}

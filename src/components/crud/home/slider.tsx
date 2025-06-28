@@ -3,16 +3,16 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { Observer } from "gsap/Observer";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 // -| Mui
 import { Box, Button, Grid, Rating, Typography } from "@mui/material";
-import CustomCard from "@/components/customCard";
-import { jwtDecode } from "jwt-decode";
-import axios from "axios";
 
 // -| Mui Icon(s)
 
 // -| project
+import CustomCard from "@/components/customCard";
 
 gsap.registerPlugin(Observer);
 
@@ -137,9 +137,9 @@ const Slider: React.FC<InfiniteScrollProps> = ({
       onRelease: ({ target }) => {
         (target as HTMLElement).style.cursor = "grab";
       },
-      onChange: ({ deltaX, isDragging, event }) => {
-        const d = event.type === "wheel" ? -deltaX : deltaX;
-        const distance = isDragging ? d * 5 : d * 10;
+      onChange: ({ deltaY, deltaX, isDragging, event }) => {
+        const d = event.type === "wheel" ? deltaY : deltaX;
+        const distance = isDragging ? d * 5 : d * 3;
         divItems.forEach((child) => {
           gsap.to(child, {
             duration: 0.5,
@@ -223,8 +223,8 @@ const Slider: React.FC<InfiniteScrollProps> = ({
           alignItems: "center",
           justifyContent: "center",
           height: "450px",
-          width: "100%",
-          maxWidth: "1800px",
+          width: "85%",
+          maxWidth: "1500px",
           overflow: "hidden",
           overscrollBehavior: "none",
           boxSizing: "border-box",
@@ -237,13 +237,12 @@ const Slider: React.FC<InfiniteScrollProps> = ({
             content: '""',
             position: "absolute",
             width: "100%",
-            pointerRvents: "none",
+            pointerEvents: "none",
           },
           "&::before,": {
             top: 0,
           },
           "&::after": {
-            "--dir": "to top",
             bottom: 0,
           },
         }}
