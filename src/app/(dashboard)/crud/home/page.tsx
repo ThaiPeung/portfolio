@@ -2,20 +2,21 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { darkModeType } from "@/stores/redux/darkMode";
 
 // -| Mui
 import { Box, Grid, Rating, Typography } from "@mui/material";
-import { darkModeType } from "@/stores/redux/darkMode";
-import { useSelector } from "react-redux";
-import CustomCard from "@/components/customCard";
-import Slider from "@/components/crud/home/slider";
-import axios from "axios";
-import { apiURL } from "@/env";
-import SectionHeader from "@/components/crud/home/sectionHeader";
 
 // -| Mui icon(s)
 
 // -| Project
+import CustomCard from "@/components/customCard";
+import Slider from "@/components/crud/home/slider";
+import { apiURL } from "@/env";
+import SectionHeader from "@/components/crud/home/sectionHeader";
+import CustomPagination from "@/components/crud/home/customPagination";
 
 type bookType = {
   id: string;
@@ -29,104 +30,46 @@ type bookType = {
   rating: number;
 };
 
+type paginationType = {
+  content: bookType[];
+  totalElements: number;
+  totalPages: number;
+  number: number;
+  size: number;
+  first: true;
+  last: false;
+};
+
 const page = () => {
   // -| Redux
   const darkMode: darkModeType = useSelector(
     (configureStoreReducer: any) => configureStoreReducer.darkMode.val
   );
 
-  const [contents, setContents] = useState<bookType[]>([
-    {
-      id: "1",
-      imageUrl: "",
-      title: "Card",
-      rating: 4,
-      author: "test review",
-      publishedDate: "24/06/2025",
-      genre: "mock up",
-      createBy: "Dev",
-      createAt: "today",
-    },
-    {
-      id: "2",
-      imageUrl: "",
-      title: "Card",
-      rating: 5,
-      author: "test review",
-      publishedDate: "24/06/2025",
-      genre: "mock up",
-      createBy: "Dev",
-      createAt: "today",
-    },
-    {
-      id: "3",
-      imageUrl: "",
-      title: "Card",
-      rating: 4.5,
-      author: "test review",
-      publishedDate: "24/06/2025",
-      genre: "mock up",
-      createBy: "Dev",
-      createAt: "today",
-    },
-    {
-      id: "4",
-      imageUrl: "",
-      title: "Card",
-      rating: 5,
-      author: "test review",
-      publishedDate: "24/06/2025",
-      genre: "mock up",
-      createBy: "Dev",
-      createAt: "today",
-    },
-    {
-      id: "5",
-      imageUrl: "",
-      title: "Card",
-      rating: 5,
-      author: "test review",
-      publishedDate: "24/06/2025",
-      genre: "mock up",
-      createBy: "Dev",
-      createAt: "today",
-    },
-    {
-      id: "6",
-      imageUrl: "",
-      title: "Card",
-      rating: 4,
-      author: "test review",
-      publishedDate: "24/06/2025",
-      genre: "mock up",
-      createBy: "Dev",
-      createAt: "today",
-    },
-    {
-      id: "7",
-      imageUrl: "",
-      title: "Card",
-      rating: 3.5,
-      author: "test review",
-      publishedDate: "24/06/2025",
-      genre: "mock up",
-      createBy: "Dev",
-      createAt: "today",
-    },
-  ]);
+  // -| useState
+  const [contents, setContents] = useState<paginationType>();
+  const [topContents, setTopContents] = useState<bookType[]>([]);
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(9);
 
   const [getBooksMsg, setGetBooksMsg] = useState<string>("");
 
   const getBooks = async () => {
     try {
-      const response = await axios.get(apiURL + "/books", {
-        headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-      });
+      const response = await axios.get(
+        apiURL + `/books?page=${page}&size=${pageSize}`,
+        {
+          headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+        }
+      );
 
-      let books: bookType[] = response.data;
-      console.log("books", books);
+      let data: paginationType = response.data;
+      console.log("books", data);
       if (response.status === 200) {
-        setContents(books);
+        setContents(data);
+        if (data.first) {
+          setTopContents(data.content.slice(0, 7));
+        }
       }
     } catch (error) {
       console.log(error);
@@ -143,12 +86,12 @@ const page = () => {
   // -| Get list of books
   useEffect(() => {
     getBooks();
-  }, []);
+  }, [page, pageSize]);
 
   return (
     <>
       <SectionHeader title="Top rating" sectionVariant="neon" />
-      <Slider />
+      <Slider contents={topContents} />
       <Box
         sx={{
           height: "100%",
@@ -157,8 +100,7 @@ const page = () => {
         }}
       >
         <Grid container direction="row" spacing={10}>
-          {contents.map((content, index) => {
-            console.log(content.imageUrl);
+          {contents?.content?.map((content, index) => {
             return (
               <Grid key={index} size={{ xs: 2, sm: 3, md: 4 }}>
                 <CustomCard enableHover>
@@ -213,7 +155,7 @@ const page = () => {
                         <Typography>{content.publishedDate}</Typography>
                         <Rating
                           readOnly
-                          defaultValue={content.rating}
+                          value={content.rating || 0}
                           size="large"
                           precision={0.5}
                         />
@@ -226,6 +168,14 @@ const page = () => {
           })}
         </Grid>
       </Box>
+      <CustomPagination
+        count={contents?.totalElements || 0}
+        page={page}
+        totalPages={contents?.totalPages || 0}
+        setPage={setPage}
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+      />
     </>
   );
 };

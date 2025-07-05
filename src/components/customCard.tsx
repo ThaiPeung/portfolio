@@ -76,6 +76,7 @@ const CustomCard = ({
         boxSizing: "border-box",
         position: "relative",
         borderRadius: "10px",
+        transition: gsap || !enableHover ? "" : "scale 0.3s ease-in",
         "&::before, &::after": darkMode
           ? {
               content: '""',

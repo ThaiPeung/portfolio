@@ -1,10 +1,9 @@
 "use client";
 
 import React, { ReactNode, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { gsap } from "gsap";
 import { Observer } from "gsap/Observer";
-import { jwtDecode } from "jwt-decode";
-import axios from "axios";
 
 // -| Mui
 import { Box, Button, Grid, Rating, Typography } from "@mui/material";
@@ -13,12 +12,19 @@ import { Box, Button, Grid, Rating, Typography } from "@mui/material";
 
 // -| project
 import CustomCard from "@/components/customCard";
+import { apiURL } from "@/env";
 
 gsap.registerPlugin(Observer);
 
-type sliderContentType = {
-  img: string;
+type bookType = {
+  id: string;
+  imageUrl: string;
   title: string;
+  author: string;
+  publishedDate: string;
+  genre: string;
+  createBy: string;
+  createAt: string;
   rating: number;
 };
 
@@ -27,6 +33,7 @@ interface InfiniteScrollItem {
 }
 
 interface InfiniteScrollProps {
+  contents: bookType[];
   width?: string;
   maxHeight?: string;
   negativeMargin?: string;
@@ -40,6 +47,7 @@ interface InfiniteScrollProps {
 }
 
 const Slider: React.FC<InfiniteScrollProps> = ({
+  contents,
   width = "100rem",
   maxHeight = "100%",
   negativeMargin = "-0.5em",
@@ -49,43 +57,43 @@ const Slider: React.FC<InfiniteScrollProps> = ({
   autoplayDirection = "right",
   pauseOnHover = true,
 }) => {
-  const [contents, setContents] = useState<sliderContentType[]>([
-    {
-      img: "I",
-      title: "Card",
-      rating: 4,
-    },
-    {
-      img: "II",
-      title: "Card",
-      rating: 5,
-    },
-    {
-      img: "III",
-      title: "Card",
-      rating: 4.5,
-    },
-    {
-      img: "IV",
-      title: "Card",
-      rating: 5,
-    },
-    {
-      img: "V",
-      title: "Card",
-      rating: 5,
-    },
-    {
-      img: "VI",
-      title: "Card",
-      rating: 4,
-    },
-    {
-      img: "VII",
-      title: "Card",
-      rating: 3.5,
-    },
-  ]);
+  // const [contents, setContents] = useState<sliderContentType[]>([
+  //   {
+  //     img: "I",
+  //     title: "Card",
+  //     rating: 4,
+  //   },
+  //   {
+  //     img: "II",
+  //     title: "Card",
+  //     rating: 5,
+  //   },
+  //   {
+  //     img: "III",
+  //     title: "Card",
+  //     rating: 4.5,
+  //   },
+  //   {
+  //     img: "IV",
+  //     title: "Card",
+  //     rating: 5,
+  //   },
+  //   {
+  //     img: "V",
+  //     title: "Card",
+  //     rating: 5,
+  //   },
+  //   {
+  //     img: "VI",
+  //     title: "Card",
+  //     rating: 4,
+  //   },
+  //   {
+  //     img: "VII",
+  //     title: "Card",
+  //     rating: 3.5,
+  //   },
+  // ]);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -138,7 +146,10 @@ const Slider: React.FC<InfiniteScrollProps> = ({
         (target as HTMLElement).style.cursor = "grab";
       },
       onChange: ({ deltaY, deltaX, isDragging, event }) => {
+        // -| deltaX/Y (X for left/right, Y for up/down) the incremental movement since the last event
+        // -| for wheel use deltaY (track user move wheel up/down) and other(focus drag) use deltaX
         const d = event.type === "wheel" ? deltaY : deltaX;
+        // -| distance of user action
         const distance = isDragging ? d * 5 : d * 3;
         divItems.forEach((child) => {
           gsap.to(child, {
@@ -222,7 +233,7 @@ const Slider: React.FC<InfiniteScrollProps> = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          height: "450px",
+          height: "500px",
           width: "85%",
           maxWidth: "1500px",
           overflow: "hidden",
@@ -259,7 +270,7 @@ const Slider: React.FC<InfiniteScrollProps> = ({
           }}
           ref={containerRef}
         >
-          {contents.map((content, i) => (
+          {contents?.map((content, i) => (
             <CustomCard
               key={i}
               duration={2000}
@@ -279,9 +290,33 @@ const Slider: React.FC<InfiniteScrollProps> = ({
                 }}
               >
                 <Grid size="grow">
-                  <Box sx={{ height: "200px" }}>{content.img}</Box>
+                  <Box sx={{ height: "250px" }}>
+                    {content.imageUrl !== "" &&
+                      content.imageUrl?.includes("/uploads/") && (
+                        <Image
+                          style={{ borderRadius: "10px" }}
+                          src={apiURL + content.imageUrl}
+                          alt={content.title}
+                          width={200}
+                          height={300}
+                        />
+                      )}
+                    {content.imageUrl === "" && (
+                      <Box
+                        sx={{
+                          width: "200",
+                          height: "300",
+                          display: "grid",
+                          placeItems: "center",
+                          boborderRadius: "10px",
+                        }}
+                      >
+                        <Typography>No Image</Typography>
+                      </Box>
+                    )}
+                  </Box>
                 </Grid>
-                <Grid size="grow">{content.title}</Grid>
+                {/* <Grid size="grow">{content.title}</Grid> */}
                 <Grid size="grow">
                   <Rating
                     readOnly

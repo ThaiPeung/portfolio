@@ -44,8 +44,8 @@ const LoginCard = () => {
   // -| useState
   const [showPassword, setShowPassword] = useState(false);
 
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [username, setUsername] = useState<string>("Bill");
+  const [password, setPassword] = useState<string>("NotSimple");
 
   const [loginMsg, setLoginMsg] = useState<string>("");
 
