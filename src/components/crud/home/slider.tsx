@@ -233,7 +233,7 @@ const Slider: React.FC<InfiniteScrollProps> = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          height: "500px",
+          height: "550px",
           width: "85%",
           maxWidth: "1500px",
           overflow: "hidden",
@@ -290,7 +290,7 @@ const Slider: React.FC<InfiniteScrollProps> = ({
                 }}
               >
                 <Grid size="grow">
-                  <Box sx={{ height: "250px" }}>
+                  <Box sx={{ height: "300px" }}>
                     {content.imageUrl !== "" &&
                       content.imageUrl?.includes("/uploads/") && (
                         <Image

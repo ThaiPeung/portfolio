@@ -17,6 +17,7 @@ import Slider from "@/components/crud/home/slider";
 import { apiURL } from "@/env";
 import SectionHeader from "@/components/crud/home/sectionHeader";
 import CustomPagination from "@/components/crud/home/customPagination";
+import MainContent from "@/components/crud/home/mainContent";
 
 type bookType = {
   id: string;
@@ -90,92 +91,21 @@ const page = () => {
 
   return (
     <>
-      <SectionHeader title="Top rating" sectionVariant="neon" />
-      <Slider contents={topContents} />
-      <Box
-        sx={{
-          height: "100%",
-          width: "100%",
-          padding: "10px",
-        }}
-      >
-        <Grid container direction="row" spacing={10}>
-          {contents?.content?.map((content, index) => {
-            return (
-              <Grid key={index} size={{ xs: 2, sm: 3, md: 4 }}>
-                <CustomCard enableHover>
-                  <Grid
-                    container
-                    direction="row"
-                    columns={2}
-                    spacing={3}
-                    sx={{
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Grid size="grow">
-                      <Box sx={{ height: "400px" }}>
-                        {content.imageUrl !== "" &&
-                          content.imageUrl?.includes("/uploads/") && (
-                            <Image
-                              style={{ borderRadius: "10px" }}
-                              src={apiURL + content.imageUrl}
-                              alt={content.title}
-                              width={200}
-                              height={300}
-                            />
-                          )}
-                        {content.imageUrl === "" && (
-                          <Box
-                            sx={{
-                              width: "200",
-                              height: "300",
-                              display: "grid",
-                              placeItems: "center",
-                              boborderRadius: "10px",
-                            }}
-                          >
-                            <Typography>No Image</Typography>
-                          </Box>
-                        )}
-                      </Box>
-                    </Grid>
-                    <Grid size="grow">
-                      <Box
-                        sx={{
-                          display: "grid",
-                          gap: "20",
-                          placeItems: "center",
-                        }}
-                      >
-                        <Typography variant="h4">{content.title}</Typography>
-                        <Typography>{content.author}</Typography>
-                        <Typography>{content.genre}</Typography>
-                        <Typography>{content.publishedDate}</Typography>
-                        <Rating
-                          readOnly
-                          value={content.rating || 0}
-                          size="large"
-                          precision={0.5}
-                        />
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </CustomCard>
-              </Grid>
-            );
-          })}
-        </Grid>
-      </Box>
-      <CustomPagination
-        count={contents?.totalElements || 0}
-        page={page}
-        totalPages={contents?.totalPages || 0}
-        setPage={setPage}
-        pageSize={pageSize}
-        setPageSize={setPageSize}
-      />
+      {contents?.content && (
+        <>
+          <SectionHeader title="Top Books" sectionVariant="neon" />
+          <Slider contents={topContents} />
+          <MainContent content={contents?.content} />
+          <CustomPagination
+            count={contents?.totalElements || 0}
+            page={page}
+            totalPages={contents?.totalPages || 0}
+            setPage={setPage}
+            pageSize={pageSize}
+            setPageSize={setPageSize}
+          />
+        </>
+      )}
     </>
   );
 };
