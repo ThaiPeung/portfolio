@@ -87,18 +87,20 @@ const CustomPagination: React.FC<FCType> = ({
         boxSizing: "border-box",
       }}
     >
-      <TablePagination
-        rowsPerPageOptions={[9, 15, 21]}
-        count={count}
-        rowsPerPage={pageSize}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        sx={{
-          border: "none",
-          padding: "0",
-        }}
-      />
+      <TableContainer sx={{ maxWidth: "max-content" }}>
+        <TablePagination
+          rowsPerPageOptions={[9, 15, 21]}
+          count={count}
+          rowsPerPage={pageSize}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          sx={{
+            border: "none",
+            padding: "0",
+          }}
+        />
+      </TableContainer>
       <Pagination
         count={totalPages}
         page={page + 1}

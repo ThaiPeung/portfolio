@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/router";
+import { useParams, useRouter } from "next/navigation";
 
 // -| Mui
 import { Box, Grid, Rating, Typography } from "@mui/material";
@@ -11,8 +11,9 @@ import { Box, Grid, Rating, Typography } from "@mui/material";
 // -| Project
 
 const page = () => {
+  const params = useParams()
   const router = useRouter();
-  return <p>Post: {router.query.slug}</p>;
+  return <p>Post: {params.id}</p>;
 };
 
 export default page;
