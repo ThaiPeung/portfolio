@@ -15,21 +15,10 @@ import { Box, Grid, Rating, Typography } from "@mui/material";
 import CustomCard from "@/components/customCard";
 import Slider from "@/components/crud/home/slider";
 import { apiURL } from "@/env";
-import SectionHeader from "@/components/crud/home/sectionHeader";
-import CustomPagination from "@/components/crud/home/customPagination";
+import SectionHeader from "@/components/crud/share/sectionHeader";
+import CustomPagination from "@/components/crud/share/customPagination";
 import MainContent from "@/components/crud/home/mainContent";
-
-type bookType = {
-  id: string;
-  imageUrl: string;
-  title: string;
-  author: string;
-  publishedDate: string;
-  genre: string;
-  createBy: string;
-  createAt: string;
-  rating: number;
-};
+import { bookType } from "@/components/crud/types/bookTypes";
 
 type paginationType = {
   content: bookType[];
