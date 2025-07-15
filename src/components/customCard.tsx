@@ -12,6 +12,7 @@ const CustomCard = ({
   enableHover = false,
   width = "100%",
   height = "100%",
+  margin,
   backgroundDark = "linear-gradient(135deg, #212121, #424242)",
   styledBorderDark = "#2962ff, #0091ea, #00b8d4, #304ffe, #2962ff",
   backgroundLight = "linear-gradient(135deg, #bdbdbd, #e0e0e0)",
@@ -24,6 +25,7 @@ const CustomCard = ({
   enableHover?: boolean;
   width?: string;
   height?: string;
+  margin?: string;
   backgroundDark?: string;
   styledBorderDark?: string;
   backgroundLight?: string;
@@ -73,6 +75,7 @@ const CustomCard = ({
       sx={{
         width: width,
         height: height,
+        margin: margin || "20px 0px 0px 0px",
         boxSizing: "border-box",
         position: "relative",
         borderRadius: "10px",

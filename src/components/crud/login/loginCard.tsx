@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import classes from "./loginCard.module.css";
@@ -32,6 +32,7 @@ import { darkModeType } from "@/stores/redux/darkMode";
 import { useDispatch, useSelector } from "react-redux";
 import CustomCard from "@/components/customCard";
 import { apiURL } from "@/env";
+import { login } from "@/services/customAxios";
 
 // -| Projects
 
@@ -66,20 +67,14 @@ const LoginCard = () => {
     event.preventDefault();
   };
 
-  const login = async () => {
+  const userLogin = async () => {
     try {
-      const response = await axios.post(apiURL + "/login", {
-        username: username,
-        password: password,
-      });
-
-      let token: string = response.data;
+      const res = await login(username, password);
+      let token: string = res;
       const decoded = jwtDecode(token);
       router.push("home");
       localStorage.setItem("token", token);
-      console.log(decoded);
     } catch (error) {
-      console.log(error);
       if (axios.isAxiosError(error)) {
         setLoginMsg(`Error: ${error.response?.data?.message || error.message}`);
       } else {
@@ -154,7 +149,7 @@ const LoginCard = () => {
           <Button
             variant="contained"
             size="small"
-            onClick={login}
+            onClick={userLogin}
             // onClick={() => router.push("home")}
             endIcon={<LoginIcon />}
           >
