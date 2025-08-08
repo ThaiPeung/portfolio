@@ -1,24 +1,16 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import axios, { AxiosResponse } from "axios";
+import React, { useState } from "react";
+import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
-import classes from "./loginCard.module.css";
 
 // -| MUI
 import {
-  Box,
-  BoxProps,
   Button,
-  Card,
-  CardActions,
-  CardContent,
   Grid,
   IconButton,
   InputAdornment,
-  OutlinedInput,
-  styled,
   TextField,
   Typography,
 } from "@mui/material";
@@ -27,14 +19,20 @@ import {
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import LoginIcon from "@mui/icons-material/Login";
-import { AppDispatch } from "@/stores/redux";
 import { darkModeType } from "@/stores/redux/darkMode";
-import { useDispatch, useSelector } from "react-redux";
-import CustomCard from "@/components/customCard";
-import { apiURL } from "@/env";
-import { login } from "@/services/customAxios";
+import { useSelector } from "react-redux";
+import CustomCard from "@/components/customComponents/customCard";
+import customAxios, { login } from "@/services/customAxios";
+import useUser from "@/stores/useUser";
 
 // -| Projects
+
+type jwtPayload = {
+  exp: number;
+  iat: number;
+  roles: string[];
+  sub: string;
+};
 
 const LoginCard = () => {
   // -| Redux
@@ -49,6 +47,9 @@ const LoginCard = () => {
   const [password, setPassword] = useState<string>("NotSimple");
 
   const [loginMsg, setLoginMsg] = useState<string>("");
+
+  // -| useUser from (zustand)
+  const setUser = useUser((state) => state.setUser);
 
   // -| useRouter
   const router = useRouter();
@@ -68,15 +69,21 @@ const LoginCard = () => {
   };
 
   const userLogin = async () => {
+    setLoginMsg("");
     try {
-      const res = await login(username, password);
-      let token: string = res;
-      const decoded = jwtDecode(token);
+      const resLogin = await login(username, password);
+      let token: string = resLogin;
+      const decoded = jwtDecode<jwtPayload>(token);
+      setUser({ username: decoded.sub, roles: decoded.roles });
+
+      const res = await customAxios.get("/csrf");
+      console.log(res)
+      customAxios.defaults.headers["X-XSRF-TOKEN"] = res.data.token;
+
       router.push("home");
-      localStorage.setItem("token", token);
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        setLoginMsg(`Error: ${error.response?.data?.message || error.message}`);
+        setLoginMsg(`Error: ${error.response?.data || error.message}`);
       } else {
         setLoginMsg("An unexpected error occurred.");
       }
@@ -147,14 +154,16 @@ const LoginCard = () => {
           }}
         >
           <Button
-            variant="contained"
+            variant="outlined"
             size="small"
             onClick={userLogin}
-            // onClick={() => router.push("home")}
             endIcon={<LoginIcon />}
           >
             Login
           </Button>
+          <Typography color="error" sx={{ marginTop: "10px" }}>
+            {loginMsg}
+          </Typography>
         </Grid>
       </Grid>
     </CustomCard>

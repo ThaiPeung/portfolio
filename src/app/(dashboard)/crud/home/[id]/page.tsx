@@ -9,6 +9,7 @@ import {
   Box,
   Button,
   Chip,
+  Dialog,
   Grid,
   Rating,
   TextField,
@@ -16,22 +17,27 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { apiURL } from "@/env";
-import CustomPagination from "@/components/crud/share/customPagination";
+import CustomPagination from "@/components/customComponents/customPagination";
 import {
   paginationType,
   reviewType,
 } from "@/components/crud/types/reviewTypes";
-import CustomCard from "@/components/customCard";
+import CustomCard from "@/components/customComponents/customCard";
 
 // -| Mui icon(s)
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
-import Reviews from "@/components/crud/home/review/reviews";
-import customAxios from "@/services/customAxios";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
 
 // -| Project
+import Reviews from "@/components/crud/home/review/reviews";
+import customAxios from "@/services/customAxios";
+import CustomDialog from "@/components/customComponents/customDialog";
+import useUser from "@/stores/useUser";
 
 const BookDetailSX = {
   display: "flex",
@@ -60,33 +66,34 @@ const page = () => {
   const [contents, setContents] = useState<paginationType>();
   const [userReviewId, setUserReviewId] = useState<number>();
 
-  const [apiResMsg, setAPIResMsg] = useState<string>("");
+  // -| Response Dialog
+  const [openDialog, setOpenDialog] = useState(false);
+  const [apiResTitle, setAPIResTitle] = useState("");
+  const [apiResMsg, setAPIResMsg] = useState("");
+  const [apiResType, setAPIResType] = useState("");
 
   // -| useState api input
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(9);
 
   // -| useState user input
-  const [rating, setRating] = useState<number>(0);
-  const [comment, setComment] = useState<string>("");
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
 
   // -| function
   const getBookDetail = async () => {
     try {
-      const response = await axios.get(apiURL + `/books/${params.id}`, {
-        headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-      });
+      const response = await customAxios.get(`/books/${params.id}`);
 
       let data: bookDetailType = response.data;
       if (response.status === 200) {
         setBookDetail(data);
       }
     } catch (error) {
-      console.log(error);
+      setAPIResType("error");
+      setAPIResTitle("Error!");
       if (axios.isAxiosError(error)) {
-        setAPIResMsg(
-          `Error: ${error.response?.data?.message || error.message}`
-        );
+        setAPIResMsg(`Error: ${error.response?.data || error.message}`);
       } else {
         setAPIResMsg("An unexpected error occurred.");
       }
@@ -96,20 +103,18 @@ const page = () => {
   const getBookReviews = async () => {
     try {
       const response = await customAxios.get(
-        apiURL + `/reviewsByBook/${params.id}?page=${page}&size=${pageSize}`,
+        `/reviewsByBook/${params.id}?page=${page}&size=${pageSize}`
       );
 
       let data: paginationType = response.data;
-      console.log("getBookReviews", data);
       if (response.status === 200) {
         setContents(data);
       }
     } catch (error) {
-      console.log(error);
+      setAPIResType("error");
+      setAPIResTitle("Error!");
       if (axios.isAxiosError(error)) {
-        setAPIResMsg(
-          `Error: ${error.response?.data?.message || error.message}`
-        );
+        setAPIResMsg(`Error: ${error.response?.data || error.message}`);
       } else {
         setAPIResMsg("An unexpected error occurred.");
       }
@@ -118,11 +123,8 @@ const page = () => {
 
   const getUserReview = async () => {
     try {
-      const response = await axios.get(
-        apiURL + `/reviewByUserAndBook/${params.id}`,
-        {
-          headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-        }
+      const response = await customAxios.get(
+        `/reviewByUserAndBook/${params.id}`
       );
 
       let data: reviewType = response.data;
@@ -132,13 +134,18 @@ const page = () => {
         setComment(data.comment);
       }
     } catch (error) {
-      console.log(error);
       if (axios.isAxiosError(error)) {
-        setAPIResMsg(
-          `Error: ${error.response?.data?.message || error.message}`
-        );
+        if (error.status !== 404) {
+          setAPIResType("error");
+          setAPIResTitle("Error!");
+          setAPIResMsg(`Error: ${error.response?.data || error.message}`);
+          setOpenDialog(true);
+        }
       } else {
+        setAPIResType("error");
+        setAPIResTitle("Error!");
         setAPIResMsg("An unexpected error occurred.");
+        setOpenDialog(true);
       }
     }
   };
@@ -153,9 +160,7 @@ const page = () => {
         comment: comment,
         createdAt: null,
       };
-      const response = await axios.post(apiURL + `/reviews`, body, {
-        headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-      });
+      const response = await customAxios.post(`/reviews`, body);
 
       let data: reviewType = response.data;
       if (response.status === 200) {
@@ -164,16 +169,56 @@ const page = () => {
         getBookDetail();
         getBookReviews();
         getUserReview();
+        setAPIResType("success");
+        setAPIResTitle("Success");
+        setAPIResMsg(`Successfully add / edit review: ${data.comment}`);
+        setOpenDialog(true);
       }
     } catch (error) {
-      console.log(error);
+      setAPIResType("error");
+      setAPIResTitle("Error!");
       if (axios.isAxiosError(error)) {
-        setAPIResMsg(
-          `Error: ${error.response?.data?.message || error.message}`
-        );
+        setAPIResMsg(`Error: ${error.response?.data || error.message}`);
       } else {
         setAPIResMsg("An unexpected error occurred.");
       }
+      setOpenDialog(true);
+    }
+  };
+
+  const deleteReviews = async (idFromAdmin?: number) => {
+    try {
+      const response = await customAxios.delete(
+        `/reviews/${idFromAdmin || userReviewId}`
+      );
+
+      let data: string = response.data;
+      if (response.status === 200) {
+        getBookDetail();
+        getBookReviews();
+        getUserReview();
+        setUserReviewId(undefined);
+        setRating(0);
+        setComment("");
+        setAPIResType("success");
+        setAPIResTitle("Success");
+        setAPIResMsg(data);
+        setOpenDialog(true);
+      } else {
+        setAPIResType("error");
+        setAPIResTitle("Error!");
+        setAPIResMsg(data);
+        setOpenDialog(true);
+      }
+    } catch (error) {
+      setAPIResType("error");
+      setAPIResTitle("Error!");
+      if (axios.isAxiosError(error)) {
+        setAPIResMsg(`Error: ${error.response?.data || error.message}`);
+      } else {
+        setAPIResMsg("An unexpected error occurred.");
+      }
+      setOpenDialog(true);
     }
   };
 
@@ -188,10 +233,6 @@ const page = () => {
     getBookReviews();
   }, [page, pageSize]);
 
-  useEffect(() => {
-    console.log("contents", contents);
-  }, [contents]);
-
   // -| function
   const handleChangeComment = (e: React.ChangeEvent<HTMLInputElement>) => {
     setComment(e.target.value);
@@ -199,6 +240,14 @@ const page = () => {
 
   return (
     <>
+      <CustomDialog
+        open={openDialog}
+        setOpenDialog={setOpenDialog}
+        title={apiResTitle}
+        msg={apiResMsg}
+        type={apiResType}
+      />
+
       <Box
         sx={{
           height: "100%",
@@ -304,7 +353,7 @@ const page = () => {
                 </Grid>
               </CustomCard>
             )}
-            {/* --------------- Add comment --------------- */}
+            {/* --------------- Add review --------------- */}
             <CustomCard height="max-content" margin="30px 0px 0px 0px">
               <Box
                 sx={{
@@ -316,23 +365,64 @@ const page = () => {
               >
                 <TextField
                   sx={{ minWidth: "200px", width: "100%" }}
-                  label="Comment"
+                  label="Review"
                   size="small"
                   onChange={handleChangeComment}
                   value={comment}
                   multiline
                 />
-                <Rating
-                  value={rating || 0}
-                  precision={0.5}
-                  size="large"
-                  onChange={(event, newValue) => {
-                    setRating(newValue || 0);
+                <Grid
+                  container
+                  columns={2}
+                  spacing={3}
+                  sx={{
+                    width: "100%",
                   }}
-                />
-                <Button onClick={postUserReviews} variant="contained">
-                  Add / Edit comment
-                </Button>
+                >
+                  <Grid size="grow" sx={{ alignContent: "center" }}>
+                    <Rating
+                      value={rating || 0}
+                      precision={0.5}
+                      size="large"
+                      onChange={(event, newValue) => {
+                        setRating(newValue || 0);
+                      }}
+                    />
+                  </Grid>
+                  <Grid
+                    size="auto"
+                    sx={{
+                      alignContent: "center",
+                    }}
+                  >
+                    <Button
+                      onClick={postUserReviews}
+                      variant="outlined"
+                      size="small"
+                      disabled={!comment}
+                      startIcon={userReviewId ? <EditIcon /> : <AddIcon />}
+                    >
+                      {userReviewId ? "Edit " : "Add "} review
+                    </Button>
+                  </Grid>
+                  <Grid
+                    size="auto"
+                    sx={{
+                      alignContent: "center",
+                    }}
+                  >
+                    <Button
+                      onClick={() => deleteReviews()}
+                      variant="outlined"
+                      size="small"
+                      color="error"
+                      disabled={!userReviewId}
+                      startIcon={<DeleteIcon />}
+                    >
+                      Delete review
+                    </Button>
+                  </Grid>
+                </Grid>
               </Box>
             </CustomCard>
           </Grid>
@@ -345,6 +435,7 @@ const page = () => {
                 setPage={setPage}
                 pageSize={pageSize}
                 setPageSize={setPageSize}
+                deleteReviews={deleteReviews}
               />
             )}
           </Grid>

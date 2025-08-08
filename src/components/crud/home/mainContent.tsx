@@ -16,7 +16,7 @@ import StarBorderIcon from "@mui/icons-material/StarBorder";
 
 // -| Project
 import { bookType } from "../types/bookTypes";
-import CustomCard from "@/components/customCard";
+import CustomCard from "@/components/customComponents/customCard";
 
 const BookDetailSX = {
   display: "flex",

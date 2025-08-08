@@ -116,7 +116,7 @@ const CustomPagination: React.FC<FCType> = ({
         onChange={handlePageInputChange}
         style={{ margin: "0px 10px 0px 10px", width: "100px" }}
       />
-      <Button variant="contained" onClick={handleGoToPage}>
+      <Button variant="outlined" onClick={handleGoToPage}>
         Go
       </Button>
     </Box>

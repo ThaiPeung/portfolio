@@ -42,6 +42,9 @@ import LightModeIcon from "@mui/icons-material/LightMode";
 import NightsStayIcon from "@mui/icons-material/NightsStay";
 import { AppDispatch, store } from "@/stores/redux";
 import { darkModeAction, darkModeType } from "@/stores/redux/darkMode";
+import { buttonDarkTheme, buttonLightTheme } from "@/theme/buttonTheme";
+import { Canvas } from "@react-three/fiber";
+import { Stars } from "@react-three/drei";
 
 // -| Project
 
@@ -137,7 +140,9 @@ const layout = ({
 }>) => {
   // -| Redux
   const dispatch = useDispatch<AppDispatch>();
-  const darkMode: darkModeType = useSelector((configureStoreReducer: any) => configureStoreReducer.darkMode.val);
+  const darkMode: darkModeType = useSelector(
+    (configureStoreReducer: any) => configureStoreReducer.darkMode.val
+  );
 
   const theme = useTheme();
   const router = useRouter();
@@ -157,6 +162,9 @@ const layout = ({
   };
 
   const darkTheme = createTheme({
+    components: {
+      MuiButton: darkMode ? buttonDarkTheme : buttonLightTheme,
+    },
     palette: {
       mode: darkMode ? "dark" : "light",
     },
@@ -284,6 +292,38 @@ const layout = ({
           {children}
         </Box>
       </ThemeProvider>
+      {darkMode && (
+        <Canvas
+          className="r3f"
+          camera={{
+            fov: 75,
+            near: 0.5,
+            far: 1000,
+          }}
+          style={{
+            outline: "none",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            overflow: "hidden",
+            zIndex: -100,
+          }}
+        >
+          {/* <OrbitControls /> */}
+
+          <Stars
+            radius={100}
+            depth={50}
+            count={10000}
+            factor={4}
+            saturation={0}
+            fade
+            speed={1}
+          />
+        </Canvas>
+      )}
     </>
   );
 };

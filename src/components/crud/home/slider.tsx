@@ -11,7 +11,7 @@ import { Box, Button, Grid, Rating, Typography } from "@mui/material";
 // -| Mui Icon(s)
 
 // -| project
-import CustomCard from "@/components/customCard";
+import CustomCard from "@/components/customComponents/customCard";
 import { apiURL } from "@/env";
 
 gsap.registerPlugin(Observer);

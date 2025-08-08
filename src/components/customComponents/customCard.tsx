@@ -17,6 +17,7 @@ const CustomCard = ({
   styledBorderDark = "#2962ff, #0091ea, #00b8d4, #304ffe, #2962ff",
   backgroundLight = "linear-gradient(135deg, #bdbdbd, #e0e0e0)",
   styledBorderLight = "",
+  blur = "1.5rem",
   gsap = false,
 }: {
   children: React.ReactNode;
@@ -30,6 +31,7 @@ const CustomCard = ({
   styledBorderDark?: string;
   backgroundLight?: string;
   styledBorderLight?: string;
+  blur?: string;
   gsap?: boolean;
 }) => {
   // -| Redux
@@ -100,7 +102,7 @@ const CustomCard = ({
           : {},
         "&::before": darkMode
           ? {
-              filter: backgroundDark !== "none" ? "blur(1.5rem)" : "",
+              filter: backgroundDark !== "none" ? `blur(${blur})` : "",
               opacity: 0.75,
             }
           : {},

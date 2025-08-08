@@ -7,53 +7,76 @@ import axios, {
 } from "axios";
 import Router from "next/router";
 
-// -| 1) Create an Axios instance preconfigured to send cookies
+// -| Create an Axios instance preconfigured to send cookies
 const customAxios: AxiosInstance = axios.create({
-  baseURL: apiURL,
+  baseURL: "http://localhost:8080/api",
   withCredentials: true, // -| sends HttpOnly cookies (refreshToken)
 });
 
-// -| 2) Store the access token in memory (or localStorage)
+// -| Store the access token in memory (or localStorage)
 let accessToken: string | null = null;
 
-// -| 3) Helper to set the Authorization header
+// -| Helper to set the Authorization header
 function setAuthHeader(token: string) {
   accessToken = token;
   customAxios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 }
 
-// -| 4) Login function
+// -| Login function
 export const login = async (username: string, password: string) => {
-  const response = await customAxios.post("/login",
-    { username, password },
-    { withCredentials: true } // -| ensure cookie is set
-  );
+  const response = await axios.post(apiURL + "/login", { username, password });
 
-  console.log("response", response);
-  let token: string = response.data.accessToken;
-  // -| { accessToken: 'eyJ…' }
-  setAuthHeader(token);
-  return token;
+  let accessToken: string = response.data.accessToken;
+  // -| { accessToken: 'new‑token' }
+  setAuthHeader(accessToken);
+  return accessToken;
 };
 
-// -| 5) Refresh token function
-async function refreshToken() {
-  const response = await customAxios.post("/refresh", null, {
+// -| Refresh token function
+const refreshToken = async () => {
+  // -| Do not send Header Authorization to refresh or else jwtFilter will intecept expired token
+  const response = await axios.get(apiURL + "/refresh", {
     withCredentials: true,
   });
   // -| { accessToken: 'new‑token' }
   setAuthHeader(response.data.accessToken);
   return response.data.accessToken;
-}
+};
 
-// -| 6) Response interceptor to catch 401s
+// -| Request interceptor to add CSRF token
+customAxios.interceptors.request.use((config) => {
+  const xsrf = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("XSRF-TOKEN="))
+    ?.split("=")[1];
+
+  if (xsrf && config.method !== "get") {
+    config.headers!["X-XSRF-TOKEN"] = xsrf;
+  }
+  return config;
+});
+
+// -| Response interceptor to catch 401
 customAxios.interceptors.response.use(
   (res: AxiosResponse) => res,
   async (err: AxiosError) => {
     const originalReq = err.config as AxiosRequestConfig & { _retry?: boolean };
 
-    // -| If 401 and we haven't retried yet
-    if (err.response?.status === 401 && !originalReq._retry) {
+    // -| Stop refresh if this is refresh or login endpoint
+    if (
+      ["/refresh", "/login", "/register"].some((item) => originalReq.url?.includes(item))
+    ) {
+      return Promise.reject(err);
+    }
+
+    // -| If 401 haven't retried yet
+    if (
+      err.response?.status === 401 &&
+      !originalReq._retry &&
+      (customAxios.defaults.headers.common["Authorization"]
+        ?.toString()
+        .split(" ")[1].length || 0) > 0
+    ) {
       originalReq._retry = true;
       try {
         const newToken = await refreshToken();
@@ -65,8 +88,8 @@ customAxios.interceptors.response.use(
       } catch (refreshError) {
         // -| Refresh also failed -> force logout or redirect to login
         accessToken = null;
-        // -| e.g. window.location.href = '/auth/login';
-        logout();
+        // -| e.g. window.location.href = '/login';
+
         return Promise.reject(refreshError);
       }
     }
@@ -75,15 +98,15 @@ customAxios.interceptors.response.use(
 );
 
 export function logout() {
-  // -| 1) Clear our in‑memory/accessToken
+  // -| Clear our in‑memory/accessToken
   // -|    (you might also clear localStorage if you stored it there)
   // -| @ts-ignore
   customAxios.defaults.headers.common["Authorization"] = "";
 
-  // -| 2) Optionally tell the server to clear the refresh cookie
+  // -| Optionally tell the server to clear the refresh cookie
   // -|    (you could implement a /api/auth/logout endpoint for that)
   const response = customAxios
-    .post(apiURL + "/logout", null, { withCredentials: true })
+    .post("/logout", null, { withCredentials: true })
     .catch(() => {
       /* we still redirect even if this fails */
     });
