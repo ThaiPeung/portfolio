@@ -305,6 +305,7 @@ const page = () => {
                             alt={bookDetail.title}
                             width={200}
                             height={300}
+                            unoptimized
                           />
                         )}
                       {bookDetail.imageUrl === "" && (

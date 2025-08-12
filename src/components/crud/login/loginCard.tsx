@@ -76,9 +76,8 @@ const LoginCard = () => {
       const decoded = jwtDecode<jwtPayload>(token);
       setUser({ username: decoded.sub, roles: decoded.roles });
 
-      const res = await customAxios.get("/csrf");
-      console.log(res)
-      customAxios.defaults.headers["X-XSRF-TOKEN"] = res.data.token;
+      // const res = await customAxios.get("/csrf");
+      // customAxios.defaults.headers["X-XSRF-TOKEN"] = res.data.token;
 
       router.push("home");
     } catch (error) {

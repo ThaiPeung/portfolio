@@ -9,7 +9,7 @@ import Router from "next/router";
 
 // -| Create an Axios instance preconfigured to send cookies
 const customAxios: AxiosInstance = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: apiURL,
   withCredentials: true, // -| sends HttpOnly cookies (refreshToken)
 });
 
@@ -24,7 +24,7 @@ function setAuthHeader(token: string) {
 
 // -| Login function
 export const login = async (username: string, password: string) => {
-  const response = await axios.post(apiURL + "/login", { username, password });
+  const response = await customAxios.post("/login", { username, password });
 
   let accessToken: string = response.data.accessToken;
   // -| { accessToken: 'new‑token' }
@@ -64,7 +64,9 @@ customAxios.interceptors.response.use(
 
     // -| Stop refresh if this is refresh or login endpoint
     if (
-      ["/refresh", "/login", "/register"].some((item) => originalReq.url?.includes(item))
+      ["/refresh", "/login", "/register"].some((item) =>
+        originalReq.url?.includes(item)
+      )
     ) {
       return Promise.reject(err);
     }

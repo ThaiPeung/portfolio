@@ -292,7 +292,7 @@ const layout = ({
           {children}
         </Box>
       </ThemeProvider>
-      {darkMode && (
+      {darkMode && pathname.includes("crud") && (
         <Canvas
           className="r3f"
           camera={{

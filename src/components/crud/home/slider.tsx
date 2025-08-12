@@ -299,6 +299,7 @@ const Slider: React.FC<InfiniteScrollProps> = ({
                           alt={content.title}
                           width={200}
                           height={300}
+                          unoptimized
                         />
                       )}
                     {content.imageUrl === "" && (
