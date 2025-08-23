@@ -89,7 +89,7 @@ const Reviews: React.FC<MainContentType> = ({
                         <Grid size="grow">
                           <Typography>{item.comment}</Typography>
                         </Grid>
-                        {userRole.includes("ADMIN") && (
+                        {userRole.includes("ROLE_ADMIN") && (
                           <Grid>
                             <Button
                               variant="outlined"

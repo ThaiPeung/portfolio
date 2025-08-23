@@ -12,6 +12,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 // -| Mui icon(s)
 import ImageIcon from "@mui/icons-material/Image";
+import AddIcon from "@mui/icons-material/Add";
 
 // -| Project
 import CustomCard from "@/components/customComponents/customCard";
@@ -24,12 +25,12 @@ import { apiURL } from "@/env";
 const AddBook = () => {
   // -| useState
   const [contents, setContents] = useState();
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
+  const [title, setTitle] = useState("Healthy Food");
+  const [author, setAuthor] = useState("Jeremy Norman");
+  const [genre, setGenre] = useState("Food");
   const [publishedDate, setPublishedDate] = useState<Dayjs | null>(
     dayjs("2022-04-17")
   );
-  const [genre, setGenre] = useState("");
 
   // -| Image file
   const [file, setFile] = useState<File>();
@@ -54,18 +55,17 @@ const AddBook = () => {
   };
 
   const handleUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setOpenDialog(false);
     if (e.target.files?.[0]) setFile(e.target.files[0]);
   };
 
   // -| useEffect
   useEffect(() => {
-    if (!file) return;
+    if (!file?.name) return;
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
     // -| cleanup
     return () => URL.revokeObjectURL(url);
-  }, [file]);
+  }, [file?.name]);
 
   // -| Function
   const addNewBook = async () => {
@@ -77,11 +77,10 @@ const AddBook = () => {
       form.append("genre", genre);
 
       if (file) {
-        form.append("file", file); // match your @RequestParam("file") on the server
+        form.append("file", file); 
       }
-      const response = await customAxios.post("/book", form, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+
+      const response = await customAxios.post("/book", form);
 
       let data: string = response.data;
       if (response.status === 200) {
@@ -111,53 +110,57 @@ const AddBook = () => {
         msg={apiResMsg}
         type={apiResType}
       />
-      <SectionHeader title="Add Book" sectionVariant="neon" />
+      <SectionHeader title="Add New Book" sectionVariant="neon" />
 
       <Grid
         container
         direction="row"
-        columns={3}
         spacing={5}
         sx={{
           justifyContent: "center",
           alignItems: "top",
         }}
       >
-        <Grid size={1}>
-          {/* --------------- Display image --------------- */}
-          {previewUrl !== "" && previewUrl?.includes("/uploads/") && (
-            <Image
-              style={{ borderRadius: "10px" }}
-              src={apiURL + previewUrl}
-              alt={previewUrl}
-              width={200}
-              height={300}
-            />
-          )}
-          {previewUrl === "" && (
-            <Box
-              sx={{
-                width: "200",
-                height: "300",
-                display: "grid",
-                placeItems: "center",
-                boborderRadius: "10px",
-              }}
-            >
-              <Typography>No Image</Typography>
-            </Box>
-          )}
+        <Grid size="grow">
           {/* --------------- Add image --------------- */}
           <CustomCard height="max-content" margin="30px 0px 0px 0px">
             <Box
               sx={{
                 width: "100%",
                 display: "grid",
-                gap: "10px",
+                gap: "20px",
                 placeItems: "center",
               }}
             >
-              <Button size="large" variant="outlined" endIcon={<ImageIcon />}>
+              {/* --------------- Display image --------------- */}
+              {previewUrl !== "" && (
+                <Image
+                  style={{ borderRadius: "10px" }}
+                  src={previewUrl}
+                  alt={previewUrl}
+                  width={200}
+                  height={300}
+                />
+              )}
+              {previewUrl === "" && (
+                <Box
+                  sx={{
+                    width: "200px",
+                    height: "300px",
+                    display: "grid",
+                    placeItems: "center",
+                    boborderRadius: "10px",
+                  }}
+                >
+                  <Typography>No Image</Typography>
+                </Box>
+              )}
+              <Button
+                component="label" // -| Importan for upload file button
+                size="large"
+                variant="outlined"
+                endIcon={<ImageIcon />}
+              >
                 <Typography>Upload Image</Typography>
                 <input type="file" hidden onChange={handleUploadImage} />
               </Button>
@@ -166,12 +169,15 @@ const AddBook = () => {
         </Grid>
         {/* --------------- Book's details --------------- */}
         <Grid size="grow">
-          <CustomCard height="max-content" margin="30px 0px 0px 0px">
+          <CustomCard
+            height="max-content"
+            width="400px"
+            margin="30px 0px 0px 0px"
+          >
             <Box
               sx={{
-                width: "100%",
                 display: "grid",
-                gap: "10px",
+                gap: "30px",
                 placeItems: "center",
               }}
             >
@@ -185,29 +191,40 @@ const AddBook = () => {
               />
               <TextField
                 sx={{ minWidth: "200px", width: "100%" }}
-                label="Title"
+                label="Author"
                 size="small"
                 onChange={handleChangeAuthor}
                 value={author}
                 multiline
               />
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  label="Controlled picker"
-                  value={publishedDate}
-                  onChange={(newValue) => setPublishedDate(newValue)}
-                />
-              </LocalizationProvider>
               <TextField
                 sx={{ minWidth: "200px", width: "100%" }}
-                label="Title"
+                label="Genre"
                 size="small"
                 onChange={handleChangeGenre}
                 value={genre}
                 multiline
               />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Published Date"
+                  value={publishedDate}
+                  onChange={(newValue) => setPublishedDate(newValue)}
+                />
+              </LocalizationProvider>
             </Box>
           </CustomCard>
+          <Button
+            variant="outlined"
+            sx={{
+              width: "100%",
+              borderRadius: "5px",
+            }}
+            startIcon={<AddIcon sx={{ scale: 1.2 }} />}
+            onClick={addNewBook}
+          >
+            <Typography fontSize={40}>Upload</Typography>
+          </Button>
         </Grid>
       </Grid>
     </>

@@ -106,7 +106,7 @@ const page = () => {
         <Grid size="grow">
           <SectionHeader title="Top Books" sectionVariant="neon" />
         </Grid>
-        {userRole.includes("ADMIN") && (
+        {userRole.includes("ROLE_ADMIN") && (
           <Grid size={1.5}>
             <Button
               variant="outlined"
