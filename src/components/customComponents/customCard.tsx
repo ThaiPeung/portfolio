@@ -13,7 +13,7 @@ const CustomCard = ({
   width = "100%",
   height = "100%",
   margin,
-  backgroundDark = "linear-gradient(135deg, #212121, #424242)",
+  backgroundDark = "linear-gradient(135deg, #000000, #212121, #000000)",
   styledBorderDark = "#2962ff, #0091ea, #00b8d4, #304ffe, #2962ff",
   backgroundLight = "linear-gradient(135deg, #bdbdbd, #e0e0e0)",
   styledBorderLight = "",
@@ -103,7 +103,7 @@ const CustomCard = ({
         "&::before": darkMode
           ? {
               filter: backgroundDark !== "none" ? `blur(${blur})` : "",
-              opacity: 0.75,
+              opacity: 0.5,
             }
           : {},
         "&:hover": gsap || !enableHover ? {} : { scale: "1.05" },

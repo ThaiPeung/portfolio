@@ -40,11 +40,12 @@ import { Grid } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import NightsStayIcon from "@mui/icons-material/NightsStay";
-import { AppDispatch, store } from "@/stores/redux";
+import { AppDispatch, store } from "@/stores/redux/redux";
 import { darkModeAction, darkModeType } from "@/stores/redux/darkMode";
 import { buttonDarkTheme, buttonLightTheme } from "@/theme/buttonTheme";
 import { Canvas } from "@react-three/fiber";
 import { Stars } from "@react-three/drei";
+import { iconButtonDarkTheme } from "@/theme/iconButtonTheme";
 
 // -| Project
 
@@ -164,6 +165,7 @@ const layout = ({
   const darkTheme = createTheme({
     components: {
       MuiButton: darkMode ? buttonDarkTheme : buttonLightTheme,
+      MuiIconButton: iconButtonDarkTheme,
     },
     palette: {
       mode: darkMode ? "dark" : "light",

@@ -11,6 +11,7 @@ import {
   Chip,
   Dialog,
   Grid,
+  IconButton,
   Rating,
   TextField,
   Typography,
@@ -37,7 +38,10 @@ import EditIcon from "@mui/icons-material/Edit";
 import Reviews from "@/components/crud/home/review/reviews";
 import customAxios from "@/services/customAxios";
 import CustomDialog from "@/components/customComponents/customDialog";
-import useUser from "@/stores/useUser";
+import useUser from "@/stores/zustand/useUser";
+import useResDialog from "@/stores/zustand/useResDialog";
+import useConfirmDialog from "@/stores/zustand/useConfirmDialog";
+import CustomIconButton from "@/components/customComponents/customIconButton";
 
 const BookDetailSX = {
   display: "flex",
@@ -66,11 +70,16 @@ const page = () => {
   const [contents, setContents] = useState<paginationType>();
   const [userReviewId, setUserReviewId] = useState<number>();
 
-  // -| Response Dialog
-  const [openDialog, setOpenDialog] = useState(false);
-  const [apiResTitle, setAPIResTitle] = useState("");
-  const [apiResMsg, setAPIResMsg] = useState("");
-  const [apiResType, setAPIResType] = useState("");
+  // -| zustand
+  const resDialog = useResDialog((state) => {
+    return state;
+  });
+  const confirmDialog = useConfirmDialog((state) => {
+    return state;
+  });
+  const userRole = useUser((state) => {
+    return state.roles;
+  });
 
   // -| useState api input
   const [page, setPage] = useState(0);
@@ -90,12 +99,12 @@ const page = () => {
         setBookDetail(data);
       }
     } catch (error) {
-      setAPIResType("error");
-      setAPIResTitle("Error!");
+      resDialog.setType("error");
+      resDialog.setTitle("Error!");
       if (axios.isAxiosError(error)) {
-        setAPIResMsg(`Error: ${error.response?.data || error.message}`);
+        resDialog.setMsg(`Error: ${error.response?.data || error.message}`);
       } else {
-        setAPIResMsg("An unexpected error occurred.");
+        resDialog.setMsg("An unexpected error occurred.");
       }
     }
   };
@@ -111,12 +120,12 @@ const page = () => {
         setContents(data);
       }
     } catch (error) {
-      setAPIResType("error");
-      setAPIResTitle("Error!");
+      resDialog.setType("error");
+      resDialog.setTitle("Error!");
       if (axios.isAxiosError(error)) {
-        setAPIResMsg(`Error: ${error.response?.data || error.message}`);
+        resDialog.setMsg(`Error: ${error.response?.data || error.message}`);
       } else {
-        setAPIResMsg("An unexpected error occurred.");
+        resDialog.setMsg("An unexpected error occurred.");
       }
     }
   };
@@ -136,16 +145,16 @@ const page = () => {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.status !== 404) {
-          setAPIResType("error");
-          setAPIResTitle("Error!");
-          setAPIResMsg(`Error: ${error.response?.data || error.message}`);
-          setOpenDialog(true);
+          resDialog.setType("error");
+          resDialog.setTitle("Error!");
+          resDialog.setMsg(`Error: ${error.response?.data || error.message}`);
+          resDialog.setOpenDialog(true);
         }
       } else {
-        setAPIResType("error");
-        setAPIResTitle("Error!");
-        setAPIResMsg("An unexpected error occurred.");
-        setOpenDialog(true);
+        resDialog.setType("error");
+        resDialog.setTitle("Error!");
+        resDialog.setMsg("An unexpected error occurred.");
+        resDialog.setOpenDialog(true);
       }
     }
   };
@@ -169,20 +178,20 @@ const page = () => {
         getBookDetail();
         getBookReviews();
         getUserReview();
-        setAPIResType("success");
-        setAPIResTitle("Success");
-        setAPIResMsg(`Successfully add / edit review: ${data.comment}`);
-        setOpenDialog(true);
+        resDialog.setType("success");
+        resDialog.setTitle("Success");
+        resDialog.setMsg(`Successfully add / edit review: ${data.comment}`);
+        resDialog.setOpenDialog(true);
       }
     } catch (error) {
-      setAPIResType("error");
-      setAPIResTitle("Error!");
+      resDialog.setType("error");
+      resDialog.setTitle("Error!");
       if (axios.isAxiosError(error)) {
-        setAPIResMsg(`Error: ${error.response?.data || error.message}`);
+        resDialog.setMsg(`Error: ${error.response?.data || error.message}`);
       } else {
-        setAPIResMsg("An unexpected error occurred.");
+        resDialog.setMsg("An unexpected error occurred.");
       }
-      setOpenDialog(true);
+      resDialog.setOpenDialog(true);
     }
   };
 
@@ -200,25 +209,25 @@ const page = () => {
         setUserReviewId(undefined);
         setRating(0);
         setComment("");
-        setAPIResType("success");
-        setAPIResTitle("Success");
-        setAPIResMsg(data);
-        setOpenDialog(true);
+        resDialog.setType("success");
+        resDialog.setTitle("Success");
+        resDialog.setMsg(data);
+        resDialog.setOpenDialog(true);
       } else {
-        setAPIResType("error");
-        setAPIResTitle("Error!");
-        setAPIResMsg(data);
-        setOpenDialog(true);
+        resDialog.setType("error");
+        resDialog.setTitle("Error!");
+        resDialog.setMsg(data);
+        resDialog.setOpenDialog(true);
       }
     } catch (error) {
-      setAPIResType("error");
-      setAPIResTitle("Error!");
+      resDialog.setType("error");
+      resDialog.setTitle("Error!");
       if (axios.isAxiosError(error)) {
-        setAPIResMsg(`Error: ${error.response?.data || error.message}`);
+        resDialog.setMsg(`Error: ${error.response?.data || error.message}`);
       } else {
-        setAPIResMsg("An unexpected error occurred.");
+        resDialog.setMsg("An unexpected error occurred.");
       }
-      setOpenDialog(true);
+      resDialog.setOpenDialog(true);
     }
   };
 
@@ -240,14 +249,6 @@ const page = () => {
 
   return (
     <>
-      <CustomDialog
-        open={openDialog}
-        setOpenDialog={setOpenDialog}
-        title={apiResTitle}
-        msg={apiResMsg}
-        type={apiResType}
-      />
-
       <Box
         sx={{
           height: "100%",
@@ -268,91 +269,108 @@ const page = () => {
           <Grid size={1}>
             {/* --------------- Book detail --------------- */}
             {bookDetail && (
-              <CustomCard height="max-content">
-                <Box
-                  sx={{
-                    width: "100%",
-                    padding: "10px 0px 30px 0px",
-                  }}
-                >
-                  <Typography align="center" variant="h4">
-                    {bookDetail.title}
-                  </Typography>
-                </Box>
-                <Grid
-                  container
-                  direction="row"
-                  columns={2}
-                  spacing={3}
-                  sx={{
-                    justifyContent: "center",
-                    alignItems: "top",
-                  }}
-                >
-                  <Grid size="grow">
-                    <Box
-                      sx={{
-                        height: "310px",
-                        display: "grid",
-                        placeItems: "center",
-                      }}
-                    >
-                      {bookDetail.imageUrl !== "" &&
-                        bookDetail.imageUrl?.includes("/uploads/") && (
-                          <Image
-                            style={{ borderRadius: "10px" }}
-                            src={apiURL + bookDetail.imageUrl}
-                            alt={bookDetail.title}
-                            width={200}
-                            height={300}
-                            unoptimized
-                          />
-                        )}
-                      {bookDetail.imageUrl === "" && (
-                        <Box
-                          sx={{
-                            width: "200",
-                            height: "300",
-                            display: "grid",
-                            placeItems: "center",
-                            boborderRadius: "10px",
-                          }}
-                        >
-                          <Typography>No Image</Typography>
-                        </Box>
-                      )}
-                    </Box>
-                  </Grid>
-                  <Grid size="grow">
-                    <Box
-                      sx={{
-                        display: "grid",
-                        gap: "8px",
-                      }}
-                    >
-                      <Chip label="Author" size="small" />
-                      <Typography sx={BookDetailSX}>
-                        <BorderColorIcon />: {bookDetail.author}
-                      </Typography>
-                      <Chip label="Genre" size="small" />
-                      <Typography sx={BookDetailSX}>
-                        <FormatListBulletedIcon />: {bookDetail.genre}
-                      </Typography>
-                      <Chip label="Published Date" size="small" />
-                      <Typography sx={BookDetailSX}>
-                        <DateRangeIcon />: {bookDetail.publishedDate}
-                      </Typography>
-                      <Chip label="Rating" size="small" />
-                      <Rating
-                        size="small"
-                        readOnly
-                        value={bookDetail.rating || 0}
-                        precision={0.5}
+              <Box>
+                <CustomCard height="max-content">
+                  <Box
+                    sx={{
+                      width: "100%",
+                      padding: "10px 0px 30px 0px",
+                    }}
+                  >
+                    <Typography align="center" variant="h4">
+                      {bookDetail.title}
+                    </Typography>
+
+                    {userRole.includes("ROLE_ADMIN") && (
+                      <CustomIconButton
+                        icon={<DeleteIcon />}
+                        onClick={() => {
+                          confirmDialog.setInput(bookDetail.id);
+                          confirmDialog.setTitle(`Delete book.`);
+                          confirmDialog.setMsg(
+                            `Do you want to delete ${bookDetail.title}?`
+                          );
+                          confirmDialog.setTask("deleteBook");
+                          confirmDialog.setOpenDialog(true);
+                        }}
                       />
-                    </Box>
+                    )}
+                  </Box>
+                  <Grid
+                    container
+                    direction="row"
+                    columns={2}
+                    spacing={3}
+                    sx={{
+                      justifyContent: "center",
+                      alignItems: "top",
+                    }}
+                  >
+                    <Grid size="grow">
+                      <Box
+                        sx={{
+                          height: "310px",
+                          display: "grid",
+                          placeItems: "center",
+                        }}
+                      >
+                        {bookDetail.imageUrl !== "" &&
+                          bookDetail.imageUrl?.includes("/uploads/") && (
+                            <Image
+                              style={{ borderRadius: "10px" }}
+                              src={apiURL + bookDetail.imageUrl}
+                              alt={bookDetail.title}
+                              width={200}
+                              height={300}
+                              unoptimized
+                            />
+                          )}
+                        {bookDetail.imageUrl === "" && (
+                          <Box
+                            sx={{
+                              width: "200",
+                              height: "300",
+                              display: "grid",
+                              placeItems: "center",
+                              boborderRadius: "10px",
+                            }}
+                          >
+                            <Typography>No Image</Typography>
+                          </Box>
+                        )}
+                      </Box>
+                    </Grid>
+                    <Grid size="grow">
+                      <Box
+                        sx={{
+                          display: "grid",
+                          gap: "8px",
+                        }}
+                      >
+                        <Chip label="Author" size="small" />
+                        <Typography sx={BookDetailSX}>
+                          <BorderColorIcon />: {bookDetail.author}
+                        </Typography>
+                        <Chip label="Genre" size="small" />
+                        <Typography sx={BookDetailSX}>
+                          <FormatListBulletedIcon />: {bookDetail.genre}
+                        </Typography>
+                        <Chip label="Published Date" size="small" />
+                        <Typography sx={BookDetailSX}>
+                          <DateRangeIcon />: {bookDetail.publishedDate}
+                        </Typography>
+                        <Chip label="Rating" size="small" />
+                        <Rating
+                          size="small"
+                          readOnly
+                          value={bookDetail.rating || 0}
+                          precision={0.5}
+                        />
+                      </Box>
+                    </Grid>
                   </Grid>
-                </Grid>
-              </CustomCard>
+                </CustomCard>
+              </Box>
             )}
             {/* --------------- Add review --------------- */}
             <CustomCard height="max-content" margin="30px 0px 0px 0px">

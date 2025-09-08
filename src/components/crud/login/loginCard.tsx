@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 
 // -| MUI
 import {
+  Box,
   Button,
   Grid,
   IconButton,
@@ -23,7 +24,9 @@ import { darkModeType } from "@/stores/redux/darkMode";
 import { useSelector } from "react-redux";
 import CustomCard from "@/components/customComponents/customCard";
 import customAxios, { login } from "@/services/customAxios";
-import useUser from "@/stores/useUser";
+import useUser from "@/stores/zustand/useUser";
+import useResDialog from "@/stores/zustand/useResDialog";
+import CustomIconButton from "@/components/customComponents/customIconButton";
 
 // -| Projects
 
@@ -39,6 +42,11 @@ const LoginCard = () => {
   const darkMode: darkModeType = useSelector(
     (configureStoreReducer: any) => configureStoreReducer.darkMode.val
   );
+
+  // -| zustand
+  const resDialog = useResDialog((state) => {
+    return state;
+  });
 
   // -| useState
   const [showPassword, setShowPassword] = useState(false);
@@ -81,11 +89,14 @@ const LoginCard = () => {
 
       router.push("home");
     } catch (error) {
+      resDialog.setType("error");
+      resDialog.setTitle("Error!");
       if (axios.isAxiosError(error)) {
-        setLoginMsg(`Error: ${error.response?.data || error.message}`);
+        resDialog.setMsg(`Error: ${error.response?.data || error.message}`);
       } else {
-        setLoginMsg("An unexpected error occurred.");
+        resDialog.setMsg("An unexpected error occurred.");
       }
+      resDialog.setOpenDialog(true);
     }
   };
 

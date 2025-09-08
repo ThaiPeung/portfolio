@@ -276,7 +276,7 @@ const Slider: React.FC<InfiniteScrollProps> = ({
               duration={2000}
               width="300px"
               enableHover={true}
-              backgroundDark="linear-gradient(135deg, #1a237e, #311b92)"
+              backgroundDark="linear-gradient(135deg, #000000, #311b92)"
             >
               <Grid
                 container

@@ -12,7 +12,7 @@ export const buttonDarkTheme: Components<Theme>["MuiButton"] = {
     root: {},
     outlined: {
       borderRadius: "5px",
-      padding: "10pxem",
+      padding: "8px",
     },
     outlinedPrimary: {
       border: "1px solid #fff",

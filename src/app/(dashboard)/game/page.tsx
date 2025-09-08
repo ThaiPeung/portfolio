@@ -11,7 +11,7 @@ import Lights from "@/components/ballgame/Lights";
 import { Level } from "@/components/ballgame/Level";
 import Player from "@/components/ballgame/Player";
 import Interface from "@/components/ballgame/Interface";
-import useGame from "@/stores/useGame";
+import useGame from "@/stores/zustand/useGame";
 
 const GamePage = () => {
   const blocksCount = useGame((state) => {

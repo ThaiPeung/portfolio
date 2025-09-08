@@ -15,7 +15,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 // -| Project
 import { paginationType, reviewType } from "../../types/reviewTypes";
 import CustomPagination from "../../../customComponents/customPagination";
-import useUser from "@/stores/useUser";
+import useUser from "@/stores/zustand/useUser";
 
 const BookDetailSX = {
   display: "flex",

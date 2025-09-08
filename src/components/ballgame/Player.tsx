@@ -1,4 +1,4 @@
-import useGame from "@/stores/useGame";
+import useGame from "@/stores/zustand/useGame";
 import { useKeyboardControls } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import {

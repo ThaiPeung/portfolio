@@ -1,0 +1,63 @@
+import customAxios from "@/services/customAxios";
+import { create } from "zustand";
+import { subscribeWithSelector } from "zustand/middleware";
+import axios from "axios";
+import useResDialog from "./useResDialog";
+
+type TaskType = "deleteBook" | "";
+
+export type useResDialogType = {
+  open: boolean;
+  title: string;
+  msg: string;
+  task: TaskType;
+  input: any;
+  setDefault: () => void;
+  setOpenDialog: (val: boolean) => void;
+  setTitle: (val: string) => void;
+  setMsg: (val: string) => void;
+  setTask: (val: TaskType) => void;
+  setInput: (val: any) => void;
+};
+
+export default create(
+  subscribeWithSelector<useResDialogType>((set, get) => {
+    return {
+      open: false,
+      title: "",
+      msg: "",
+      task: "",
+      input: undefined,
+      setDefault: () => {
+        set(() => {
+          return { open: false, title: "", msg: "", task: "", input: undefined };
+        });
+      },
+      setOpenDialog: (val: boolean) => {
+        set(() => {
+          return { open: val };
+        });
+      },
+      setTitle: (val: string) => {
+        set(() => {
+          return { title: val };
+        });
+      },
+      setMsg: (val: string) => {
+        set(() => {
+          return { msg: val };
+        });
+      },
+      setTask: (val: TaskType) => {
+        set(() => {
+          return { task: val };
+        });
+      },
+      setInput: (val: any) => {
+        set(() => {
+          return { input: val };
+        });
+      },
+    };
+  })
+);

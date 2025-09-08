@@ -10,38 +10,40 @@ import CustomCard from "@/components/customComponents/customCard";
 import ErrorTwoToneIcon from "@mui/icons-material/ErrorTwoTone";
 import CheckCircleTwoToneIcon from "@mui/icons-material/CheckCircleTwoTone";
 import WarningTwoToneIcon from "@mui/icons-material/WarningTwoTone";
+import { darkModeType } from "@/stores/redux/darkMode";
+import { useSelector } from "react-redux";
+import useResDialog from "@/stores/zustand/useResDialog";
 
 // -| Project
 
 const CustomDialog = ({
-  open,
-  setOpenDialog,
-  title,
-  msg,
-  type,
   width = "100%",
   height = "100%",
   margin,
   styledBorderDark = "#2962ff, #0091ea, #00b8d4, #304ffe, #2962ff",
 }: {
-  open: boolean;
-  setOpenDialog: (val: boolean) => void;
-  title?: string;
-  msg?: string;
-  type?: string;
   width?: string;
   height?: string;
   margin?: string;
   styledBorderDark?: string;
 }) => {
+  // -| Redux
+  const darkMode: darkModeType = useSelector(
+    (configureStoreReducer: any) => configureStoreReducer.darkMode.val
+  );
+  // -| zustand
+  const resDialog = useResDialog((state) => {
+    return state;
+  });
+
   const [icon, setIcon] = useState(<></>);
   const [borderDark, setBorderDark] = useState(styledBorderDark);
 
   useEffect(() => {
-    if (type?.includes("error")) {
+    if (resDialog.type?.includes("error")) {
       setBorderDark("#b71c1c, #ffc400, #d50000, #ffc400, #ffc400, #b71c1c");
       setIcon(<ErrorTwoToneIcon color="error" sx={{ fontSize: "8rem" }} />);
-    } else if (type?.includes("success")) {
+    } else if (resDialog.type?.includes("success")) {
       setBorderDark("#64dd17, #64ffda, #00c853, #64ffda, #64ffda, #64dd17");
       setIcon(
         <CheckCircleTwoToneIcon color="success" sx={{ fontSize: "8rem" }} />
@@ -50,13 +52,13 @@ const CustomDialog = ({
       setBorderDark("#ffd600, #616161, #ffff00, #616161, #616161, #ffd600");
       setIcon(<WarningTwoToneIcon color="warning" sx={{ fontSize: "8rem" }} />);
     }
-  }, [type]);
+  }, [resDialog.type]);
 
   return (
     <Dialog
-      open={open}
+      open={resDialog.open}
       onClose={() => {
-        setOpenDialog(false);
+        resDialog.setOpenDialog(false);
       }}
       slotProps={{
         paper: {
@@ -81,8 +83,12 @@ const CustomDialog = ({
           }}
         >
           {icon}
-          <Typography>{title}</Typography>
-          <Typography>{msg}</Typography>
+          <Typography sx={{ color: darkMode ? "#fff" : "#000" }}>
+            {resDialog.title}
+          </Typography>
+          <Typography sx={{ color: darkMode ? "#fff" : "#000" }}>
+            {resDialog.msg}
+          </Typography>
         </Box>
       </CustomCard>
     </Dialog>

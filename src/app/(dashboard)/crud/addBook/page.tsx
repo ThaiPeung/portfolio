@@ -21,6 +21,7 @@ import customAxios from "@/services/customAxios";
 import CustomDialog from "@/components/customComponents/customDialog";
 import dayjs, { Dayjs } from "dayjs";
 import { apiURL } from "@/env";
+import useResDialog from "@/stores/zustand/useResDialog";
 
 const AddBook = () => {
   // -| useState
@@ -32,16 +33,15 @@ const AddBook = () => {
     dayjs("2022-04-17")
   );
 
+  // -| zustand
+  const resDialog = useResDialog((state) => {
+    return state;
+  });
+
   // -| Image file
   const [file, setFile] = useState<File>();
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [uploading, setUploading] = useState(false);
-
-  // -| Response Dialog
-  const [openDialog, setOpenDialog] = useState(false);
-  const [apiResTitle, setAPIResTitle] = useState("");
-  const [apiResMsg, setAPIResMsg] = useState("");
-  const [apiResType, setAPIResType] = useState("");
 
   // -| Function
   const handleChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,39 +77,32 @@ const AddBook = () => {
       form.append("genre", genre);
 
       if (file) {
-        form.append("file", file); 
+        form.append("file", file);
       }
 
       const response = await customAxios.post("/book", form);
 
       let data: string = response.data;
-      if (response.status === 200) {
-        setAPIResType("success");
-        setAPIResTitle("Success");
-        setAPIResMsg(data);
-        setOpenDialog(true);
+      if (response.status === 201) {
+        resDialog.setType("success");
+        resDialog.setTitle("Success");
+        resDialog.setMsg(data);
+        resDialog.setOpenDialog(true);
       }
     } catch (error) {
-      setAPIResType("error");
-      setAPIResTitle("Error!");
+      resDialog.setType("error");
+      resDialog.setTitle("Error!");
       if (axios.isAxiosError(error)) {
-        setAPIResMsg(`Error: ${error.response?.data || error.message}`);
+        resDialog.setMsg(`Error: ${error.response?.data || error.message}`);
       } else {
-        setAPIResMsg("An unexpected error occurred.");
+        resDialog.setMsg("An unexpected error occurred.");
       }
-      setOpenDialog(true);
+      resDialog.setOpenDialog(true);
     }
   };
 
   return (
     <>
-      <CustomDialog
-        open={openDialog}
-        setOpenDialog={setOpenDialog}
-        title={apiResTitle}
-        msg={apiResMsg}
-        type={apiResType}
-      />
       <SectionHeader title="Add New Book" sectionVariant="neon" />
 
       <Grid
@@ -212,19 +205,21 @@ const AddBook = () => {
                   onChange={(newValue) => setPublishedDate(newValue)}
                 />
               </LocalizationProvider>
+              <Button
+                variant="outlined"
+                sx={{
+                  width: "100%",
+                  borderRadius: "5px",
+                }}
+                endIcon={<AddIcon sx={{ scale: 2 }} />}
+                onClick={addNewBook}
+              >
+                <Box sx={{ width: "85%" }}>
+                  <Typography fontSize={32}>Add</Typography>
+                </Box>
+              </Button>
             </Box>
           </CustomCard>
-          <Button
-            variant="outlined"
-            sx={{
-              width: "100%",
-              borderRadius: "5px",
-            }}
-            startIcon={<AddIcon sx={{ scale: 1.2 }} />}
-            onClick={addNewBook}
-          >
-            <Typography fontSize={40}>Upload</Typography>
-          </Button>
         </Grid>
       </Grid>
     </>
