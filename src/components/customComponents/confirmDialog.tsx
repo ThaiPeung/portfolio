@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // -| Mui
 import { Box, Dialog, Grid, Stack, Typography } from "@mui/material";
@@ -29,57 +29,26 @@ const ConfirmDialog = ({
   const darkMode: darkModeType = useSelector(
     (configureStoreReducer: any) => configureStoreReducer.darkMode.val
   );
+
   // -| zustand
-  const confirmDialog = useConfirmDialog((state) => {
+  const confirmDialogZus = useConfirmDialog((state) => {
     return state;
   });
 
-  // -| useRouter
-  const router = useRouter();
-
-  const resDialog = useResDialog((state) => {
-    return state;
-  });
+  // -| Clean dialog
+  useEffect(() => {
+    if (confirmDialogZus.open === false) {
+      confirmDialogZus.setDefault();
+    }
+  }, [confirmDialogZus.open]);
 
   const [borderDark, setBorderDark] = useState(styledBorderDark);
 
-  const deleteBook = async () => {
-    try {
-      const response = await customAxios.delete(
-        `/books/${confirmDialog.input}`
-      );
-
-      let data: string = response.data;
-      if (response.status === 200) {
-        router.back();
-        resDialog.setType("success");
-        resDialog.setTitle("Success");
-        resDialog.setMsg(data);
-        resDialog.setOpenDialog(true);
-        confirmDialog.setOpenDialog(false);
-      } else {
-        resDialog.setType("error");
-        resDialog.setTitle("Error!");
-        resDialog.setMsg(data);
-        resDialog.setOpenDialog(true);
-      }
-    } catch (error) {
-      resDialog.setType("error");
-      resDialog.setTitle("Error!");
-      if (axios.isAxiosError(error)) {
-        resDialog.setMsg(`Error: ${error.response?.data || error.message}`);
-      } else {
-        resDialog.setMsg("An unexpected error occurred.");
-      }
-      resDialog.setOpenDialog(true);
-    }
-  };
-
   return (
     <Dialog
-      open={confirmDialog.open}
+      open={confirmDialogZus.open}
       onClose={() => {
-        confirmDialog.setOpenDialog(false);
+        confirmDialogZus.setOpenDialog(false);
       }}
       slotProps={{
         paper: {
@@ -112,10 +81,10 @@ const ConfirmDialog = ({
             }}
           >
             <Typography sx={{ color: darkMode ? "#fff" : "#000" }}>
-              {confirmDialog.title}
+              {confirmDialogZus.title}
             </Typography>
             <Typography sx={{ color: darkMode ? "#fff" : "#000" }}>
-              {confirmDialog.msg}
+              {confirmDialogZus.msg}
             </Typography>
             <Grid
               container
@@ -130,9 +99,7 @@ const ConfirmDialog = ({
                   styledBorderDark="#1b5e20, #76ff03, #00e676, #1b5e20"
                   icon={<CheckIcon />}
                   onClick={() => {
-                    if (confirmDialog.task === "deleteBook") {
-                      deleteBook();
-                    }
+                    confirmDialogZus.setPressConfirm(true);
                   }}
                 />
               </Grid>
@@ -141,8 +108,8 @@ const ConfirmDialog = ({
                   styledBorderDark="#b71c1c, #e65100, #dd2c00, #b71c1c"
                   icon={<CloseIcon />}
                   onClick={() => {
-                    confirmDialog.setOpenDialog(false);
-                    confirmDialog.setDefault();
+                    confirmDialogZus.setOpenDialog(false);
+                    confirmDialogZus.setDefault();
                   }}
                 />
               </Grid>

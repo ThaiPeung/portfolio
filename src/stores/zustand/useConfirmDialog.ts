@@ -11,13 +11,13 @@ export type useResDialogType = {
   title: string;
   msg: string;
   task: TaskType;
-  input: any;
+  pressConfirm: boolean;
   setDefault: () => void;
   setOpenDialog: (val: boolean) => void;
   setTitle: (val: string) => void;
   setMsg: (val: string) => void;
   setTask: (val: TaskType) => void;
-  setInput: (val: any) => void;
+  setPressConfirm: (val: boolean) => void;
 };
 
 export default create(
@@ -27,10 +27,16 @@ export default create(
       title: "",
       msg: "",
       task: "",
-      input: undefined,
+      pressConfirm: false,
       setDefault: () => {
         set(() => {
-          return { open: false, title: "", msg: "", task: "", input: undefined };
+          return {
+            open: false,
+            title: "",
+            msg: "",
+            task: "",
+            pressConfirm: false,
+          };
         });
       },
       setOpenDialog: (val: boolean) => {
@@ -53,9 +59,9 @@ export default create(
           return { task: val };
         });
       },
-      setInput: (val: any) => {
+      setPressConfirm: (val: boolean) => {
         set(() => {
-          return { input: val };
+          return { pressConfirm: val };
         });
       },
     };

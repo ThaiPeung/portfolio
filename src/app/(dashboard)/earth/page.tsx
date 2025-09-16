@@ -1,6 +1,7 @@
 "use client";
 
 import Earth from "@/components/earth/Earth";
+import ThreeLoader from "@/components/ThreeLoader";
 import { Box } from "@mui/material";
 import { Loader, OrbitControls } from "@react-three/drei";
 import { CameraProps, Canvas } from "@react-three/fiber";
@@ -38,11 +39,11 @@ const EarthPage = () => {
       //   camera.updateProjectionMatrix();
       // }}
     >
-      {/* <Suspense fallback={<Loader />}> */}
-      <OrbitControls minDistance={8} maxDistance={20} enablePan={false} />
+      <Suspense fallback={<ThreeLoader />}>
+        <OrbitControls minDistance={8} maxDistance={20} enablePan={false} />
 
-      <Earth />
-      {/* </Suspense> */}
+        <Earth />
+      </Suspense>
     </Canvas>
   );
 };

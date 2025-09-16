@@ -71,13 +71,13 @@ const page = () => {
   const [userReviewId, setUserReviewId] = useState<number>();
 
   // -| zustand
-  const resDialog = useResDialog((state) => {
+  const resDialogZus = useResDialog((state) => {
     return state;
   });
-  const confirmDialog = useConfirmDialog((state) => {
+  const confirmDialogZus = useConfirmDialog((state) => {
     return state;
   });
-  const userRole = useUser((state) => {
+  const userRoleZus = useUser((state) => {
     return state.roles;
   });
 
@@ -99,12 +99,12 @@ const page = () => {
         setBookDetail(data);
       }
     } catch (error) {
-      resDialog.setType("error");
-      resDialog.setTitle("Error!");
+      resDialogZus.setType("error");
+      resDialogZus.setTitle("Error!");
       if (axios.isAxiosError(error)) {
-        resDialog.setMsg(`Error: ${error.response?.data || error.message}`);
+        resDialogZus.setMsg(`Error: ${error.response?.data || error.message}`);
       } else {
-        resDialog.setMsg("An unexpected error occurred.");
+        resDialogZus.setMsg("An unexpected error occurred.");
       }
     }
   };
@@ -120,12 +120,12 @@ const page = () => {
         setContents(data);
       }
     } catch (error) {
-      resDialog.setType("error");
-      resDialog.setTitle("Error!");
+      resDialogZus.setType("error");
+      resDialogZus.setTitle("Error!");
       if (axios.isAxiosError(error)) {
-        resDialog.setMsg(`Error: ${error.response?.data || error.message}`);
+        resDialogZus.setMsg(`Error: ${error.response?.data || error.message}`);
       } else {
-        resDialog.setMsg("An unexpected error occurred.");
+        resDialogZus.setMsg("An unexpected error occurred.");
       }
     }
   };
@@ -145,16 +145,18 @@ const page = () => {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.status !== 404) {
-          resDialog.setType("error");
-          resDialog.setTitle("Error!");
-          resDialog.setMsg(`Error: ${error.response?.data || error.message}`);
-          resDialog.setOpenDialog(true);
+          resDialogZus.setType("error");
+          resDialogZus.setTitle("Error!");
+          resDialogZus.setMsg(
+            `Error: ${error.response?.data || error.message}`
+          );
+          resDialogZus.setOpenDialog(true);
         }
       } else {
-        resDialog.setType("error");
-        resDialog.setTitle("Error!");
-        resDialog.setMsg("An unexpected error occurred.");
-        resDialog.setOpenDialog(true);
+        resDialogZus.setType("error");
+        resDialogZus.setTitle("Error!");
+        resDialogZus.setMsg("An unexpected error occurred.");
+        resDialogZus.setOpenDialog(true);
       }
     }
   };
@@ -178,20 +180,20 @@ const page = () => {
         getBookDetail();
         getBookReviews();
         getUserReview();
-        resDialog.setType("success");
-        resDialog.setTitle("Success");
-        resDialog.setMsg(`Successfully add / edit review: ${data.comment}`);
-        resDialog.setOpenDialog(true);
+        resDialogZus.setType("success");
+        resDialogZus.setTitle("Success");
+        resDialogZus.setMsg(`Successfully add / edit review: ${data.comment}`);
+        resDialogZus.setOpenDialog(true);
       }
     } catch (error) {
-      resDialog.setType("error");
-      resDialog.setTitle("Error!");
+      resDialogZus.setType("error");
+      resDialogZus.setTitle("Error!");
       if (axios.isAxiosError(error)) {
-        resDialog.setMsg(`Error: ${error.response?.data || error.message}`);
+        resDialogZus.setMsg(`Error: ${error.response?.data || error.message}`);
       } else {
-        resDialog.setMsg("An unexpected error occurred.");
+        resDialogZus.setMsg("An unexpected error occurred.");
       }
-      resDialog.setOpenDialog(true);
+      resDialogZus.setOpenDialog(true);
     }
   };
 
@@ -209,25 +211,55 @@ const page = () => {
         setUserReviewId(undefined);
         setRating(0);
         setComment("");
-        resDialog.setType("success");
-        resDialog.setTitle("Success");
-        resDialog.setMsg(data);
-        resDialog.setOpenDialog(true);
+        resDialogZus.setType("success");
+        resDialogZus.setTitle("Success");
+        resDialogZus.setMsg(data);
+        resDialogZus.setOpenDialog(true);
       } else {
-        resDialog.setType("error");
-        resDialog.setTitle("Error!");
-        resDialog.setMsg(data);
-        resDialog.setOpenDialog(true);
+        resDialogZus.setType("error");
+        resDialogZus.setTitle("Error!");
+        resDialogZus.setMsg(data);
+        resDialogZus.setOpenDialog(true);
       }
     } catch (error) {
-      resDialog.setType("error");
-      resDialog.setTitle("Error!");
+      resDialogZus.setType("error");
+      resDialogZus.setTitle("Error!");
       if (axios.isAxiosError(error)) {
-        resDialog.setMsg(`Error: ${error.response?.data || error.message}`);
+        resDialogZus.setMsg(`Error: ${error.response?.data || error.message}`);
       } else {
-        resDialog.setMsg("An unexpected error occurred.");
+        resDialogZus.setMsg("An unexpected error occurred.");
       }
-      resDialog.setOpenDialog(true);
+      resDialogZus.setOpenDialog(true);
+    }
+  };
+
+  const deleteBook = async () => {
+    try {
+      const response = await customAxios.delete(`/books/${params.id}`);
+
+      let data: string = response.data;
+      if (response.status === 200) {
+        router.back();
+        resDialogZus.setType("success");
+        resDialogZus.setTitle("Success");
+        resDialogZus.setMsg(data);
+        resDialogZus.setOpenDialog(true);
+        confirmDialogZus.setOpenDialog(false);
+      } else {
+        resDialogZus.setType("error");
+        resDialogZus.setTitle("Error!");
+        resDialogZus.setMsg(data);
+        resDialogZus.setOpenDialog(true);
+      }
+    } catch (error) {
+      resDialogZus.setType("error");
+      resDialogZus.setTitle("Error!");
+      if (axios.isAxiosError(error)) {
+        resDialogZus.setMsg(`Error: ${error.response?.data || error.message}`);
+      } else {
+        resDialogZus.setMsg("An unexpected error occurred.");
+      }
+      resDialogZus.setOpenDialog(true);
     }
   };
 
@@ -241,6 +273,13 @@ const page = () => {
   useEffect(() => {
     getBookReviews();
   }, [page, pageSize]);
+
+  // -| Track user press confirm in confirm dialog(for delete book)
+  useEffect(() => {
+    if (confirmDialogZus.pressConfirm) {
+      deleteBook();
+    }
+  }, [confirmDialogZus.pressConfirm]);
 
   // -| function
   const handleChangeComment = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -281,17 +320,16 @@ const page = () => {
                       {bookDetail.title}
                     </Typography>
 
-                    {userRole.includes("ROLE_ADMIN") && (
+                    {userRoleZus.includes("ROLE_ADMIN") && (
                       <CustomIconButton
                         icon={<DeleteIcon />}
                         onClick={() => {
-                          confirmDialog.setInput(bookDetail.id);
-                          confirmDialog.setTitle(`Delete book.`);
-                          confirmDialog.setMsg(
+                          confirmDialogZus.setTitle(`Delete book.`);
+                          confirmDialogZus.setMsg(
                             `Do you want to delete ${bookDetail.title}?`
                           );
-                          confirmDialog.setTask("deleteBook");
-                          confirmDialog.setOpenDialog(true);
+                          confirmDialogZus.setTask("deleteBook");
+                          confirmDialogZus.setOpenDialog(true);
                         }}
                       />
                     )}

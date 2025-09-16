@@ -8,6 +8,8 @@ import { CameraProps, Canvas } from "@react-three/fiber";
 import LoginCard from "@/components/crud/login/loginCard";
 import MedievalBook from "@/components/crud/login/book";
 import { useGLTF } from "@react-three/drei";
+import Loader from "@/components/Loader";
+import ThreeLoader from "@/components/ThreeLoader";
 
 // -| MUI Icons
 
@@ -17,7 +19,7 @@ const CRUDPage = () => {
   const cameraSetting: CameraProps = {
     near: 0.1,
     far: 1000,
-    position: [-50.49, 25.60, 69.51],
+    position: [-50.49, 25.6, 69.51],
   };
 
   return (
@@ -54,9 +56,9 @@ const CRUDPage = () => {
               border: "1px solid #000",
             }}
           >
-            {/* <Suspense fallback={<Loader />}> */}
-            <MedievalBook />
-            {/* </Suspense> */}
+            <Suspense fallback={<ThreeLoader />}>
+              <MedievalBook />
+            </Suspense>
           </Canvas>
         </Grid>
         <Grid
@@ -65,7 +67,9 @@ const CRUDPage = () => {
             justifyItems: "center",
           }}
         >
-          <LoginCard />
+          <Suspense fallback={<Loader />}>
+            <LoginCard />
+          </Suspense>
         </Grid>
       </Grid>
     </Box>

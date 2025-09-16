@@ -34,6 +34,7 @@ type paginationType = {
 };
 
 const page = () => {
+
   // -| useRouter
   const router = useRouter();
 
@@ -115,7 +116,7 @@ const page = () => {
               }}
               startIcon={<AddIcon sx={{ scale: 3 }} />}
               onClick={() => {
-                router.push(`addBook`);
+                router.push(`home/addBook`);
               }}
             >
               <Typography fontSize={40}>Add</Typography>
