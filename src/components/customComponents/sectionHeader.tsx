@@ -19,7 +19,7 @@ interface SectionHeaderType {
 const SectionHeader: React.FC<SectionHeaderType> = ({
   title = "",
   sectionVariant = "normal",
-  textNeonColor = "0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff, 0 0 42px #0091ea, 0 0 82px #0091ea, 0 0 92px #0091ea, 0 0 102px #0091ea, 0 0 151px #0091ea",
+  textNeonColor = "0 0 .1rem #fff, 0 0 1rem #fff, 0 0 1.5rem #fff, 0 0 1rem #0091ea, 0 0 1rem #0091ea, 0 0 0.5rem #0091ea, 0 0 0.5rem #0091ea, 0 0 0.5rem #0091ea",
   neonBorderColor = "0 0 .2rem #fff, 0 0 .2rem #fff, 0 0 2rem #00bfa5, 0 0 0.8rem #00bfa5,0 0 2.8rem #00bfa5,inset 0 0 1.3rem #00bfa5",
   textLinearColor = "",
   linearBorderColor = "",
@@ -43,6 +43,7 @@ const SectionHeader: React.FC<SectionHeaderType> = ({
         >
           <Typography
             variant="h2"
+            letterSpacing={5}
             sx={{
               color: "#fff",
               textShadow: textNeonColor,

@@ -10,6 +10,7 @@ import { store } from "@/stores/redux/redux";
 import CustomDialog from "@/components/customComponents/customDialog";
 import useResDialog from "@/stores/zustand/useResDialog";
 import ConfirmDialog from "@/components/customComponents/confirmDialog";
+import { GlobalStyles } from "@mui/material";
 
 export default function RootLayout({
   children,
@@ -24,8 +25,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Provider store={store}>
-        <CustomDialog/>
+        <CustomDialog />
         <ConfirmDialog />
+        <GlobalStyles
+          styles={{
+            'input[type="password"]::-ms-reveal, input[type="password"]::-ms-clear':
+              {
+                display: "none",
+              },
+            'input[type="password"]::-webkit-credentials-auto-fill-button': {
+              display: "none",
+            },
+            'input[type="password"]::-webkit-textfield-decoration-container': {
+              display: "none",
+            },
+          }}
+        />
         <body style={{ height: "100vh" }}>{children}</body>
       </Provider>
     </html>

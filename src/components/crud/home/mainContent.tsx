@@ -43,7 +43,7 @@ const MainContent: React.FC<MainContentType> = ({ content }) => {
       <Grid container direction="row" spacing={10}>
         {content?.map((item, index) => {
           return (
-            <Grid key={index} size={{ xs: 2, sm: 3, md: 4 }}>
+            <Grid key={index} size={{ xs: 12, sm: 12, md: 6, lg: 4 }}>
               <Box
                 onClick={() => {
                   router.push(`home/${item.id}`);

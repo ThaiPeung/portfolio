@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Provider, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { Canvas } from "@react-three/fiber";
+import { Stars } from "@react-three/drei";
 
 // -| Mui
 import {
@@ -27,27 +28,24 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import { MenuItems } from "./menuItems";
 import { Grid } from "@mui/material";
 
 // -| Mui Icon(s)
 import MenuIcon from "@mui/icons-material/Menu";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import NightsStayIcon from "@mui/icons-material/NightsStay";
-import { AppDispatch, store } from "@/stores/redux/redux";
-import { darkModeAction, darkModeType } from "@/stores/redux/darkMode";
-import { buttonDarkTheme, buttonLightTheme } from "@/theme/buttonTheme";
-import { Canvas } from "@react-three/fiber";
-import { Stars } from "@react-three/drei";
-import { iconButtonDarkTheme } from "@/theme/iconButtonTheme";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 // -| Project
+import { MenuItems, menuItemsType } from "./menuItems";
+import { AppDispatch } from "@/stores/redux/redux";
+import { darkModeAction, darkModeType } from "@/stores/redux/darkMode";
+import { iconButtonDarkTheme } from "@/theme/iconButtonTheme";
+import { buttonDarkTheme, buttonLightTheme } from "@/theme/buttonTheme";
+import Sidebar from "@/components/sidebar/sidebar";
+import SidebarWithChildren from "@/components/sidebar/sidebarWithChildren";
+import CustomDivider from "@/components/customComponents/customDivider";
 
 const drawerWidth = 240;
 
@@ -146,7 +144,6 @@ const layout = ({
   );
 
   const theme = useTheme();
-  const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -211,7 +208,7 @@ const layout = ({
               </Grid>
               <Grid size="grow">
                 <Typography variant="h6" noWrap component="div" color="#fff">
-                  Thai
+                  Thai's sandbox
                 </Typography>
               </Grid>
               <Grid size="auto">
@@ -237,57 +234,13 @@ const layout = ({
             </DrawerHeader>
             <Divider />
             <List>
-              {MenuItems.map((item, index) => (
-                <Box
-                  key={index}
-                  sx={{
-                    backgroundImage: pathname.includes(item.path!)
-                      ? "linear-gradient(-45deg, grey, blue)"
-                      : "",
-                  }}
-                >
-                  <ListItem
-                    disablePadding
-                    sx={{
-                      display: "block",
-                    }}
-                  >
-                    <ListItemButton
-                      sx={[
-                        {
-                          minHeight: 48,
-                          px: 2.5,
-                          justifyContent: open ? "initial" : "center",
-                        },
-                      ]}
-                      onClick={() => {
-                        router.push(item.path!);
-                      }}
-                    >
-                      <ListItemIcon
-                        sx={[
-                          {
-                            minWidth: 0,
-                            justifyContent: "center",
-                            mr: open ? 3 : "auto",
-                            color: pathname.includes(item.path!) ? "white" : "",
-                          },
-                        ]}
-                      >
-                        {item.icon}
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={item.title}
-                        sx={[
-                          {
-                            opacity: open ? 1 : 0,
-                            color: pathname.includes(item.path!) ? "white" : "",
-                          },
-                        ]}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                </Box>
+              {MenuItems.map((item: menuItemsType, index) => (
+                <>
+                  {!item.children && <Sidebar item={item} open={open} />}
+                  {item.children && (
+                    <SidebarWithChildren item={item} open={open} />
+                  )}
+                </>
               ))}
             </List>
           </Drawer>
