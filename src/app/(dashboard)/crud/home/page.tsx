@@ -22,6 +22,7 @@ import customAxios from "@/services/customAxios";
 import CustomDialog from "@/components/customComponents/customDialog";
 import useUser from "@/stores/zustand/useUser";
 import BookFilters from "@/components/crud/home/bookFilters";
+import useResDialog from "@/stores/zustand/useResDialog";
 
 type paginationType = {
   content: bookType[];
@@ -34,7 +35,6 @@ type paginationType = {
 };
 
 const page = () => {
-
   // -| useRouter
   const router = useRouter();
 
@@ -46,6 +46,9 @@ const page = () => {
   // -| zustand
   const userRole = useUser((state) => {
     return state.roles;
+  });
+  const resDialogZus = useResDialog((state) => {
+    return state;
   });
 
   // -| useState
@@ -81,16 +84,14 @@ const page = () => {
         }
       }
     } catch (error) {
-      setAPIResType("error");
-      setAPIResTitle("Error!");
+      resDialogZus.setType("error");
+      resDialogZus.setTitle("Error!");
       if (axios.isAxiosError(error)) {
-        setAPIResMsg(
-          `Error: ${error.response?.data?.message || error.message}`
-        );
+        resDialogZus.setMsg(`Error: ${error.response?.data || error.message}`);
       } else {
-        setAPIResMsg("An unexpected error occurred.");
+        resDialogZus.setMsg("An unexpected error occurred.");
       }
-      setOpenDialog(true);
+      resDialogZus.setOpenDialog(true);
     }
   };
 

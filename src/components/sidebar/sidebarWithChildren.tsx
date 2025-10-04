@@ -9,7 +9,6 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import { menuItemsType } from "@/app/(dashboard)/menuItems";
 import { Collapse, List } from "@mui/material";
 
 // -| Mui Icon(s)
@@ -18,6 +17,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 
 // -| Project
 import CustomDivider from "../customComponents/customDivider";
+import { menuItemsType } from "@/app/(dashboard)/menuItems";
 
 type sidebarType = {
   item: menuItemsType;

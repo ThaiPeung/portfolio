@@ -55,7 +55,7 @@ export const MenuItems: menuItemsType[] = [
       },
       {
         title: "Admin",
-        path: "/crud/admin",
+        path: "/crud/admin/manageUser",
         icon: <AdjustIcon />,
       },
     ],
