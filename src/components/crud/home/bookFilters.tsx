@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-// -| Mui
+//-| Mui
 import {
   Box,
   Button,
@@ -21,7 +21,7 @@ import {
 } from "@mui/material";
 import { apiURL } from "@/env";
 
-// -| Mui icon(s)
+//-| Mui icon(s)
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import DateRangeIcon from "@mui/icons-material/DateRange";
@@ -29,7 +29,7 @@ import StarBorderIcon from "@mui/icons-material/StarBorder";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import SearchIcon from "@mui/icons-material/Search";
 
-// -| Project
+//-| Project
 import { bookType } from "../types/bookTypes";
 import CustomCard from "@/components/customComponents/customCard";
 import { paginationType } from "../types/reviewTypes";
@@ -47,12 +47,12 @@ type BookFiltersType = {
 };
 
 const BookFilters: React.FC<BookFiltersType> = ({ getBooks }) => {
-  // -| useState
+  //-| useState
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [genre, setGenre] = useState("");
 
-  // -| functions
+  //-| functions
   const handleChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
   };

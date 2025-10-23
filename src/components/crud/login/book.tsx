@@ -11,11 +11,11 @@ import {
 import { Canvas, useThree } from "@react-three/fiber";
 import React, { useEffect } from "react";
 
-// -| MUI
+//-| MUI
 
-// -| MUI Icons
+//-| MUI Icons
 
-// -| Projects
+//-| Projects
 
 const MedievalBook = () => {
   const MedievalFantasyBook = useGLTF("/models/medieval_fantasy_book.glb");

@@ -8,7 +8,7 @@ import {
   PresentationControls,
 } from "@react-three/drei";
 import React from "react";
-import MacBook from "./models/MacBook";
+import MacBook from "../models/MacBook";
 
 const Laptop = () => {
   return (

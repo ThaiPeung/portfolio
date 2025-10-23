@@ -10,44 +10,44 @@ import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 const Player = () => {
-  // -| Ref(s)
+  //-| Ref(s)
   const body = useRef<any>(null);
 
-  // -| useKeyboardControls
+  //-| useKeyboardControls
   const [subscribeKeys, getKeys] = useKeyboardControls();
 
-  // -| useRapier
+  //-| useRapier
   const { rapier, world } = useRapier();
 
-  // -| Smoothed cameras setup
+  //-| Smoothed cameras setup
   const [smoothedCameraPosition] = useState(
     () => new THREE.Vector3(10, 10, 10)
   );
   const [smoothedCameraTarget] = useState(() => new THREE.Vector3());
 
-  // -| useGame stages from (zustand)
+  //-| useGame stages from (zustand)
   const start = useGame((state) => state.start);
   const end = useGame((state) => state.end);
   const restart = useGame((state) => state.restart);
   const blocksCount = useGame((state) => state.blocksCount);
 
-  // -| Jump function
+  //-| Jump function
   const jump = () => {
     if (body.current) {
-      // -| get current position of the ball
+      //-| get current position of the ball
       const origin = body.current.translation();
-      // -| "origin" is position of center of the ball -0.31 to move it to around bellow of the ball
+      //-| "origin" is position of center of the ball -0.31 to move it to around bellow of the ball
       origin.y -= 0.31;
 
       const direction = { x: 0, y: -1, z: 0 };
 
-      // -| Cast ray from bottom of the ball downward to check the distance between the ball and the floor (think of Sonar)
+      //-| Cast ray from bottom of the ball downward to check the distance between the ball and the floor (think of Sonar)
       const ray = new rapier.Ray(origin, direction);
-      // -| When we cast ray to "hit" (check the distance between ball and other object) something
-      // -| (in this case, the whole world [every other object])
+      //-| When we cast ray to "hit" (check the distance between ball and other object) something
+      //-| (in this case, the whole world [every other object])
       const hit = world.castRay(ray, 10, true);
 
-      // -| In case of ball is bouncing so we don't have to wait until the ball stop bouncing to jump again
+      //-| In case of ball is bouncing so we don't have to wait until the ball stop bouncing to jump again
       if (hit!.timeOfImpact < 0.15) {
         body.current.applyImpulse({ x: 0, y: 0.25, z: 0 });
       }
@@ -55,20 +55,20 @@ const Player = () => {
   };
 
   const reset = () => {
-    // -| Reset ball position
+    //-| Reset ball position
     body.current.setTranslation({ x: 0, y: 1, z: 0 });
-    // -| Reset ball velocities
+    //-| Reset ball velocities
     body.current.setLinvel({ x: 0, y: 0, z: 0 });
     body.current.setAngvel({ x: 0, y: 0, z: 0 });
   };
 
-  // -| Handle keyboard event
+  //-| Handle keyboard event
   useEffect(() => {
-    // -|
+    //-|
     const unsubscribeReset = useGame.subscribe(
-      // -| Selector: pick the "state.phase" to watch
+      //-| Selector: pick the "state.phase" to watch
       (state) => state.phase,
-      // -| Listener: called whenever that slice changes; receives the new phase value
+      //-| Listener: called whenever that slice changes; receives the new phase value
       (phaseVal) => {
         if (phaseVal === "ready") {
           reset();
@@ -76,11 +76,11 @@ const Player = () => {
       }
     );
 
-    // -| Handle player jump (when press spacebar)
+    //-| Handle player jump (when press spacebar)
     const unsubscribeJump = subscribeKeys(
-      // -| Selector: pick the "state.jump" to watch
+      //-| Selector: pick the "state.jump" to watch
       (state) => state.jump,
-      // -| Listener: called whenever that slice changes; receives the new phase value
+      //-| Listener: called whenever that slice changes; receives the new phase value
       (jumpVal) => {
         if (jumpVal) {
           jump();
@@ -88,7 +88,7 @@ const Player = () => {
       }
     );
 
-    // -| Handle player start playing the game (when press any [W, A, S, D, spacebar])
+    //-| Handle player start playing the game (when press any [W, A, S, D, spacebar])
     const unsubscribeAny = subscribeKeys(() => {
       start();
     });
@@ -101,7 +101,7 @@ const Player = () => {
   }, []);
 
   useFrame((state, delta) => {
-    // -| Handle the ball movement.
+    //-| Handle the ball movement.
     const { forward, backward, leftward, rightward } = getKeys();
 
     const impulse = { x: 0, y: 0, z: 0 };
@@ -135,7 +135,7 @@ const Player = () => {
       body.current.applyTorqueImpulse(torque);
     }
 
-    // -| Camera.
+    //-| Camera.
     if (body.current) {
       const bodyPosition = body.current.translation();
 
@@ -148,20 +148,20 @@ const Player = () => {
       cameraTarget.copy(bodyPosition);
       cameraTarget.y += 0.25;
 
-      // -| Make camera move smooter.
+      //-| Make camera move smooter.
       smoothedCameraPosition.lerp(cameraPosition, 5 * delta);
       smoothedCameraTarget.lerp(cameraTarget, 5 * delta);
 
       state.camera.position.copy(smoothedCameraPosition);
       state.camera.lookAt(smoothedCameraTarget);
 
-      // -| Phases.
-      // -| Check if player is at the end of stage.
+      //-| Phases.
+      //-| Check if player is at the end of stage.
       if (bodyPosition.z < -(blocksCount * 4 + 2)) {
         end();
       }
 
-      // -| Check if player is fall out of stage.
+      //-| Check if player is fall out of stage.
       if (bodyPosition.y < -4) {
         restart();
       }
@@ -191,7 +191,7 @@ const Player = () => {
 
 export default Player;
 
-// -| test code for Boat movement
+//-| test code for Boat movement
 //   const [subscribeKeys, getKeys] = useKeyboardControls();
 //   const body = useRef<RapierRigidBody>(null!);
 //   const mesh = useRef<THREE.Mesh>(null!);

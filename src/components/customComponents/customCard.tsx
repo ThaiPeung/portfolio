@@ -34,7 +34,7 @@ const CustomCard = ({
   blur?: string;
   gsap?: boolean;
 }) => {
-  // -| Redux
+  //-| Redux
   const darkMode: darkModeType = useSelector(
     (configureStoreReducer: any) => configureStoreReducer.darkMode.val
   );
@@ -50,7 +50,7 @@ const CustomCard = ({
       const step = (timestamp: number) => {
         if (start === null) start = timestamp;
         const elapsed = timestamp - start;
-        // -| 0 → 360deg over 'duration' ms, then loop
+        //-| 0 → 360deg over 'duration' ms, then loop
         const angle = ((elapsed % duration) / duration) * 360;
         ref.current?.style.setProperty("--deg", `${angle}deg`);
         requestAnimationFrame(step);

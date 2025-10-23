@@ -2,7 +2,7 @@
 
 import React, { Suspense } from "react";
 
-// -| MUI
+//-| MUI
 import { Box, Grid } from "@mui/material";
 import { CameraProps, Canvas } from "@react-three/fiber";
 import LoginCard from "@/components/crud/login/loginCard";
@@ -11,9 +11,9 @@ import { useGLTF } from "@react-three/drei";
 import Loader from "@/components/Loader";
 import ThreeLoader from "@/components/ThreeLoader";
 
-// -| MUI Icons
+//-| MUI Icons
 
-// -| Projects
+//-| Projects
 
 const CRUDPage = () => {
   const cameraSetting: CameraProps = {

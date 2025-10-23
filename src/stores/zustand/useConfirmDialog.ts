@@ -4,7 +4,7 @@ import { subscribeWithSelector } from "zustand/middleware";
 import axios from "axios";
 import useResDialog from "./useResDialog";
 
-type TaskType = "deleteBook" | "";
+type TaskType = "deleteBook" | "deleteUser" | "";
 
 export type useResDialogType = {
   open: boolean;

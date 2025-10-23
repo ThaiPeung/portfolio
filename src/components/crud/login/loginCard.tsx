@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 
-// -| MUI
+//-| MUI
 import {
   Box,
   Button,
@@ -17,14 +17,14 @@ import {
   Typography,
 } from "@mui/material";
 
-// -| MUI Icons
+//-| MUI Icons
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import LoginIcon from "@mui/icons-material/Login";
 import CustomIconButton from "@/components/customComponents/customIconButton";
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 
-// -| Projects
+//-| Projects
 import { darkModeType } from "@/stores/redux/darkMode";
 import CustomCard from "@/components/customComponents/customCard";
 import customAxios, { login } from "@/services/customAxios";
@@ -39,17 +39,27 @@ type jwtPayload = {
 };
 
 const LoginCard = () => {
-  // -| Redux
+  useEffect(() => {
+    if (userRole.length !== 0) {
+      router.push("home");
+    }
+  }, []);
+
+  //-| Redux
   const darkMode: darkModeType = useSelector(
     (configureStoreReducer: any) => configureStoreReducer.darkMode.val
   );
 
-  // -| zustand
+  //-| zustand
   const resDialog = useResDialog((state) => {
     return state;
   });
 
-  // -| useState
+  const userRole = useUser((state) => {
+    return state.roles;
+  });
+
+  //-| useState
   const [showPassword, setShowPassword] = useState(false);
 
   const [username, setUsername] = useState<string>("Bill");
@@ -57,10 +67,10 @@ const LoginCard = () => {
 
   const [loginMsg, setLoginMsg] = useState<string>("");
 
-  // -| useUser from (zustand)
+  //-| useUser from (zustand)
   const setUser = useUser((state) => state.setUser);
 
-  // -| useRouter
+  //-| useRouter
   const router = useRouter();
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);

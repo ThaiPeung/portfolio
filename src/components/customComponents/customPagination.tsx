@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 
-// -| Mui
+//-| Mui
 import Pagination from "@mui/material/Pagination";
 import {
   Box,
@@ -18,9 +18,9 @@ import {
   TextField,
 } from "@mui/material";
 
-// -| Mui icon(s)
+//-| Mui icon(s)
 
-// -| Project
+//-| Project
 
 type FCType = {
   count: number;

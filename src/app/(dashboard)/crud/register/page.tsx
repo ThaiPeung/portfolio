@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
 
-// -| Mui
+//-| Mui
 import {
   Box,
   Button,
@@ -18,11 +18,11 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-// -| Mui icon(s)
+//-| Mui icon(s)
 import ImageIcon from "@mui/icons-material/Image";
 import AddIcon from "@mui/icons-material/Add";
 
-// -| Project
+//-| Project
 import CustomCard from "@/components/customComponents/customCard";
 import SectionHeader from "@/components/customComponents/sectionHeader";
 import customAxios from "@/services/customAxios";
@@ -34,29 +34,30 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 const Register = () => {
-  // -| useState
+  //-| useState
   const [username, setUsername] = useState("Jame");
   const [password, setPassword] = useState("TestPass");
   const [confirmPassword, setConfirmPassword] = useState("TestPass");
   const [email, setEmail] = useState("Test@test.t");
 
-  // -| zustand
+  //-| zustand
   const resDialog = useResDialog((state) => {
     return state;
   });
 
-  // -| Image file
+  //-| Image file
   const [file, setFile] = useState<File>();
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [uploading, setUploading] = useState(false);
 
-  // -| passowrd field
+  //-| passowrd field
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setConfirmShowPassword] = useState(false);
 
-  // -| Function
+  //-| Function
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleClickShowConfirmPassword = () => setConfirmShowPassword((show) => !show);
 
   const handleMouseDownPassword = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -85,16 +86,16 @@ const Register = () => {
     setEmail(e.target.value);
   };
 
-  // -| useEffect
+  //-| useEffect
   useEffect(() => {
     if (!file?.name) return;
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
-    // -| cleanup
+    //-| cleanup
     return () => URL.revokeObjectURL(url);
   }, [file?.name]);
 
-  // -| Function
+  //-| Function
   const addUser = async () => {
     try {
       const response = await customAxios.post("/register", {
@@ -203,7 +204,7 @@ const Register = () => {
                               ? "hide the password"
                               : "display the password"
                           }
-                          onClick={handleClickShowPassword}
+                          onClick={handleClickShowConfirmPassword}
                           onMouseDown={handleMouseDownPassword}
                           onMouseUp={handleMouseUpPassword}
                         >

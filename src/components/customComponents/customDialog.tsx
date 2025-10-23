@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 
-// -| Mui
+//-| Mui
 import { Box, Dialog, Paper, Typography } from "@mui/material";
 import CustomCard from "@/components/customComponents/customCard";
 
-// -| Mui icon(s)
+//-| Mui icon(s)
 import ErrorTwoToneIcon from "@mui/icons-material/ErrorTwoTone";
 import CheckCircleTwoToneIcon from "@mui/icons-material/CheckCircleTwoTone";
 import WarningTwoToneIcon from "@mui/icons-material/WarningTwoTone";
@@ -14,7 +14,7 @@ import { darkModeType } from "@/stores/redux/darkMode";
 import { useSelector } from "react-redux";
 import useResDialog from "@/stores/zustand/useResDialog";
 
-// -| Project
+//-| Project
 
 const CustomDialog = ({
   width = "100%",
@@ -27,11 +27,11 @@ const CustomDialog = ({
   margin?: string;
   styledBorderDark?: string;
 }) => {
-  // -| Redux
+  //-| Redux
   const darkMode: darkModeType = useSelector(
     (configureStoreReducer: any) => configureStoreReducer.darkMode.val
   );
-  // -| zustand
+  //-| zustand
   const resDialog = useResDialog((state) => {
     return state;
   });

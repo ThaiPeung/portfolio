@@ -6,11 +6,11 @@ const Lights = () => {
 
   useFrame((state, delta) => {
     if (light.current) {
-      // -| Update light position and target based on camera position and target to render shadow based on where player is, 
-      // -| if shadow is too far from light the shadow not rendered and if the light isn't move following camera, the shadow will be missing
-      // -| when move away from starting point.
-      // -| "- 4" to adjust light to move ahead of player current position because there is shadow rendered behide the camera and 
-      // -| it's a bit waste.
+      //-| Update light position and target based on camera position and target to render shadow based on where player is, 
+      //-| if shadow is too far from light the shadow not rendered and if the light isn't move following camera, the shadow will be missing
+      //-| when move away from starting point.
+      //-| "- 4" to adjust light to move ahead of player current position because there is shadow rendered behide the camera and 
+      //-| it's a bit waste.
       light.current.position.z = state.camera.position.z + 1 - 4;
       light.current.target.position.z = state.camera.position.z - 4;
       light.current.target.updateMatrixWorld();

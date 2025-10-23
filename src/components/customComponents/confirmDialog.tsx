@@ -2,15 +2,15 @@
 
 import React, { useEffect, useState } from "react";
 
-// -| Mui
-import { Box, Dialog, Grid, Stack, Typography } from "@mui/material";
+//-| Mui
+import { Box, Dialog, Divider, Grid, Stack, Typography } from "@mui/material";
 import CustomCard from "@/components/customComponents/customCard";
 
-// -| Mui icon(s)
+//-| Mui icon(s)
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 
-// -| Project
+//-| Project
 import { darkModeType } from "@/stores/redux/darkMode";
 import { useSelector } from "react-redux";
 import useConfirmDialog from "@/stores/zustand/useConfirmDialog";
@@ -25,17 +25,17 @@ const ConfirmDialog = ({
 }: {
   styledBorderDark?: string;
 }) => {
-  // -| Redux
+  //-| Redux
   const darkMode: darkModeType = useSelector(
     (configureStoreReducer: any) => configureStoreReducer.darkMode.val
   );
 
-  // -| zustand
+  //-| zustand
   const confirmDialogZus = useConfirmDialog((state) => {
     return state;
   });
 
-  // -| Clean dialog
+  //-| Clean dialog
   useEffect(() => {
     if (confirmDialogZus.open === false) {
       confirmDialogZus.setDefault();
@@ -80,9 +80,12 @@ const ConfirmDialog = ({
               alignItems: "center",
             }}
           >
-            <Typography sx={{ color: darkMode ? "#fff" : "#000" }}>
+            <Typography
+              sx={{ color: darkMode ? "#fff" : "#000", size: "1.5rem" }}
+            >
               {confirmDialogZus.title}
             </Typography>
+            <Divider />
             <Typography sx={{ color: darkMode ? "#fff" : "#000" }}>
               {confirmDialogZus.msg}
             </Typography>

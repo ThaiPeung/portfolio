@@ -3,23 +3,23 @@
 import React, { useEffect, useState } from "react";
 import { CameraProps, Canvas } from "@react-three/fiber";
 
-// -| Mui
+//-| Mui
 import { Box } from "@mui/material";
 import { OrbitControls, Stage, Stars } from "@react-three/drei";
 import { darkModeType } from "@/stores/redux/darkMode";
 import { useSelector } from "react-redux";
 
-// -| Mui icon(s)
+//-| Mui icon(s)
 
-// -| Project
+//-| Project
 
 export default function layout({ children }: { children: React.ReactNode }) {
-  // -| Redux
+  //-| Redux
   const darkMode: darkModeType = useSelector(
     (configureStoreReducer: any) => configureStoreReducer.darkMode.val
   );
 
-  // -| useState
+  //-| useState
 
   return (
     <>

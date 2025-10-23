@@ -3,17 +3,18 @@
 import React from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-// -| Mui
+//-| Mui
 import Box from "@mui/material/Box";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 
-// -| Mui Icon(s)
+//-| Mui Icon(s)
 
-// -| Project
+//-| Project
 import { menuItemsType } from "@/app/(dashboard)/menuItems";
+import { Tooltip } from "@mui/material";
 
 type sidebarType = {
   item: menuItemsType;
@@ -58,18 +59,22 @@ const Sidebar: React.FC<sidebarType> = (props) => {
             router.push(props.item.path!);
           }}
         >
-          <ListItemIcon
-            sx={[
-              {
-                minWidth: 0,
-                justifyContent: "center",
-                mr: props.open ? 3 : "auto",
-                color: pathname.includes(props.item.path!) ? "#fff" : "#b39ddb",
-              },
-            ]}
-          >
-            {props.item.icon}
-          </ListItemIcon>
+          <Tooltip title={props.open ? "" : props.item.title} placement="right">
+            <ListItemIcon
+              sx={[
+                {
+                  minWidth: 0,
+                  justifyContent: "center",
+                  mr: props.open ? 3 : "auto",
+                  color: pathname.includes(props.item.path!)
+                    ? "#fff"
+                    : "#b39ddb",
+                },
+              ]}
+            >
+              {props.item.icon}
+            </ListItemIcon>
+          </Tooltip>
           <ListItemText
             primary={props.item.title}
             sx={{

@@ -9,6 +9,8 @@ export type paginationType = {
 };
 
 export type userType = {
+  id: number;
   username: string;
   email: string;
+  accountNonLocked: boolean;
 };

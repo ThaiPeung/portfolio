@@ -5,12 +5,12 @@ import Image from "next/image";
 import { gsap } from "gsap";
 import { Observer } from "gsap/Observer";
 
-// -| Mui
+//-| Mui
 import { Box, Button, Grid, Rating, Typography } from "@mui/material";
 
-// -| Mui Icon(s)
+//-| Mui Icon(s)
 
-// -| project
+//-| project
 import CustomCard from "@/components/customComponents/customCard";
 import { apiURL } from "@/env";
 
@@ -146,10 +146,10 @@ const Slider: React.FC<InfiniteScrollProps> = ({
         (target as HTMLElement).style.cursor = "grab";
       },
       onChange: ({ deltaY, deltaX, isDragging, event }) => {
-        // -| deltaX/Y (X for left/right, Y for up/down) the incremental movement since the last event
-        // -| for wheel use deltaY (track user move wheel up/down) and other(focus drag) use deltaX
+        //-| deltaX/Y (X for left/right, Y for up/down) the incremental movement since the last event
+        //-| for wheel use deltaY (track user move wheel up/down) and other(focus drag) use deltaX
         const d = event.type === "wheel" ? deltaY : deltaX;
-        // -| distance of user action
+        //-| distance of user action
         const distance = isDragging ? d * 5 : d * 3;
         divItems.forEach((child) => {
           gsap.to(child, {

@@ -32,7 +32,7 @@ const CustomIconButton = ({
   gsap?: boolean;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }) => {
-  // -| Redux
+  //-| Redux
   const darkMode: darkModeType = useSelector(
     (configureStoreReducer: any) => configureStoreReducer.darkMode.val
   );

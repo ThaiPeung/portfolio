@@ -3,19 +3,19 @@
 import React from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-// -| Mui
+//-| Mui
 import Box from "@mui/material/Box";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import { Collapse, List } from "@mui/material";
+import { Collapse, List, Tooltip } from "@mui/material";
 
-// -| Mui Icon(s)
+//-| Mui Icon(s)
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
-// -| Project
+//-| Project
 import CustomDivider from "../customComponents/customDivider";
 import { menuItemsType } from "@/app/(dashboard)/menuItems";
 
@@ -66,16 +66,18 @@ const SidebarWithChildren: React.FC<sidebarType> = (props) => {
             },
           ]}
         >
-          <ListItemIcon
-            sx={{
-              minWidth: 0,
-              justifyContent: "center",
-              mr: props.open ? 3 : "auto",
-              color: open ? "#fff" : "#b39ddb",
-            }}
-          >
-            {props.item.icon}
-          </ListItemIcon>
+          <Tooltip title={props.open ? "" : props.item.title} placement="right">
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                justifyContent: "center",
+                mr: props.open ? 3 : "auto",
+                color: open ? "#fff" : "#b39ddb",
+              }}
+            >
+              {props.item.icon}
+            </ListItemIcon>
+          </Tooltip>
           <ListItemText
             primary="CRUD"
             sx={{
@@ -104,18 +106,23 @@ const SidebarWithChildren: React.FC<sidebarType> = (props) => {
                 router.push(childItem.path!);
               }}
             >
-              <ListItemIcon
-                sx={[
-                  {
-                    minWidth: props.open ? "56px" : 0,
-                    color: pathname.includes(props.item.path!)
-                      ? "#fff"
-                      : "#b39ddb",
-                  },
-                ]}
+              <Tooltip
+                title={props.open ? "" : childItem.title}
+                placement="right"
               >
-                {childItem.icon}
-              </ListItemIcon>
+                <ListItemIcon
+                  sx={[
+                    {
+                      minWidth: props.open ? "56px" : 0,
+                      color: pathname.includes(props.item.path!)
+                        ? "#fff"
+                        : "#b39ddb",
+                    },
+                  ]}
+                >
+                  {childItem.icon}
+                </ListItemIcon>
+              </Tooltip>
               {props.open && (
                 <>
                   <ListItemText

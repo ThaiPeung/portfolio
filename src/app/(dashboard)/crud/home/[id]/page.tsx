@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 
-// -| Mui
+//-| Mui
 import {
   Box,
   Button,
@@ -25,7 +25,7 @@ import {
 } from "@/components/crud/types/reviewTypes";
 import CustomCard from "@/components/customComponents/customCard";
 
-// -| Mui icon(s)
+//-| Mui icon(s)
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import DateRangeIcon from "@mui/icons-material/DateRange";
@@ -34,7 +34,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 
-// -| Project
+//-| Project
 import Reviews from "@/components/crud/home/review/reviews";
 import customAxios from "@/services/customAxios";
 import CustomDialog from "@/components/customComponents/customDialog";
@@ -65,12 +65,12 @@ const page = () => {
   const params = useParams();
   const router = useRouter();
 
-  // -| useState data
+  //-| useState data
   const [bookDetail, setBookDetail] = useState<bookDetailType>();
   const [contents, setContents] = useState<paginationType>();
   const [userReviewId, setUserReviewId] = useState<number>();
 
-  // -| zustand
+  //-| zustand
   const resDialogZus = useResDialog((state) => {
     return state;
   });
@@ -81,15 +81,15 @@ const page = () => {
     return state.roles;
   });
 
-  // -| useState api input
+  //-| useState api input
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(9);
 
-  // -| useState user input
+  //-| useState user input
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
 
-  // -| function
+  //-| function
   const getBookDetail = async () => {
     try {
       const response = await customAxios.get(`/books/${params.id}`);
@@ -263,25 +263,25 @@ const page = () => {
     }
   };
 
-  // -| Get book detail and user reviews
+  //-| Get book detail and user reviews
   useEffect(() => {
     getBookDetail();
     getUserReview();
   }, []);
 
-  // -| Get reviews
+  //-| Get reviews
   useEffect(() => {
     getBookReviews();
   }, [page, pageSize]);
 
-  // -| Track user press confirm in confirm dialog(for delete book)
+  //-| Track user press confirm in confirm dialog(for delete book)
   useEffect(() => {
     if (confirmDialogZus.pressConfirm) {
       deleteBook();
     }
   }, [confirmDialogZus.pressConfirm]);
 
-  // -| function
+  //-| function
   const handleChangeComment = (e: React.ChangeEvent<HTMLInputElement>) => {
     setComment(e.target.value);
   };

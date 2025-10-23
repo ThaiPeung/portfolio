@@ -2,12 +2,12 @@
 
 import React, { useEffect, useRef, useState } from "react";
 
-// -| Mui
+//-| Mui
 import { Box, Button, duration, Grid, Rating, Typography } from "@mui/material";
 
-// -| Mui Icon(s)
+//-| Mui Icon(s)
 
-// -| project
+//-| project
 import styles from "./loading.module.css";
 
 const loading = () => {
@@ -19,7 +19,7 @@ const loading = () => {
     const step = (timestamp: number) => {
       if (start === null) start = timestamp;
       const elapsed = timestamp - start;
-      // -| 0 → 360deg over 'duration' ms, then loop
+      //-| 0 → 360deg over 'duration' ms, then loop
       const angle = ((elapsed % 5000) / 5000) * 360;
       ref.current?.style.setProperty("--deg", `${angle}deg`);
       requestAnimationFrame(step);

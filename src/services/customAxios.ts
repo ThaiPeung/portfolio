@@ -7,43 +7,43 @@ import axios, {
 } from "axios";
 import Router from "next/router";
 
-// -| Create an Axios instance preconfigured to send cookies
+//-| Create an Axios instance preconfigured to send cookies
 const customAxios: AxiosInstance = axios.create({
   baseURL: apiURL,
-  withCredentials: true, // -| sends HttpOnly cookies (refreshToken)
+  withCredentials: true, //-| sends HttpOnly cookies (refreshToken)
 });
 
-// -| Store the access token in memory (or localStorage)
+//-| Store the access token in memory (or localStorage)
 let accessToken: string | null = null;
 
-// -| Helper to set the Authorization header
+//-| Helper to set the Authorization header
 function setAuthHeader(token: string) {
   accessToken = token;
   customAxios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 }
 
-// -| Login function
+//-| Login function
 export const login = async (username: string, password: string) => {
   const response = await customAxios.post("/login", { username, password });
 
   let accessToken: string = response.data.accessToken;
-  // -| { accessToken: 'new‑token' }
+  //-| { accessToken: 'new‑token' }
   setAuthHeader(accessToken);
   return accessToken;
 };
 
-// -| Refresh token function
+//-| Refresh token function
 const refreshToken = async () => {
-  // -| Do not send Header Authorization to refresh or else jwtFilter will intecept expired token
+  //-| Do not send Header Authorization to refresh or else jwtFilter will intecept expired token
   const response = await axios.get(apiURL + "/refresh", {
     withCredentials: true,
   });
-  // -| { accessToken: 'new‑token' }
+  //-| { accessToken: 'new‑token' }
   setAuthHeader(response.data.accessToken);
   return response.data.accessToken;
 };
 
-// -| Request interceptor to add CSRF token
+//-| Request interceptor to add CSRF token
 customAxios.interceptors.request.use((config) => {
   const xsrf = document.cookie
     .split("; ")
@@ -56,13 +56,13 @@ customAxios.interceptors.request.use((config) => {
   return config;
 });
 
-// -| Response interceptor to catch 401
+//-| Response interceptor to catch 401
 customAxios.interceptors.response.use(
   (res: AxiosResponse) => res,
   async (err: AxiosError) => {
     const originalReq = err.config as AxiosRequestConfig & { _retry?: boolean };
 
-    // -| Stop refresh if this is refresh or login endpoint
+    //-| Stop refresh if this is refresh or login endpoint
     if (
       ["/refresh", "/login", "/register"].some((item) =>
         originalReq.url?.includes(item)
@@ -71,7 +71,7 @@ customAxios.interceptors.response.use(
       return Promise.reject(err);
     }
 
-    // -| If 401 haven't retried yet
+    //-| If 401 haven't retried yet
     if (
       err.response?.status === 401 &&
       !originalReq._retry &&
@@ -82,15 +82,15 @@ customAxios.interceptors.response.use(
       originalReq._retry = true;
       try {
         const newToken = await refreshToken();
-        // -| Update the failed request with new token and retry
+        //-| Update the failed request with new token and retry
         if (originalReq.headers) {
           originalReq.headers["Authorization"] = `Bearer ${newToken}`;
         }
         return customAxios(originalReq);
       } catch (refreshError) {
-        // -| Refresh also failed -> force logout or redirect to login
+        //-| Refresh also failed -> force logout or redirect to login
         accessToken = null;
-        // -| e.g. window.location.href = '/login';
+        //-| e.g. window.location.href = '/login';
 
         return Promise.reject(refreshError);
       }
@@ -100,20 +100,20 @@ customAxios.interceptors.response.use(
 );
 
 export function logout() {
-  // -| Clear our in‑memory/accessToken
-  // -|    (you might also clear localStorage if you stored it there)
-  // -| @ts-ignore
+  //-| Clear our in‑memory/accessToken
+  //-|    (you might also clear localStorage if you stored it there)
+  //-| @ts-ignore
   customAxios.defaults.headers.common["Authorization"] = "";
 
-  // -| Optionally tell the server to clear the refresh cookie
-  // -|    (you could implement a /api/auth/logout endpoint for that)
+  //-| Optionally tell the server to clear the refresh cookie
+  //-|    (you could implement a /api/auth/logout endpoint for that)
   const response = customAxios
     .post("/logout", null, { withCredentials: true })
     .catch(() => {
       /* we still redirect even if this fails */
     });
 
-  // -| 3) Redirect to login
+  //-| 3) Redirect to login
   Router.replace("/crud/login");
 }
 

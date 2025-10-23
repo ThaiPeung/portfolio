@@ -17,10 +17,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // -| zustand
-  const resDialog = useResDialog((state) => {
-    return state;
-  });
 
   return (
     <html lang="en">

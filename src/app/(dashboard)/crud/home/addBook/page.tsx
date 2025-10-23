@@ -4,17 +4,17 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
 
-// -| Mui
+//-| Mui
 import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-// -| Mui icon(s)
+//-| Mui icon(s)
 import ImageIcon from "@mui/icons-material/Image";
 import AddIcon from "@mui/icons-material/Add";
 
-// -| Project
+//-| Project
 import CustomCard from "@/components/customComponents/customCard";
 import SectionHeader from "@/components/customComponents/sectionHeader";
 import customAxios from "@/services/customAxios";
@@ -24,7 +24,7 @@ import { apiURL } from "@/env";
 import useResDialog from "@/stores/zustand/useResDialog";
 
 const AddBook = () => {
-  // -| useState
+  //-| useState
   const [contents, setContents] = useState();
   const [title, setTitle] = useState("Healthy Food");
   const [author, setAuthor] = useState("Jeremy Norman");
@@ -33,17 +33,17 @@ const AddBook = () => {
     dayjs("2022-04-17")
   );
 
-  // -| zustand
+  //-| zustand
   const resDialog = useResDialog((state) => {
     return state;
   });
 
-  // -| Image file
+  //-| Image file
   const [file, setFile] = useState<File>();
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [uploading, setUploading] = useState(false);
 
-  // -| Function
+  //-| Function
   const handleChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
   };
@@ -58,16 +58,16 @@ const AddBook = () => {
     if (e.target.files?.[0]) setFile(e.target.files[0]);
   };
 
-  // -| useEffect
+  //-| useEffect
   useEffect(() => {
     if (!file?.name) return;
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
-    // -| cleanup
+    //-| cleanup
     return () => URL.revokeObjectURL(url);
   }, [file?.name]);
 
-  // -| Function
+  //-| Function
   const addNewBook = async () => {
     try {
       const form = new FormData();
@@ -149,7 +149,7 @@ const AddBook = () => {
                 </Box>
               )}
               <Button
-                component="label" // -| Importan for upload file button
+                component="label" //-| Importan for upload file button
                 size="large"
                 variant="outlined"
                 endIcon={<ImageIcon />}

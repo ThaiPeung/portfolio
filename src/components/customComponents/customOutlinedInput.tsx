@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-// -| Mui
+//-| Mui
 import {
   alpha,
   Box,
@@ -24,14 +24,14 @@ import {
 } from "@mui/material";
 import { apiURL } from "@/env";
 
-// -| Mui icon(s)
+//-| Mui icon(s)
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 
-// -| Project
+//-| Project
 
 type CustomOutlinedInput = {
   title: string;

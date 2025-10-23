@@ -53,6 +53,40 @@ export const MenuItems: menuItemsType[] = [
         path: "/crud/login",
         icon: <HomeIcon />,
       },
+    ],
+  },
+];
+
+export const MenuItemsAdmin: menuItemsType[] = [
+  {
+    title: "About",
+    path: "/about",
+    icon: <InfoIcon />,
+  },
+  {
+    title: "Earth",
+    path: "/earth",
+    icon: <PublicIcon />,
+  },
+  {
+    title: "Game",
+    path: "/game",
+    icon: <SportsSoccerIcon />,
+  },
+  {
+    title: "Laptop",
+    path: "/laptop",
+    icon: <LaptopMacIcon />,
+  },
+  {
+    title: "CRUD",
+    icon: <ArticleIcon />,
+    children: [
+      {
+        title: "User",
+        path: "/crud/login",
+        icon: <HomeIcon />,
+      },
       {
         title: "Admin",
         path: "/crud/admin/manageUser",

@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { Canvas } from "@react-three/fiber";
 import { Stars } from "@react-three/drei";
 
-// -| Mui
+//-| Mui
 import {
   styled,
   useTheme,
@@ -30,15 +30,15 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import { Grid } from "@mui/material";
 
-// -| Mui Icon(s)
+//-| Mui Icon(s)
 import MenuIcon from "@mui/icons-material/Menu";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import NightsStayIcon from "@mui/icons-material/NightsStay";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
-// -| Project
-import { MenuItems, menuItemsType } from "./menuItems";
+//-| Project
+import { MenuItems, MenuItemsAdmin, menuItemsType } from "./menuItems";
 import { AppDispatch } from "@/stores/redux/redux";
 import { darkModeAction, darkModeType } from "@/stores/redux/darkMode";
 import { iconButtonDarkTheme } from "@/theme/iconButtonTheme";
@@ -46,6 +46,8 @@ import { buttonDarkTheme, buttonLightTheme } from "@/theme/buttonTheme";
 import Sidebar from "@/components/sidebar/sidebar";
 import SidebarWithChildren from "@/components/sidebar/sidebarWithChildren";
 import CustomDivider from "@/components/customComponents/customDivider";
+import useUser from "@/stores/zustand/useUser";
+import darkTheme from "@/theme/createDarkTheme";
 
 const drawerWidth = 240;
 
@@ -137,11 +139,16 @@ const layout = ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  // -| Redux
+  //-| Redux
   const dispatch = useDispatch<AppDispatch>();
   const darkMode: darkModeType = useSelector(
     (configureStoreReducer: any) => configureStoreReducer.darkMode.val
   );
+
+  //-| zustand
+  const userRole = useUser((state) => {
+    return state.roles;
+  });
 
   const theme = useTheme();
   const pathname = usePathname();
@@ -158,21 +165,6 @@ const layout = ({
   const handleChangeMode = () => {
     dispatch(darkModeAction.switchMode());
   };
-
-  const darkTheme = createTheme({
-    components: {
-      MuiButton: darkMode ? buttonDarkTheme : buttonLightTheme,
-      MuiIconButton: iconButtonDarkTheme,
-    },
-    palette: {
-      mode: darkMode ? "dark" : "light",
-    },
-    typography: {
-      allVariants: {
-        color: darkMode ? "#fff" : "#000",
-      },
-    },
-  });
 
   return (
     <>
@@ -234,7 +226,15 @@ const layout = ({
             </DrawerHeader>
             <Divider />
             <List>
-              {MenuItems.map((item: menuItemsType, index) => (
+              {!userRole.includes("ROLE_ADMIN") && MenuItems.map((item: menuItemsType, index) => (
+                <>
+                  {!item.children && <Sidebar item={item} open={open} />}
+                  {item.children && (
+                    <SidebarWithChildren item={item} open={open} />
+                  )}
+                </>
+              ))}
+              {userRole.includes("ROLE_ADMIN") && MenuItemsAdmin.map((item: menuItemsType, index) => (
                 <>
                   {!item.children && <Sidebar item={item} open={open} />}
                   {item.children && (

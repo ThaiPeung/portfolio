@@ -6,7 +6,7 @@ import { Physics } from "@react-three/rapier";
 import { CameraProps, Canvas } from "@react-three/fiber";
 import { Perf } from "r3f-perf";
 
-// -| Project
+//-| Project
 import Lights from "@/components/ballgame/Lights";
 import { Level } from "@/components/ballgame/Level";
 import Player from "@/components/ballgame/Player";

@@ -6,13 +6,13 @@ import { useSelector } from "react-redux";
 import { darkModeType } from "@/stores/redux/darkMode";
 import { useRouter } from "next/navigation";
 
-// -| Mui
+//-| Mui
 import { Button, Grid, Typography } from "@mui/material";
 
-// -| Mui icon(s)
+//-| Mui icon(s)
 import AddIcon from "@mui/icons-material/Add";
 
-// -| Project
+//-| Project
 import Slider from "@/components/crud/home/slider";
 import SectionHeader from "@/components/customComponents/sectionHeader";
 import CustomPagination from "@/components/customComponents/customPagination";
@@ -35,15 +35,15 @@ type paginationType = {
 };
 
 const page = () => {
-  // -| useRouter
+  //-| useRouter
   const router = useRouter();
 
-  // -| Redux
+  //-| Redux
   const darkMode: darkModeType = useSelector(
     (configureStoreReducer: any) => configureStoreReducer.darkMode.val
   );
 
-  // -| zustand
+  //-| zustand
   const userRole = useUser((state) => {
     return state.roles;
   });
@@ -51,13 +51,13 @@ const page = () => {
     return state;
   });
 
-  // -| useState
+  //-| useState
   const [contents, setContents] = useState<paginationType>();
   const [topContents, setTopContents] = useState<bookType[]>([]);
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(9);
 
-  // -| Response Dialog
+  //-| Response Dialog
   const [openDialog, setOpenDialog] = useState(false);
   const [apiResTitle, setAPIResTitle] = useState("");
   const [apiResMsg, setAPIResMsg] = useState("");
@@ -95,7 +95,7 @@ const page = () => {
     }
   };
 
-  // -| Get list of books
+  //-| Get list of books
   useEffect(() => {
     getBooks();
   }, [page, pageSize]);

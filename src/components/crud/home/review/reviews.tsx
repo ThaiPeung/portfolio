@@ -3,16 +3,16 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-// -| Mui
+//-| Mui
 import { Box, Button, Chip, Grid, Rating, Typography } from "@mui/material";
 import CustomCard from "@/components/customComponents/customCard";
 
-// -| Mui icon(s)
+//-| Mui icon(s)
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-// -| Project
+//-| Project
 import { paginationType, reviewType } from "../../types/reviewTypes";
 import CustomPagination from "../../../customComponents/customPagination";
 import useUser from "@/stores/zustand/useUser";
@@ -40,7 +40,7 @@ const Reviews: React.FC<MainContentType> = ({
   setPageSize,
   deleteReviews,
 }) => {
-  // -| zustand
+  //-| zustand
   const userRole = useUser((state) => {
     return state.roles;
   });

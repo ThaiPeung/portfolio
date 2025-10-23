@@ -1,6 +1,6 @@
 "use client";
 
-import Laptop from "@/components/Laptop";
+import Laptop from "@/components/laptop/Laptop";
 import { Loader, OrbitControls } from "@react-three/drei";
 import { CameraProps, Canvas } from "@react-three/fiber";
 import React, { Suspense } from "react";

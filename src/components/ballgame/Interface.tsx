@@ -4,7 +4,7 @@ import { useKeyboardControls } from "@react-three/drei";
 import { addEffect } from "@react-three/fiber";
 import React, { useEffect, useRef } from "react";
 
-// -| MUI custom style
+//-| MUI custom style
 const Controls = styled(Box)(({ theme }) => ({
   position: "absolute",
   bottom: "10%",
@@ -30,14 +30,14 @@ const Controls = styled(Box)(({ theme }) => ({
 }));
 
 const Interface = () => {
-  // -| useGame
+  //-| useGame
   const restart = useGame((state) => state.restart);
   const phase = useGame((state) => state.phase);
 
-  // -| useRef
+  //-| useRef
   const time = useRef<any>(null);
 
-  // -| useKeyboardControls
+  //-| useKeyboardControls
   const forward = useKeyboardControls((state) => state.forward);
   const backward = useKeyboardControls((state) => state.backward);
   const leftward = useKeyboardControls((state) => state.leftward);
@@ -56,7 +56,7 @@ const Interface = () => {
         elapsedTime = state.endTime - state.startTime;
       }
 
-      // -| remove milisecond
+      //-| remove milisecond
       elapsedTime /= 1000;
       let elapsedTimeStr = elapsedTime.toFixed(2);
 
@@ -82,7 +82,7 @@ const Interface = () => {
       }}
     >
       <Box
-        // -| We want to update "time" ourself (directly into HTML DOM) not with reactive data to prevent having too many re-render
+        //-| We want to update "time" ourself (directly into HTML DOM) not with reactive data to prevent having too many re-render
         ref={time}
         sx={{
           position: "absolute",

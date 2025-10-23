@@ -1,11 +1,11 @@
 import { Theme } from "@emotion/react";
 import { Components } from "@mui/material";
 
-declare module "@mui/material/Button" {
-  interface ButtonPropsColorOverrides {
-    warningYellow: true;
-  }
-}
+// declare module "@mui/material/Button" {
+//   interface ButtonPropsColorOverrides {
+//     warningYellow: true;
+//   }
+// }
 
 export const buttonDarkTheme: Components<Theme>["MuiButton"] = {
   styleOverrides: {

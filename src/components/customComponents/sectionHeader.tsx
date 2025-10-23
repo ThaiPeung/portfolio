@@ -1,11 +1,11 @@
 import React from "react";
 
-// -| Mui
+//-| Mui
 import { Box, Button, Grid, Rating, Typography } from "@mui/material";
 
-// -| Mui Icon(s)
+//-| Mui Icon(s)
 
-// -| project
+//-| project
 
 interface SectionHeaderType {
   title: string;
