@@ -57,12 +57,6 @@ const page = () => {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(9);
 
-  //-| Response Dialog
-  const [openDialog, setOpenDialog] = useState(false);
-  const [apiResTitle, setAPIResTitle] = useState("");
-  const [apiResMsg, setAPIResMsg] = useState("");
-  const [apiResType, setAPIResType] = useState("");
-
   const getBooks = async (
     title: string = "",
     author: string = "",

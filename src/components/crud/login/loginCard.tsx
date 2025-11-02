@@ -39,12 +39,6 @@ type jwtPayload = {
 };
 
 const LoginCard = () => {
-  useEffect(() => {
-    if (userRole.length !== 0) {
-      router.push("home");
-    }
-  }, []);
-
   //-| Redux
   const darkMode: darkModeType = useSelector(
     (configureStoreReducer: any) => configureStoreReducer.darkMode.val
