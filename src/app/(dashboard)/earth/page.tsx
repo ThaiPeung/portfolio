@@ -5,6 +5,7 @@ import ThreeLoader from "@/components/ThreeLoader";
 import { Box } from "@mui/material";
 import { Loader, OrbitControls } from "@react-three/drei";
 import { CameraProps, Canvas } from "@react-three/fiber";
+import { useControls } from "leva";
 import React, { Suspense } from "react";
 import { PerspectiveCamera } from "three";
 

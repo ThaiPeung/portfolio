@@ -48,6 +48,7 @@ import SidebarWithChildren from "@/components/sidebar/sidebarWithChildren";
 import CustomDivider from "@/components/customComponents/customDivider";
 import useUser from "@/stores/zustand/useUser";
 import darkTheme from "@/theme/createDarkTheme";
+import Earth from "@/components/earth/Earth";
 
 const drawerWidth = 240;
 
@@ -226,22 +227,24 @@ const layout = ({
             </DrawerHeader>
             <Divider />
             <List>
-              {!userRole.includes("ROLE_ADMIN") && MenuItems.map((item: menuItemsType, index) => (
-                <>
-                  {!item.children && <Sidebar item={item} open={open} />}
-                  {item.children && (
-                    <SidebarWithChildren item={item} open={open} />
-                  )}
-                </>
-              ))}
-              {userRole.includes("ROLE_ADMIN") && MenuItemsAdmin.map((item: menuItemsType, index) => (
-                <>
-                  {!item.children && <Sidebar item={item} open={open} />}
-                  {item.children && (
-                    <SidebarWithChildren item={item} open={open} />
-                  )}
-                </>
-              ))}
+              {!userRole.includes("ROLE_ADMIN") &&
+                MenuItems.map((item: menuItemsType, index) => (
+                  <>
+                    {!item.children && <Sidebar item={item} open={open} />}
+                    {item.children && (
+                      <SidebarWithChildren item={item} open={open} />
+                    )}
+                  </>
+                ))}
+              {userRole.includes("ROLE_ADMIN") &&
+                MenuItemsAdmin.map((item: menuItemsType, index) => (
+                  <>
+                    {!item.children && <Sidebar item={item} open={open} />}
+                    {item.children && (
+                      <SidebarWithChildren item={item} open={open} />
+                    )}
+                  </>
+                ))}
             </List>
           </Drawer>
           {children}
@@ -268,15 +271,7 @@ const layout = ({
         >
           {/* <OrbitControls /> */}
 
-          <Stars
-            radius={100}
-            depth={50}
-            count={10000}
-            factor={4}
-            saturation={0}
-            fade
-            speed={1}
-          />
+          <Earth />
         </Canvas>
       )}
     </>

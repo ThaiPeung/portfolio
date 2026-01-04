@@ -8,7 +8,7 @@ import {
   PresentationControls,
 } from "@react-three/drei";
 import React from "react";
-import MacBook from "../models/MacBook";
+import MacBookModel from "../models/MacBookModel";
 
 const Laptop = () => {
   return (
@@ -33,7 +33,7 @@ const Laptop = () => {
             rotation={[-0.1, Math.PI, 0]}
             position={[0, 0.55, -1.15]}
           />
-          <MacBook />
+          <MacBookModel />
         </Float>
       </PresentationControls>
 

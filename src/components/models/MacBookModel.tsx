@@ -1,7 +1,7 @@
 import { Html, useGLTF } from "@react-three/drei";
 import React from "react";
 
-const MacBook = () => {
+const MacBookModel = () => {
   const { scene } = useGLTF("./models/MacBook.gltf");
   return (
     <>
@@ -18,4 +18,4 @@ const MacBook = () => {
   );
 };
 
-export default MacBook;
+export default MacBookModel;
