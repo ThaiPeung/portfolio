@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense } from "react";
+import React, { Suspense, useState } from "react";
 import { CameraProps, Canvas } from "@react-three/fiber";
 import ThreeLoader from "@/components/ThreeLoader";
 import { Environment, Float, OrbitControls } from "@react-three/drei";
@@ -17,10 +17,14 @@ export type originalCameraPosType = {
 };
 
 const AboutPage = () => {
+  const [focusOn, setFocusOn] = useState<boolean>(false);
+  const [targetObj, setTargetObj] = useState<Vector3>(new Vector3());
+
   const originalCameraPos = {
-    number: [0, 0, 23],
-    vector: new Vector3(0, 0, 23),
+    number: [0, 0, 50],
+    vector: new Vector3(0, 0, 50),
   };
+
   const cameraSetting: CameraProps = {
     fov: 25,
     near: 0.1,
@@ -52,9 +56,21 @@ const AboutPage = () => {
       <Environment preset="city" />
 
       <Suspense fallback={<ThreeLoader />}>
-        <CameraControl originalCameraPos={originalCameraPos}/>
-        <Skills originalCameraPos={originalCameraPos} />
-        {/* <Contact originalCameraPos={originalCameraPos} /> */}
+        <CameraControl
+          focusOn={focusOn}
+          originalCameraPos={originalCameraPos}
+          targetObj={targetObj}
+        />
+        <Skills
+          setFocusOn={setFocusOn}
+          originalCameraPos={originalCameraPos}
+          setTargetObj={setTargetObj}
+        />
+        <Contact
+          setFocusOn={setFocusOn}
+          originalCameraPos={originalCameraPos}
+          setTargetObj={setTargetObj}
+        />
       </Suspense>
     </Canvas>
   );

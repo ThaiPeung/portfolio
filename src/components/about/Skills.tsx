@@ -4,75 +4,36 @@ import { originalCameraPosType } from "@/app/(dashboard)/about/page";
 import { Box, List, ListItem, ListItemText, Typography } from "@mui/material";
 import { Float, Html, useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import React, { useRef, useState } from "react";
+import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import * as THREE from "three";
+import { Vector3 } from "three";
 
-const Skills: React.FC<{ originalCameraPos: originalCameraPosType }> = (
-  props
-) => {
+const Skills: React.FC<{
+  setFocusOn: Dispatch<SetStateAction<boolean>>;
+  originalCameraPos: originalCameraPosType;
+  setTargetObj: Dispatch<SetStateAction<Vector3>>;
+}> = (props) => {
   const ToolBox = useGLTF("./models/ToolBox.glb");
   const meshRef = useRef<THREE.Object3D>(null!);
 
   const [open, setOpen] = useState(false);
 
-  //-| Smoothed cameras setup
-  const [smoothedCameraPosition] = useState(() => new THREE.Vector3(0, 0, 50));
-  const [smoothedCameraTarget] = useState(() => new THREE.Vector3());
-
-  useFrame((state, delta) => {
-    //-| Camera.
-    if (meshRef.current && open) {
-      const bodyPosition = meshRef.current.position;
-
-      const cameraPosition = new THREE.Vector3(
-        props.originalCameraPos.number[0],
-        props.originalCameraPos.number[1],
-        props.originalCameraPos.number[2]
-      );
-      cameraPosition.copy(bodyPosition);
-      cameraPosition.z += 15;
-
-      const cameraTarget = new THREE.Vector3();
-      cameraTarget.copy(bodyPosition);
-
-      //-| Make camera move smooter.
-      smoothedCameraPosition.lerp(cameraPosition, 3 * delta);
-      smoothedCameraTarget.lerp(cameraTarget, 3 * delta);
-
-      state.camera.position.copy(smoothedCameraPosition);
-      state.camera.lookAt(smoothedCameraTarget);
-    } else {
-      const cameraPosition = new THREE.Vector3(
-        props.originalCameraPos.number[0],
-        props.originalCameraPos.number[1],
-        props.originalCameraPos.number[2]
-      );
-      cameraPosition.copy(props.originalCameraPos.vector);
-      cameraPosition.z += 2;
-
-      const cameraTarget = new THREE.Vector3();
-      cameraTarget.copy(props.originalCameraPos.vector);
-
-      //-| Make camera move smooter.
-      smoothedCameraPosition.lerp(cameraPosition, 4 * delta);
-      smoothedCameraTarget.lerp(cameraTarget, 4 * delta);
-
-      state.camera.position.copy(smoothedCameraPosition);
-      state.camera.lookAt(smoothedCameraTarget);
-    }
-  });
-
   return (
     <>
-      <Float rotationIntensity={0.4} floatIntensity={0.4} speed={1}>
+      <Float
+        rotationIntensity={open ? 0 : 0.6}
+        floatIntensity={open ? 0 : 0.6}
+        speed={open ? 0 : 1}
+      >
         <primitive
           ref={meshRef}
-          position={[-7, 2.5, 0]}
+          position={[-14, 5, 0]}
           object={ToolBox.scene}
-          scale={0.5}
           onClick={(event: any) => {
-            console.log(event.object);
+            props.setFocusOn((prev) => !prev);
+            props.setTargetObj(new Vector3(-14, 5, 0));
             setOpen((prev) => !prev);
+
             //-| prevent the event from going futhere to object(s) behide the target object
             event.stopPropagation();
           }}
@@ -85,7 +46,7 @@ const Skills: React.FC<{ originalCameraPos: originalCameraPosType }> = (
         >
           {open && (
             <Html
-              position={[6, 4, 0]}
+              position={[5, 4, 0]}
               center
               distanceFactor={6}
               occlude={[]}
@@ -98,15 +59,19 @@ const Skills: React.FC<{ originalCameraPos: originalCameraPosType }> = (
                   padding: "20px",
                   backgroundColor: "#072ac8",
                   borderRadius: "20px",
-                  width: "400px",
+                  width: "600px",
                 }}
               >
                 <Typography
-                  sx={{ fontsize: "3rem", fontWeight: "600", color: "#fcf300" }}
+                  sx={{ fontSize: "3rem", fontWeight: "600", color: "#fcf300" }}
                 >
                   Skills
                 </Typography>
-                <Typography>Programming language</Typography>
+                <Typography
+                  sx={{ fontSize: "2rem", fontWeight: "600", color: "" }}
+                >
+                  Programming language
+                </Typography>
                 <List>
                   <ListItem>
                     <ListItemText primary="Javascript / Typescript" />
