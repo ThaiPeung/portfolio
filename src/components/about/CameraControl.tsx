@@ -1,13 +1,14 @@
 import { useFrame } from "@react-three/fiber";
-import React, { useRef, useState } from "react";
-import { originalCameraPosType } from "./page";
+import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import * as THREE from "three";
 import { Vector3 } from "three";
+import { originalCameraPosType, targetNameType } from "./types";
 
 const CameraControl: React.FC<{
   focusOn: boolean;
   originalCameraPos: originalCameraPosType;
   targetObj: Vector3;
+  setTargetName: Dispatch<SetStateAction<targetNameType>>;
 }> = (props) => {
   //-| Smoothed cameras setup
   const [smoothedCameraPosition] = useState(props.originalCameraPos.vector);
@@ -18,12 +19,13 @@ const CameraControl: React.FC<{
     if (props.focusOn) {
       const cameraPosition = new Vector3();
       cameraPosition.copy(props.targetObj);
-      cameraPosition.z += 15;
+      cameraPosition.z += 20;
+      cameraPosition.y += 10;
 
       const cameraTarget = new Vector3();
       cameraTarget.copy(props.targetObj);
-      cameraTarget.y += 1.5;
       cameraTarget.x += 2;
+      cameraTarget.y += 1;
 
       //-| Make camera move smooter.
       smoothedCameraPosition.lerp(cameraPosition, 3 * delta);

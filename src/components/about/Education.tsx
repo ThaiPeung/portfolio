@@ -6,12 +6,10 @@ import { useFrame } from "@react-three/fiber";
 import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import * as THREE from "three";
 import { Vector3 } from "three";
-import { Outline } from "@react-three/postprocessing";
-import { BlendFunction, Resolution, KernelSize } from "postprocessing";
 import { originalCameraPosType, targetNameType } from "./types";
 import { checkCurrentTargetName } from "./shared/handler";
 
-const Contact: React.FC<{
+const Education: React.FC<{
   focusOn: boolean;
   setFocusOn: Dispatch<SetStateAction<boolean>>;
   originalCameraPos: originalCameraPosType;
@@ -19,12 +17,11 @@ const Contact: React.FC<{
   targetName: string;
   setTargetName: Dispatch<SetStateAction<targetNameType>>;
 }> = (props) => {
-  const position = new Vector3(0, 5, 0);
-  const HTMLPosition = new Vector3(7, 5, 0);
-  const currentTargetName = "Contact";
+  const position = new Vector3(14, 5, 0);
+  const HTMLPosition = new Vector3(55, 20, 0);
+  const currentTargetName = "Education";
 
-  const obj = useGLTF("./models/Phone.glb");
-  const ref = useRef<any>(null);
+  const obj = useGLTF("./models/University.glb");
 
   const [open, setOpen] = useState(false);
   const [hover, setHover] = useState(false);
@@ -38,19 +35,17 @@ const Contact: React.FC<{
         speed={open ? 0 : 1}
       >
         <primitive
-          ref={ref}
           position={position}
-          scale={0.75}
           object={obj.scene}
           onClick={(event: any) => {
             if (!props.focusOn) {
               props.setFocusOn(true);
               props.setTargetObj(position);
               setOpen(true);
-              props.setTargetName("Contact");
+              props.setTargetName("Education");
             } else if (
               props.focusOn &&
-              checkCurrentTargetName("Contact", props.targetName)
+              checkCurrentTargetName("Education", props.targetName)
             ) {
               props.setFocusOn(false);
               setOpen(false);
@@ -63,7 +58,7 @@ const Contact: React.FC<{
           onPointerEnter={() => {
             if (
               !props.focusOn ||
-              checkCurrentTargetName("Contact", props.targetName)
+              checkCurrentTargetName("Education", props.targetName)
             ) {
               document.body.style.cursor = "pointer";
               setHover(true);
@@ -78,7 +73,7 @@ const Contact: React.FC<{
             checkCurrentTargetName("Skills", props.targetName)) &&
             open && (
               <Html
-                position={HTMLPosition}
+                position={[5, 4, 0]}
                 center
                 distanceFactor={6}
                 occlude={[]}
@@ -101,7 +96,17 @@ const Contact: React.FC<{
                       color: "#fcf300",
                     }}
                   >
-                    Contact
+                    Education
+                  </Typography>
+                  <Typography
+                    sx={{
+                      pl: "40px",
+                      fontSize: "2rem",
+                      fontWeight: "600",
+                      color: "",
+                    }}
+                  >
+                    Thammasat University: GPA 3.14
                   </Typography>
                 </Box>
               </Html>
@@ -111,7 +116,7 @@ const Contact: React.FC<{
             hover &&
             !open && (
               <Html
-                position={HTMLPosition}
+                position={[5, 4, 0]}
                 center
                 distanceFactor={6}
                 occlude={[]}
@@ -133,7 +138,7 @@ const Contact: React.FC<{
                       color: "#fcf300",
                     }}
                   >
-                    Contact
+                    Education
                   </Typography>
                 </Box>
               </Html>
@@ -144,4 +149,4 @@ const Contact: React.FC<{
   );
 };
 
-export default Contact;
+export default Education;

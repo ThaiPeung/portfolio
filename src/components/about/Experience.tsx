@@ -6,12 +6,10 @@ import { useFrame } from "@react-three/fiber";
 import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import * as THREE from "three";
 import { Vector3 } from "three";
-import { Outline } from "@react-three/postprocessing";
-import { BlendFunction, Resolution, KernelSize } from "postprocessing";
 import { originalCameraPosType, targetNameType } from "./types";
 import { checkCurrentTargetName } from "./shared/handler";
 
-const Contact: React.FC<{
+const Experience: React.FC<{
   focusOn: boolean;
   setFocusOn: Dispatch<SetStateAction<boolean>>;
   originalCameraPos: originalCameraPosType;
@@ -19,12 +17,11 @@ const Contact: React.FC<{
   targetName: string;
   setTargetName: Dispatch<SetStateAction<targetNameType>>;
 }> = (props) => {
-  const position = new Vector3(0, 5, 0);
-  const HTMLPosition = new Vector3(7, 5, 0);
-  const currentTargetName = "Contact";
+  const position = new Vector3(-14, -5, 0);
+  const HTMLPosition = new Vector3(55, 20, 0);
 
-  const obj = useGLTF("./models/Phone.glb");
-  const ref = useRef<any>(null);
+  const obj = useGLTF("./models/MacBook.gltf");
+  const currentTargetName = "Experience";
 
   const [open, setOpen] = useState(false);
   const [hover, setHover] = useState(false);
@@ -38,19 +35,18 @@ const Contact: React.FC<{
         speed={open ? 0 : 1}
       >
         <primitive
-          ref={ref}
           position={position}
-          scale={0.75}
           object={obj.scene}
+          scale={1.6}
           onClick={(event: any) => {
             if (!props.focusOn) {
               props.setFocusOn(true);
               props.setTargetObj(position);
               setOpen(true);
-              props.setTargetName("Contact");
+              props.setTargetName("Education");
             } else if (
               props.focusOn &&
-              checkCurrentTargetName("Contact", props.targetName)
+              checkCurrentTargetName("Education", props.targetName)
             ) {
               props.setFocusOn(false);
               setOpen(false);
@@ -63,7 +59,7 @@ const Contact: React.FC<{
           onPointerEnter={() => {
             if (
               !props.focusOn ||
-              checkCurrentTargetName("Contact", props.targetName)
+              checkCurrentTargetName("Education", props.targetName)
             ) {
               document.body.style.cursor = "pointer";
               setHover(true);
@@ -74,44 +70,12 @@ const Contact: React.FC<{
             setHover(false);
           }}
         >
-          {(props.focusOn ||
-            checkCurrentTargetName("Skills", props.targetName)) &&
-            open && (
-              <Html
-                position={HTMLPosition}
-                center
-                distanceFactor={6}
-                occlude={[]}
-                style={{
-                  background: "none",
-                }}
-              >
-                <Box
-                  sx={{
-                    padding: "20px",
-                    backgroundColor: "#072ac8",
-                    borderRadius: "20px",
-                    width: "600px",
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      fontSize: "3rem",
-                      fontWeight: "600",
-                      color: "#fcf300",
-                    }}
-                  >
-                    Contact
-                  </Typography>
-                </Box>
-              </Html>
-            )}
           {(!props.focusOn ||
             checkCurrentTargetName("Skills", props.targetName)) &&
             hover &&
             !open && (
               <Html
-                position={HTMLPosition}
+                position={[3, 3, 0]}
                 center
                 distanceFactor={6}
                 occlude={[]}
@@ -133,7 +97,7 @@ const Contact: React.FC<{
                       color: "#fcf300",
                     }}
                   >
-                    Contact
+                    Experience
                   </Typography>
                 </Box>
               </Html>
@@ -144,4 +108,4 @@ const Contact: React.FC<{
   );
 };
 
-export default Contact;
+export default Experience;

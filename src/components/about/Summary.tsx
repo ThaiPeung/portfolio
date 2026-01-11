@@ -1,17 +1,21 @@
 "use client";
 
 import { Box, List, ListItem, ListItemText, Typography } from "@mui/material";
-import { Float, Html, useGLTF } from "@react-three/drei";
+import { Float, Html, useAnimations, useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import React, { Dispatch, SetStateAction, useRef, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import * as THREE from "three";
 import { Vector3 } from "three";
-import { Outline } from "@react-three/postprocessing";
-import { BlendFunction, Resolution, KernelSize } from "postprocessing";
 import { originalCameraPosType, targetNameType } from "./types";
 import { checkCurrentTargetName } from "./shared/handler";
 
-const Contact: React.FC<{
+const Summary: React.FC<{
   focusOn: boolean;
   setFocusOn: Dispatch<SetStateAction<boolean>>;
   originalCameraPos: originalCameraPosType;
@@ -19,15 +23,24 @@ const Contact: React.FC<{
   targetName: string;
   setTargetName: Dispatch<SetStateAction<targetNameType>>;
 }> = (props) => {
-  const position = new Vector3(0, 5, 0);
-  const HTMLPosition = new Vector3(7, 5, 0);
-  const currentTargetName = "Contact";
+  const position = new Vector3(0, -3, 0);
+  const HTMLPosition = new Vector3(55, 30, 0);
 
-  const obj = useGLTF("./models/Phone.glb");
-  const ref = useRef<any>(null);
+  const obj = useGLTF("./models/medieval_fantasy_book.glb");
+  const animations = useAnimations(obj.animations, obj.scene);
+  const currentTargetName = "Summary";
 
   const [open, setOpen] = useState(false);
   const [hover, setHover] = useState(false);
+
+  useEffect(() => {
+    const action = animations.actions["The Life"];
+    action?.reset().fadeIn(0.5).play();
+
+    return () => {
+      action?.fadeOut(0.5);
+    };
+  }, []);
 
   return (
     <>
@@ -38,19 +51,18 @@ const Contact: React.FC<{
         speed={open ? 0 : 1}
       >
         <primitive
-          ref={ref}
           position={position}
-          scale={0.75}
           object={obj.scene}
+          scale={0.1}
           onClick={(event: any) => {
             if (!props.focusOn) {
               props.setFocusOn(true);
               props.setTargetObj(position);
               setOpen(true);
-              props.setTargetName("Contact");
+              props.setTargetName("Education");
             } else if (
               props.focusOn &&
-              checkCurrentTargetName("Contact", props.targetName)
+              checkCurrentTargetName("Education", props.targetName)
             ) {
               props.setFocusOn(false);
               setOpen(false);
@@ -63,7 +75,7 @@ const Contact: React.FC<{
           onPointerEnter={() => {
             if (
               !props.focusOn ||
-              checkCurrentTargetName("Contact", props.targetName)
+              checkCurrentTargetName("Education", props.targetName)
             ) {
               document.body.style.cursor = "pointer";
               setHover(true);
@@ -91,7 +103,7 @@ const Contact: React.FC<{
                     padding: "20px",
                     backgroundColor: "#072ac8",
                     borderRadius: "20px",
-                    width: "600px",
+                    width: "800px",
                   }}
                 >
                   <Typography
@@ -101,7 +113,19 @@ const Contact: React.FC<{
                       color: "#fcf300",
                     }}
                   >
-                    Contact
+                    Summary
+                  </Typography>
+                  <Typography
+                    sx={{ fontSize: "2rem", fontWeight: "600", color: "" }}
+                  >
+                    A dedicated full-stack developer with over 3 years of
+                    experience in designing, developing, and maintaining
+                    internal web applications. Skilled in React, ASP.NET Core,
+                    Angular, and MSSQL, with experience in building and
+                    improving web applications. Adept at collaborating with
+                    cross-functional teams to drive business objectives, while
+                    continuously updating skills to embrace emerging
+                    technologies.
                   </Typography>
                 </Box>
               </Html>
@@ -133,7 +157,7 @@ const Contact: React.FC<{
                       color: "#fcf300",
                     }}
                   >
-                    Contact
+                    Summary
                   </Typography>
                 </Box>
               </Html>
@@ -144,4 +168,4 @@ const Contact: React.FC<{
   );
 };
 
-export default Contact;
+export default Summary;
