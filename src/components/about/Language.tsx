@@ -21,6 +21,7 @@ import { Vector3 } from "three";
 import { ShaderMaterial, TextureLoader } from "three";
 import { originalCameraPosType, targetNameType } from "./types";
 import { checkCurrentTargetName } from "./shared/handler";
+import { Select } from "@react-three/postprocessing";
 
 type earthParametersType = {
   atmosphereDayColor: string;
@@ -213,7 +214,11 @@ const Language: React.FC<{
                 }}
               >
                 <Typography
-                  sx={{ fontSize: "3rem", fontWeight: "600", color: "#fcf300" }}
+                  sx={{
+                    fontSize: "3rem",
+                    fontWeight: "600",
+                    color: "#fcf300",
+                  }}
                 >
                   Language
                 </Typography>
@@ -261,7 +266,11 @@ const Language: React.FC<{
                 }}
               >
                 <Typography
-                  sx={{ fontSize: "5rem", fontWeight: "600", color: "#fcf300" }}
+                  sx={{
+                    fontSize: "5rem",
+                    fontWeight: "600",
+                    color: "#fcf300",
+                  }}
                 >
                   Skills
                 </Typography>

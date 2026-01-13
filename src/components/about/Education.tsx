@@ -8,6 +8,7 @@ import * as THREE from "three";
 import { Vector3 } from "three";
 import { originalCameraPosType, targetNameType } from "./types";
 import { checkCurrentTargetName } from "./shared/handler";
+import { Select } from "@react-three/postprocessing";
 
 const Education: React.FC<{
   focusOn: boolean;

@@ -1,41 +1,46 @@
 "use client";
 
-import React, { Suspense, useEffect, useState } from "react";
-import { CameraProps, Canvas } from "@react-three/fiber";
+import React, { Suspense, useEffect, useMemo, useState } from "react";
+import { CameraProps, Canvas, useThree } from "@react-three/fiber";
 import ThreeLoader from "@/components/ThreeLoader";
-import {
-  Environment,
-  Float,
-  OrbitControls,
-  Stage,
-  Stars,
-} from "@react-three/drei";
+import { Environment } from "@react-three/drei";
 import Skills from "@/components/about/Skills";
-import { CameraRig } from "@/components/crud/share/CameraRig";
-import { Leva } from "leva";
-import { Vector3 } from "three";
+import { Group, Object3D, Object3DEventMap, Vector3 } from "three";
 import Contact from "@/components/about/Contact";
 import Education from "@/components/about/Education";
 import CameraControl from "@/components/about/CameraControl";
-import Experience from "@/components/about/Experience";
 import Language from "@/components/about/Language";
-import Summary from "@/components/about/Summary";
 import { targetNameType } from "@/components/about/types";
+import {
+  EffectComposer,
+  Outline,
+  Select,
+  Selection,
+  SMAA,
+} from "@react-three/postprocessing";
 
 const AboutPage = () => {
   const [focusOn, setFocusOn] = useState<boolean>(false);
   const [targetObj, setTargetObj] = useState<Vector3>(new Vector3());
-  const [targetName, setTargetName] = useState<targetNameType>("");
+  const [targetName, setTargetName] = useState<targetNameType>(""); //-| Prevent other objs from interactable when focusing
+  const [hoveredObj, setHoveredObj] = useState<Group<Object3DEventMap> | null>(null); //-| Show outline
+
+  //-| collect all renderable meshes inside the GLTF once
+  const meshes = useMemo<Object3D[]>(() => {
+    const arr: Object3D[] = [];
+    if (hoveredObj) {
+      hoveredObj.traverse((o) => {
+        const anyO = o as any;
+        if (anyO.isMesh || anyO.isSkinnedMesh) arr.push(o);
+      });
+    }
+    return arr;
+  }, [hoveredObj]);
 
   const originalCameraPos = {
     number: [0, 0, 50],
     vector: new Vector3(0, 0, 50),
   };
-
-  useEffect(() => {
-    console.log(focusOn);
-    console.log(targetName);
-  }, [focusOn, targetName]);
 
   const cameraSetting: CameraProps = {
     fov: 25,
@@ -47,6 +52,7 @@ const AboutPage = () => {
 
   return (
     <Canvas
+      dpr={[2, 4]}
       className="r3f"
       camera={cameraSetting}
       flat
@@ -64,7 +70,6 @@ const AboutPage = () => {
       {/* <OrbitControls /> */}
 
       <Environment preset="city" />
-
       <Suspense fallback={<ThreeLoader />}>
         <CameraControl
           focusOn={focusOn}
@@ -72,15 +77,28 @@ const AboutPage = () => {
           targetObj={targetObj}
           setTargetName={setTargetName}
         />
-        {/* <Summary
-          focusOn={focusOn}
-          setFocusOn={setFocusOn}
-          originalCameraPos={originalCameraPos}
-          setTargetObj={setTargetObj}
-          targetName={targetName}
-                    setTargetName={targetNamesetT
 
-        /> */}
+        <EffectComposer autoClear={false} multisampling={16}>
+          <Outline
+            selection={meshes}
+            edgeStrength={3} // the edge strength
+            pulseSpeed={0.0} // a pulse speed. A value of zero disables the pulse effect
+            visibleEdgeColor={0xffffff} // the color of visible edges
+            hiddenEdgeColor={0x22090a} // the color of hidden edges
+            blur={true} // whether the outline should be blurred
+          />
+          <SMAA />
+        </EffectComposer>
+
+        {/* <Summary
+            focusOn={focusOn}
+            setFocusOn={setFocusOn}
+            originalCameraPos={originalCameraPos}
+            setTargetObj={setTargetObj}
+            targetName={targetName}
+            setTargetName={setTargetName}
+          /> */}
+
         <Skills
           focusOn={focusOn}
           setFocusOn={setFocusOn}
@@ -88,7 +106,9 @@ const AboutPage = () => {
           setTargetObj={setTargetObj}
           targetName={targetName}
           setTargetName={setTargetName}
+          setHoveredObj={setHoveredObj}
         />
+
         <Contact
           focusOn={focusOn}
           setFocusOn={setFocusOn}
@@ -97,6 +117,7 @@ const AboutPage = () => {
           targetName={targetName}
           setTargetName={setTargetName}
         />
+
         <Education
           focusOn={focusOn}
           setFocusOn={setFocusOn}
@@ -106,14 +127,14 @@ const AboutPage = () => {
           setTargetName={setTargetName}
         />
         {/* <Experience
-          focusOn={focusOn}
-          setFocusOn={setFocusOn}
-          originalCameraPos={originalCameraPos}
-          setTargetObj={setTargetObj}
-          targetName={targetName}
-                    setTargetName={targetNamesetT
+            focusOn={focusOn}
+            setFocusOn={setFocusOn}
+            originalCameraPos={originalCameraPos}
+            setTargetObj={setTargetObj}
+            targetName={targetName}
+            setTargetName={setTargetName}
+          /> */}
 
-        /> */}
         <Language
           focusOn={focusOn}
           setFocusOn={setFocusOn}
@@ -121,16 +142,6 @@ const AboutPage = () => {
           setTargetObj={setTargetObj}
           targetName={targetName}
           setTargetName={setTargetName}
-        />
-
-        <Stars
-          radius={100}
-          depth={50}
-          count={10000}
-          factor={4}
-          saturation={0}
-          fade
-          speed={1}
         />
       </Suspense>
     </Canvas>

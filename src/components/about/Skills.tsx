@@ -11,14 +11,55 @@ import {
   Typography,
 } from "@mui/material";
 import { Float, Html, useGLTF } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
-import React, { Dispatch, SetStateAction, useRef, useState } from "react";
-import * as THREE from "three";
-import { Vector3 } from "three";
+import { ThreeEvent, useFrame } from "@react-three/fiber";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import {
+  Group,
+  Mesh,
+  Object3D,
+  Object3DEventMap,
+  SkinnedMesh,
+  Vector3,
+} from "three";
 import CustomCard2 from "../customComponents/customCard2";
 import { originalCameraPosType, targetNameType } from "./types";
 import { checkCurrentTargetName } from "./shared/handler";
 import CustomDivider from "../customComponents/customDivider";
+import {
+  EffectComposer,
+  Outline,
+  Select,
+  SMAA,
+} from "@react-three/postprocessing";
+
+const skillTools = [
+  "Git GitHub",
+  "Azure DevOps",
+  "Figma",
+  "Docker",
+  "Cinema 4D",
+  "Blender",
+];
+const skillProgramming = ["Javascript / Typescript", "C#", "Java", "Python"];
+const skillFront = ["React", "Next JS", "Angular", "HTML5", "CSS3"];
+const skillReact = [
+  "Material UI",
+  "Redux",
+  "React router",
+  "Tailwind",
+  "React Three fiber",
+  "React Three Drei",
+];
+
+type RefLike<T> = { current: T | null };
 
 const Skills: React.FC<{
   focusOn: boolean;
@@ -27,14 +68,53 @@ const Skills: React.FC<{
   setTargetObj: Dispatch<SetStateAction<Vector3>>;
   targetName: string;
   setTargetName: Dispatch<SetStateAction<targetNameType>>;
+  setHoveredObj: Dispatch<SetStateAction<Group<Object3DEventMap> | null>>;
 }> = (props) => {
   const position = new Vector3(-14, 5, 0);
-  const HTMLPosition = new Vector3(5, 4, 0);
+  const HTMLPosition = new Vector3(6, 2, 0);
 
   const obj = useGLTF("./models/ToolBox.glb");
 
   const [open, setOpen] = useState(false);
   const [hover, setHover] = useState(false);
+
+  const onClick = (event: any) => {
+    if (!props.focusOn) {
+      props.setFocusOn(true);
+      props.setTargetObj(position);
+      setOpen(true);
+      props.setTargetName("Skills");
+      props.setHoveredObj(null);
+    } else if (
+      props.focusOn &&
+      checkCurrentTargetName("Skills", props.targetName)
+    ) {
+      props.setFocusOn(false);
+      setOpen(false);
+      props.setTargetName("");
+    }
+
+    //-| prevent the event from going futhere to object(s) behide the target object
+    event.stopPropagation();
+  };
+
+  const onEnter = (e: ThreeEvent<PointerEvent>) => {
+    e.stopPropagation();
+    if (!props.focusOn || checkCurrentTargetName("Skills", props.targetName)) {
+      document.body.style.cursor = "pointer";
+      setHover(true);
+      if (!open) {
+        props.setHoveredObj(obj.scene);
+      }
+    }
+  };
+
+  const onLeave = (e: ThreeEvent<PointerEvent>) => {
+    e.stopPropagation();
+    document.body.style.cursor = "default";
+    setHover(false);
+    props.setHoveredObj(null);
+  };
 
   return (
     <>
@@ -47,37 +127,9 @@ const Skills: React.FC<{
         <primitive
           position={position}
           object={obj.scene}
-          onClick={(event: any) => {
-            if (!props.focusOn) {
-              props.setFocusOn(true);
-              props.setTargetObj(position);
-              setOpen(true);
-              props.setTargetName("Skills");
-            } else if (
-              props.focusOn &&
-              checkCurrentTargetName("Skills", props.targetName)
-            ) {
-              props.setFocusOn(false);
-              setOpen(false);
-              props.setTargetName("");
-            }
-
-            //-| prevent the event from going futhere to object(s) behide the target object
-            event.stopPropagation();
-          }}
-          onPointerEnter={() => {
-            if (
-              !props.focusOn ||
-              checkCurrentTargetName("Skills", props.targetName)
-            ) {
-              document.body.style.cursor = "pointer";
-              setHover(true);
-            }
-          }}
-          onPointerLeave={() => {
-            document.body.style.cursor = "default";
-            setHover(false);
-          }}
+          onClick={onClick}
+          onPointerEnter={onEnter}
+          onPointerLeave={onLeave}
         >
           {(props.focusOn ||
             checkCurrentTargetName("Skills", props.targetName)) &&
@@ -91,7 +143,11 @@ const Skills: React.FC<{
                   background: "none",
                 }}
               >
-                <CustomCard2 height="max-content" width="800px" padding="3rem">
+                <CustomCard2
+                  height="max-content"
+                  width="800px"
+                  padding="3rem 3rem 5rem 3rem"
+                >
                   <Typography
                     sx={{
                       fontSize: "3rem",
@@ -103,19 +159,20 @@ const Skills: React.FC<{
                   </Typography>
                   <CustomDivider />
                   <Grid container spacing={8} columns={12}>
+                    {/* Left side */}
                     <Grid size={7}>
                       <Typography
-                        sx={{ fontSize: "2rem", fontWeight: "600", color: "" }}
+                        sx={{
+                          fontSize: "2rem",
+                          fontWeight: "600",
+                          marginTop: "10px",
+                          color: "",
+                        }}
                       >
                         Programming language
                       </Typography>
                       <Stack spacing={1}>
-                        {[
-                          "Javascript / Typescript",
-                          "C#",
-                          "Java",
-                          "Python",
-                        ].map((item) => (
+                        {skillProgramming.map((item) => (
                           <Typography
                             display="block"
                             sx={{
@@ -128,12 +185,58 @@ const Skills: React.FC<{
                           </Typography>
                         ))}
                       </Stack>
+                      <Typography
+                        sx={{
+                          fontSize: "2rem",
+                          fontWeight: "600",
+                          marginTop: "10px",
+                          color: "",
+                        }}
+                      >
+                        Front-end
+                      </Typography>
+                      <Stack spacing={1}>
+                        {skillFront.map((item) => (
+                          <>
+                            <Typography
+                              display="block"
+                              sx={{
+                                paddingLeft: "1rem",
+                                fontSize: "1.5rem",
+                                fontWeight: "600",
+                              }}
+                            >
+                              {"- " + item}
+                            </Typography>
+                            {item === "React" &&
+                              skillReact.map((subItem) => (
+                                <Typography
+                                  display="block"
+                                  sx={{
+                                    paddingLeft: "3rem",
+                                    fontSize: "1.3rem",
+                                    fontWeight: "600",
+                                  }}
+                                >
+                                  {"-- " + subItem}
+                                </Typography>
+                              ))}
+                          </>
+                        ))}
+                      </Stack>
                     </Grid>
+
+                    {/* Right side */}
                     <Grid size={5}>
                       <Typography
-                        sx={{ fontSize: "2rem", fontWeight: "600", color: "" }}
+                        sx={{
+                          fontSize: "2rem",
+                          fontWeight: "600",
+                          marginTop: "10px",
+                          color: "",
+                        }}
                       >
-                        Backend
+                        Back-end
                       </Typography>
                       <Stack spacing={1}>
                         {["ASP.NET core", "Spring Boot"].map((item) => (
@@ -151,7 +254,12 @@ const Skills: React.FC<{
                       </Stack>
 
                       <Typography
-                        sx={{ fontSize: "2rem", fontWeight: "600", color: "" }}
+                        sx={{
+                          fontSize: "2rem",
+                          fontWeight: "600",
+                          marginTop: "10px",
+                          color: "",
+                        }}
                       >
                         Database
                       </Typography>
@@ -169,19 +277,17 @@ const Skills: React.FC<{
                       </Stack>
 
                       <Typography
-                        sx={{ fontSize: "2rem", fontWeight: "600", color: "" }}
+                        sx={{
+                          fontSize: "2rem",
+                          fontWeight: "600",
+                          marginTop: "10px",
+                          color: "",
+                        }}
                       >
                         Tools
                       </Typography>
                       <Stack spacing={1}>
-                        {[
-                          "Git GitHub",
-                          "Azure DevOps",
-                          "Figma",
-                          "Docker",
-                          "Cinema 4D",
-                          "Blender",
-                        ].map((item) => (
+                        {skillTools.map((item) => (
                           <Typography
                             display="block"
                             sx={{
