@@ -8,20 +8,27 @@ import atmosphereFragmentShader from "./atmosphereShaders/fragment.glsl";
 
 import { Box, List, ListItem, ListItemText, Typography } from "@mui/material";
 import { Float, Html, useGLTF } from "@react-three/drei";
-import { useFrame, useLoader } from "@react-three/fiber";
+import { ThreeEvent, useFrame, useLoader } from "@react-three/fiber";
 import React, {
   Dispatch,
+  RefObject,
   SetStateAction,
   useMemo,
   useRef,
   useState,
 } from "react";
 import * as THREE from "three";
-import { Vector3 } from "three";
+import { Mesh, Object3D, Vector3 } from "three";
 import { ShaderMaterial, TextureLoader } from "three";
 import { originalCameraPosType, targetNameType } from "./types";
-import { checkCurrentTargetName } from "./shared/handler";
+import {
+  checkCurrentTargetName,
+  onClickHandler,
+  onEnterHandler,
+  onLeaveHandler,
+} from "./shared/handler";
 import { Select } from "@react-three/postprocessing";
+import CustomCard2 from "../customComponents/customCard2";
 
 type earthParametersType = {
   atmosphereDayColor: string;
@@ -35,12 +42,14 @@ const Language: React.FC<{
   setTargetObj: Dispatch<SetStateAction<Vector3>>;
   targetName: string;
   setTargetName: Dispatch<SetStateAction<targetNameType>>;
+  setHoveredObj: Dispatch<
+    SetStateAction<THREE.Group<THREE.Object3DEventMap> | Object3D | null>
+  >;
 }> = (props) => {
-  const earthRef = useRef<THREE.Mesh>(null);
+  const earthRef = useRef<Object3D>(null!);
 
-  const HTMLPosition = new Vector3(3, 3, 0);
+  const HTMLPosition = new Vector3(4.5, 3, 0);
   const position = new Vector3(14, -2.7, 0);
-  const currentTargetName = "Language";
 
   const [open, setOpen] = useState(false);
   const [hover, setHover] = useState(false);
@@ -125,10 +134,10 @@ const Language: React.FC<{
       }),
     [earthParameters]
   );
-  const debugSunRef = useRef<THREE.Mesh>(null);
+  const debugSunRef = useRef<Mesh>(null);
 
   let phi = Math.PI * 0.5;
-  let theta = 0;
+  let theta = 5;
   let atmosphereDayColor = "#00aaff";
   let atmosphereTwilightColor = "#ff6600";
 
@@ -153,6 +162,38 @@ const Language: React.FC<{
     });
   });
 
+  const onClick = (event: any) => {
+    onClickHandler(
+      event,
+      "Skills",
+      position,
+      props.targetName,
+      props.focusOn,
+      props.setFocusOn,
+      props.setTargetObj,
+      props.setTargetName,
+      setOpen,
+      props.setHoveredObj
+    );
+  };
+
+  const onEnter = (e: ThreeEvent<PointerEvent>) => {
+    onEnterHandler(
+      e,
+      "Skills",
+      open,
+      props.targetName,
+      props.focusOn,
+      props.setHoveredObj,
+      setHover,
+      earthRef.current
+    );
+  };
+
+  const onLeave = (e: ThreeEvent<PointerEvent>) => {
+    onLeaveHandler(e, props.setHoveredObj, setHover);
+  };
+
   return (
     <>
       {/* Earth */}
@@ -160,39 +201,37 @@ const Language: React.FC<{
         ref={earthRef}
         position={position}
         material={earthMaterial}
-        onClick={(event: any) => {
-          if (!props.focusOn) {
-            props.setFocusOn(true);
-            props.setTargetObj(position);
-            setOpen(true);
-            props.setTargetName("Education");
-          } else if (
-            props.focusOn &&
-            checkCurrentTargetName("Education", props.targetName)
-          ) {
-            props.setFocusOn(false);
-            setOpen(false);
-            props.setTargetName("");
-          }
-
-          //-| prevent the event from going futhere to object(s) behide the target object
-          event.stopPropagation();
-        }}
-        onPointerEnter={() => {
-          if (
-            !props.focusOn ||
-            checkCurrentTargetName("Education", props.targetName)
-          ) {
-            document.body.style.cursor = "pointer";
-            setHover(true);
-          }
-        }}
-        onPointerLeave={() => {
-          document.body.style.cursor = "default";
-          setHover(false);
-        }}
+        onClick={onClick}
+        onPointerEnter={onEnter}
+        onPointerLeave={onLeave}
       >
         <sphereGeometry args={[2.5, 64, 64]} />
+        {(!props.focusOn ||
+          checkCurrentTargetName("Skills", props.targetName)) &&
+          hover &&
+          !open && (
+            <Html
+              position={HTMLPosition}
+              center
+              distanceFactor={6}
+              occlude={[]}
+              style={{
+                background: "none",
+              }}
+            >
+              <CustomCard2 height="max-content">
+                <Typography
+                  sx={{
+                    fontSize: "5rem",
+                    fontWeight: "600",
+                    color: "#fcf300",
+                  }}
+                >
+                  Language
+                </Typography>
+              </CustomCard2>
+            </Html>
+          )}
         {(props.focusOn ||
           checkCurrentTargetName("Skills", props.targetName)) &&
           open && (
@@ -205,13 +244,10 @@ const Language: React.FC<{
                 background: "none",
               }}
             >
-              <Box
-                sx={{
-                  padding: "20px",
-                  backgroundColor: "#072ac8",
-                  borderRadius: "20px",
-                  width: "600px",
-                }}
+              <CustomCard2
+                height="max-content"
+                width="800px"
+                padding="3rem 3rem 5rem 3rem"
               >
                 <Typography
                   sx={{
@@ -242,39 +278,7 @@ const Language: React.FC<{
                 >
                   English
                 </Typography>
-              </Box>
-            </Html>
-          )}
-        {(!props.focusOn ||
-          checkCurrentTargetName("Skills", props.targetName)) &&
-          hover &&
-          !open && (
-            <Html
-              position={HTMLPosition}
-              center
-              distanceFactor={6}
-              occlude={[]}
-              style={{
-                background: "none",
-              }}
-            >
-              <Box
-                sx={{
-                  padding: "20px",
-                  backgroundColor: "#072ac8",
-                  borderRadius: "20px",
-                }}
-              >
-                <Typography
-                  sx={{
-                    fontSize: "5rem",
-                    fontWeight: "600",
-                    color: "#fcf300",
-                  }}
-                >
-                  Skills
-                </Typography>
-              </Box>
+              </CustomCard2>
             </Html>
           )}
       </mesh>

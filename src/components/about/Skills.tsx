@@ -14,6 +14,7 @@ import { Float, Html, useGLTF } from "@react-three/drei";
 import { ThreeEvent, useFrame } from "@react-three/fiber";
 import React, {
   Dispatch,
+  RefObject,
   SetStateAction,
   useCallback,
   useEffect,
@@ -31,7 +32,12 @@ import {
 } from "three";
 import CustomCard2 from "../customComponents/customCard2";
 import { originalCameraPosType, targetNameType } from "./types";
-import { checkCurrentTargetName } from "./shared/handler";
+import {
+  checkCurrentTargetName,
+  onClickHandler,
+  onEnterHandler,
+  onLeaveHandler,
+} from "./shared/handler";
 import CustomDivider from "../customComponents/customDivider";
 import {
   EffectComposer,
@@ -68,7 +74,9 @@ const Skills: React.FC<{
   setTargetObj: Dispatch<SetStateAction<Vector3>>;
   targetName: string;
   setTargetName: Dispatch<SetStateAction<targetNameType>>;
-  setHoveredObj: Dispatch<SetStateAction<Group<Object3DEventMap> | null>>;
+  setHoveredObj: Dispatch<
+    SetStateAction<Group<Object3DEventMap> | Object3D | null>
+  >;
 }> = (props) => {
   const position = new Vector3(-14, 5, 0);
   const HTMLPosition = new Vector3(6, 2, 0);
@@ -79,41 +87,64 @@ const Skills: React.FC<{
   const [hover, setHover] = useState(false);
 
   const onClick = (event: any) => {
-    if (!props.focusOn) {
-      props.setFocusOn(true);
-      props.setTargetObj(position);
-      setOpen(true);
-      props.setTargetName("Skills");
-      props.setHoveredObj(null);
-    } else if (
-      props.focusOn &&
-      checkCurrentTargetName("Skills", props.targetName)
-    ) {
-      props.setFocusOn(false);
-      setOpen(false);
-      props.setTargetName("");
-    }
+    onClickHandler(
+      event,
+      "Skills",
+      position,
+      props.targetName,
+      props.focusOn,
+      props.setFocusOn,
+      props.setTargetObj,
+      props.setTargetName,
+      setOpen,
+      props.setHoveredObj
+    );
+    // if (!props.focusOn) {
+    //   props.setFocusOn(true);
+    //   props.setTargetObj(position);
+    //   setOpen(true);
+    //   props.setTargetName("Skills");
+    //   props.setHoveredObj(null);
+    // } else if (
+    //   props.focusOn &&
+    //   checkCurrentTargetName("Skills", props.targetName)
+    // ) {
+    //   props.setFocusOn(false);
+    //   setOpen(false);
+    //   props.setTargetName("");
+    // }
 
-    //-| prevent the event from going futhere to object(s) behide the target object
-    event.stopPropagation();
+    // //-| prevent the event from going futhere to object(s) behide the target object
+    // event.stopPropagation();
   };
 
   const onEnter = (e: ThreeEvent<PointerEvent>) => {
-    e.stopPropagation();
-    if (!props.focusOn || checkCurrentTargetName("Skills", props.targetName)) {
-      document.body.style.cursor = "pointer";
-      setHover(true);
-      if (!open) {
-        props.setHoveredObj(obj.scene);
-      }
-    }
+    onEnterHandler(
+      e,
+      "Skills",
+      open,
+      props.targetName,
+      props.focusOn,
+      props.setHoveredObj,
+      setHover,
+      obj.scene
+    );
+    // e.stopPropagation();
+    // if (!props.focusOn || checkCurrentTargetName("Skills", props.targetName)) {
+    //   document.body.style.cursor = "pointer";
+    //   setHover(true);
+    //   if (!open) {
+    //     props.setHoveredObj(obj.scene);
+    //   }
+    // }
   };
 
   const onLeave = (e: ThreeEvent<PointerEvent>) => {
-    e.stopPropagation();
-    document.body.style.cursor = "default";
-    setHover(false);
-    props.setHoveredObj(null);
+    onLeaveHandler(e, props.setHoveredObj, setHover);
+    // e.stopPropagation();
+    // document.body.style.cursor = "default";
+    // setHover(false);
+    // props.setHoveredObj(null);
   };
 
   return (
@@ -131,6 +162,32 @@ const Skills: React.FC<{
           onPointerEnter={onEnter}
           onPointerLeave={onLeave}
         >
+          {(!props.focusOn ||
+            checkCurrentTargetName("Skills", props.targetName)) &&
+            hover &&
+            !open && (
+              <Html
+                position={HTMLPosition}
+                center
+                distanceFactor={6}
+                occlude={[]}
+                style={{
+                  background: "none",
+                }}
+              >
+                <CustomCard2 height="max-content">
+                  <Typography
+                    sx={{
+                      fontSize: "6rem",
+                      fontWeight: "600",
+                      color: "#fcf300",
+                    }}
+                  >
+                    Skills
+                  </Typography>
+                </CustomCard2>
+              </Html>
+            )}
           {(props.focusOn ||
             checkCurrentTargetName("Skills", props.targetName)) &&
             open && (
@@ -302,32 +359,6 @@ const Skills: React.FC<{
                       </Stack>
                     </Grid>
                   </Grid>
-                </CustomCard2>
-              </Html>
-            )}
-          {(!props.focusOn ||
-            checkCurrentTargetName("Skills", props.targetName)) &&
-            hover &&
-            !open && (
-              <Html
-                position={HTMLPosition}
-                center
-                distanceFactor={6}
-                occlude={[]}
-                style={{
-                  background: "none",
-                }}
-              >
-                <CustomCard2 height="max-content">
-                  <Typography
-                    sx={{
-                      fontSize: "6rem",
-                      fontWeight: "600",
-                      color: "#fcf300",
-                    }}
-                  >
-                    Skills
-                  </Typography>
                 </CustomCard2>
               </Html>
             )}

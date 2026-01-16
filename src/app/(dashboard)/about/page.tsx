@@ -3,9 +3,9 @@
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { CameraProps, Canvas, useThree } from "@react-three/fiber";
 import ThreeLoader from "@/components/ThreeLoader";
-import { Environment } from "@react-three/drei";
+import { Environment, OrbitControls } from "@react-three/drei";
 import Skills from "@/components/about/Skills";
-import { Group, Object3D, Object3DEventMap, Vector3 } from "three";
+import { Group, Mesh, Object3D, Object3DEventMap, Vector3 } from "three";
 import Contact from "@/components/about/Contact";
 import Education from "@/components/about/Education";
 import CameraControl from "@/components/about/CameraControl";
@@ -18,12 +18,15 @@ import {
   Selection,
   SMAA,
 } from "@react-three/postprocessing";
+import SpaceBackground from "@/components/about/SpaceBackground";
 
 const AboutPage = () => {
   const [focusOn, setFocusOn] = useState<boolean>(false);
   const [targetObj, setTargetObj] = useState<Vector3>(new Vector3());
   const [targetName, setTargetName] = useState<targetNameType>(""); //-| Prevent other objs from interactable when focusing
-  const [hoveredObj, setHoveredObj] = useState<Group<Object3DEventMap> | null>(null); //-| Show outline
+  const [hoveredObj, setHoveredObj] = useState<
+    Group<Object3DEventMap> | Object3D | null
+  >(null); //-| Show outline
 
   //-| collect all renderable meshes inside the GLTF once
   const meshes = useMemo<Object3D[]>(() => {
@@ -68,8 +71,8 @@ const AboutPage = () => {
       }}
     >
       {/* <OrbitControls /> */}
-
       <Environment preset="city" />
+      <SpaceBackground />
       <Suspense fallback={<ThreeLoader />}>
         <CameraControl
           focusOn={focusOn}
@@ -116,6 +119,7 @@ const AboutPage = () => {
           setTargetObj={setTargetObj}
           targetName={targetName}
           setTargetName={setTargetName}
+          setHoveredObj={setHoveredObj}
         />
 
         <Education
@@ -125,6 +129,7 @@ const AboutPage = () => {
           setTargetObj={setTargetObj}
           targetName={targetName}
           setTargetName={setTargetName}
+          setHoveredObj={setHoveredObj}
         />
         {/* <Experience
             focusOn={focusOn}
@@ -142,6 +147,7 @@ const AboutPage = () => {
           setTargetObj={setTargetObj}
           targetName={targetName}
           setTargetName={setTargetName}
+          setHoveredObj={setHoveredObj}
         />
       </Suspense>
     </Canvas>

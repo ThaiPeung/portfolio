@@ -2,14 +2,20 @@
 
 import { Box, List, ListItem, ListItemText, Typography } from "@mui/material";
 import { Float, Html, useGLTF } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
-import React, { Dispatch, SetStateAction, useRef, useState } from "react";
+import { ThreeEvent, useFrame } from "@react-three/fiber";
+import React, { Dispatch, RefObject, SetStateAction, useRef, useState } from "react";
 import * as THREE from "three";
-import { Vector3 } from "three";
+import { Group, Mesh, Object3D, Object3DEventMap, Vector3 } from "three";
 import { Outline, Select } from "@react-three/postprocessing";
 import { BlendFunction, Resolution, KernelSize } from "postprocessing";
 import { originalCameraPosType, targetNameType } from "./types";
-import { checkCurrentTargetName } from "./shared/handler";
+import {
+  checkCurrentTargetName,
+  onClickHandler,
+  onEnterHandler,
+  onLeaveHandler,
+} from "./shared/handler";
+import CustomCard2 from "../customComponents/customCard2";
 
 const Contact: React.FC<{
   focusOn: boolean;
@@ -18,6 +24,7 @@ const Contact: React.FC<{
   setTargetObj: Dispatch<SetStateAction<Vector3>>;
   targetName: string;
   setTargetName: Dispatch<SetStateAction<targetNameType>>;
+  setHoveredObj: Dispatch<SetStateAction<Group<Object3DEventMap> | Object3D | null>>;
 }> = (props) => {
   const position = new Vector3(0, 5, 0);
   const HTMLPosition = new Vector3(7, 5, 0);
@@ -29,117 +36,112 @@ const Contact: React.FC<{
   const [open, setOpen] = useState(false);
   const [hover, setHover] = useState(false);
 
+  const onClick = (event: any) => {
+    onClickHandler(
+      event,
+      "Skills",
+      position,
+      props.targetName,
+      props.focusOn,
+      props.setFocusOn,
+      props.setTargetObj,
+      props.setTargetName,
+      setOpen,
+      props.setHoveredObj
+    );
+  };
+
+  const onEnter = (e: ThreeEvent<PointerEvent>) => {
+    onEnterHandler(
+      e,
+      "Skills",
+      open,
+      props.targetName,
+      props.focusOn,
+      props.setHoveredObj,
+      setHover,
+      obj.scene
+    );
+  };
+
+  const onLeave = (e: ThreeEvent<PointerEvent>) => {
+    onLeaveHandler(e, props.setHoveredObj, setHover);
+  };
+
   return (
     <>
-        <Float
-          rotationIntensity={open ? 0 : 0.6}
-          floatIntensity={open ? 0 : 0.6}
-          floatingRange={[-0.03, 0.03]}
-          speed={open ? 0 : 1}
+      <Float
+        rotationIntensity={open ? 0 : 0.6}
+        floatIntensity={open ? 0 : 0.6}
+        floatingRange={[-0.03, 0.03]}
+        speed={open ? 0 : 1}
+      >
+        <primitive
+          ref={ref}
+          position={position}
+          scale={0.75}
+          object={obj.scene}
+          onClick={onClick}
+          onPointerEnter={onEnter}
+          onPointerLeave={onLeave}
         >
-          <primitive
-            ref={ref}
-            position={position}
-            scale={0.75}
-            object={obj.scene}
-            onClick={(event: any) => {
-              if (!props.focusOn) {
-                props.setFocusOn(true);
-                props.setTargetObj(position);
-                setOpen(true);
-                props.setTargetName("Contact");
-              } else if (
-                props.focusOn &&
-                checkCurrentTargetName("Contact", props.targetName)
-              ) {
-                props.setFocusOn(false);
-                setOpen(false);
-                props.setTargetName("");
-              }
-
-              //-| prevent the event from going futhere to object(s) behide the target object
-              event.stopPropagation();
-            }}
-            onPointerEnter={() => {
-              if (
-                !props.focusOn ||
-                checkCurrentTargetName("Contact", props.targetName)
-              ) {
-                document.body.style.cursor = "pointer";
-                setHover(true);
-              }
-            }}
-            onPointerLeave={() => {
-              document.body.style.cursor = "default";
-              setHover(false);
-            }}
-          >
-            {(props.focusOn ||
-              checkCurrentTargetName("Skills", props.targetName)) &&
-              open && (
-                <Html
-                  position={HTMLPosition}
-                  center
-                  distanceFactor={6}
-                  occlude={[]}
-                  style={{
-                    background: "none",
-                  }}
-                >
-                  <Box
+          {(!props.focusOn ||
+            checkCurrentTargetName("Skills", props.targetName)) &&
+            hover &&
+            !open && (
+              <Html
+                position={HTMLPosition}
+                center
+                distanceFactor={6}
+                occlude={[]}
+                style={{
+                  background: "none",
+                }}
+              >
+                <CustomCard2 height="max-content">
+                  <Typography
                     sx={{
-                      padding: "20px",
-                      backgroundColor: "#072ac8",
-                      borderRadius: "20px",
-                      width: "600px",
+                      fontSize: "5rem",
+                      fontWeight: "600",
+                      color: "#fcf300",
                     }}
                   >
-                    <Typography
-                      sx={{
-                        fontSize: "3rem",
-                        fontWeight: "600",
-                        color: "#fcf300",
-                      }}
-                    >
-                      Contact
-                    </Typography>
-                  </Box>
-                </Html>
-              )}
-            {(!props.focusOn ||
-              checkCurrentTargetName("Skills", props.targetName)) &&
-              hover &&
-              !open && (
-                <Html
-                  position={HTMLPosition}
-                  center
-                  distanceFactor={6}
-                  occlude={[]}
-                  style={{
-                    background: "none",
-                  }}
+                    Contact
+                  </Typography>
+                </CustomCard2>
+              </Html>
+            )}
+          {(props.focusOn ||
+            checkCurrentTargetName("Skills", props.targetName)) &&
+            open && (
+              <Html
+                position={HTMLPosition}
+                center
+                distanceFactor={6}
+                occlude={[]}
+                style={{
+                  background: "none",
+                }}
+              >
+                <CustomCard2
+                  height="max-content"
+                  width="800px"
+                  padding="3rem 3rem 5rem 3rem"
                 >
-                  <Box
+                  <Typography
                     sx={{
-                      padding: "20px",
-                      backgroundColor: "#072ac8",
-                      borderRadius: "20px",
+                      fontSize: "3rem",
+                      fontWeight: "600",
+                      color: "#fcf300",
                     }}
                   >
-                    <Typography
-                      sx={{
-                        fontSize: "5rem",
-                        fontWeight: "600",
-                        color: "#fcf300",
-                      }}
-                    >
-                      Contact
-                    </Typography>
-                  </Box>
-                </Html>
-              )}
-          </primitive>
-        </Float>
+                    Contact
+                  </Typography>
+                </CustomCard2>
+              </Html>
+            )}
+        </primitive>
+      </Float>
     </>
   );
 };
