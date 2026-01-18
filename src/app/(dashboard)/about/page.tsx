@@ -12,13 +12,18 @@ import CameraControl from "@/components/about/CameraControl";
 import Language from "@/components/about/Language";
 import { targetNameType } from "@/components/about/types";
 import {
+  Bloom,
   EffectComposer,
   Outline,
   Select,
   Selection,
   SMAA,
+  ToneMapping,
 } from "@react-three/postprocessing";
 import SpaceBackground from "@/components/about/SpaceBackground";
+import MeteorShower from "@/components/about/MeteorShower";
+import { Perf } from "r3f-perf";
+import { ToneMappingMode } from "postprocessing";
 
 const AboutPage = () => {
   const [focusOn, setFocusOn] = useState<boolean>(false);
@@ -48,7 +53,7 @@ const AboutPage = () => {
   const cameraSetting: CameraProps = {
     fov: 25,
     near: 0.1,
-    far: 200,
+    far: 300,
     position: originalCameraPos.vector,
     rotation: [0, 0, 0],
   };
@@ -70,18 +75,29 @@ const AboutPage = () => {
         overflow: "hidden",
       }}
     >
-      {/* <OrbitControls /> */}
+      <OrbitControls />
+
+      <Perf position="bottom-right" />
       <Environment preset="city" />
+      {/* <directionalLight castShadow position={[1, 2, 3]} intensity={4.5} />
+      <ambientLight intensity={1.5} /> */}
+
       <SpaceBackground />
       <Suspense fallback={<ThreeLoader />}>
-        <CameraControl
+        {/* <CameraControl
           focusOn={focusOn}
           originalCameraPos={originalCameraPos}
           targetObj={targetObj}
           setTargetName={setTargetName}
-        />
+        /> */}
 
         <EffectComposer autoClear={false} multisampling={16}>
+          {/* <Bloom
+            intensity={1.1}
+            mipmapBlur
+            luminanceThreshold={0.35}
+            luminanceSmoothing={0.2}
+          /> */}
           <Outline
             selection={meshes}
             edgeStrength={3} // the edge strength
@@ -91,6 +107,7 @@ const AboutPage = () => {
             blur={true} // whether the outline should be blurred
           />
           <SMAA />
+          <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
         </EffectComposer>
 
         {/* <Summary
@@ -101,6 +118,8 @@ const AboutPage = () => {
             targetName={targetName}
             setTargetName={setTargetName}
           /> */}
+
+        {/* <MeteorShower /> */}
 
         <Skills
           focusOn={focusOn}
