@@ -39,7 +39,7 @@ const Contact: React.FC<{
   const onClick = (event: any) => {
     onClickHandler(
       event,
-      "Skills",
+      "Contact",
       position,
       props.targetName,
       props.focusOn,
@@ -54,7 +54,7 @@ const Contact: React.FC<{
   const onEnter = (e: ThreeEvent<PointerEvent>) => {
     onEnterHandler(
       e,
-      "Skills",
+      "Contact",
       open,
       props.targetName,
       props.focusOn,

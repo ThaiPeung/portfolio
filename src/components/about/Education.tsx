@@ -39,7 +39,7 @@ const Education: React.FC<{
   const onClick = (event: any) => {
     onClickHandler(
       event,
-      "Skills",
+      "Education",
       position,
       props.targetName,
       props.focusOn,
@@ -54,7 +54,7 @@ const Education: React.FC<{
   const onEnter = (e: ThreeEvent<PointerEvent>) => {
     onEnterHandler(
       e,
-      "Skills",
+      "Education",
       open,
       props.targetName,
       props.focusOn,

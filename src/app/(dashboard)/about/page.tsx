@@ -53,7 +53,7 @@ const AboutPage = () => {
   const cameraSetting: CameraProps = {
     fov: 25,
     near: 0.1,
-    far: 300,
+    far: 1000,
     position: originalCameraPos.vector,
     rotation: [0, 0, 0],
   };
@@ -75,7 +75,7 @@ const AboutPage = () => {
         overflow: "hidden",
       }}
     >
-      <OrbitControls />
+      {/* <OrbitControls /> */}
 
       <Perf position="bottom-right" />
       <Environment preset="city" />
@@ -84,20 +84,20 @@ const AboutPage = () => {
 
       <SpaceBackground />
       <Suspense fallback={<ThreeLoader />}>
-        {/* <CameraControl
+        <CameraControl
           focusOn={focusOn}
           originalCameraPos={originalCameraPos}
           targetObj={targetObj}
           setTargetName={setTargetName}
-        /> */}
+        />
 
         <EffectComposer autoClear={false} multisampling={16}>
-          {/* <Bloom
-            intensity={1.1}
+          <Bloom
+            intensity={11}
             mipmapBlur
-            luminanceThreshold={0.35}
-            luminanceSmoothing={0.2}
-          /> */}
+            luminanceSmoothing={2}
+            luminanceThreshold={50} //-| (journey) Since we are using <ToneMapping>, there is a difference and you can see everything glowing.
+          />
           <Outline
             selection={meshes}
             edgeStrength={3} // the edge strength
@@ -119,7 +119,7 @@ const AboutPage = () => {
             setTargetName={setTargetName}
           /> */}
 
-        {/* <MeteorShower /> */}
+        <MeteorShower />
 
         <Skills
           focusOn={focusOn}
@@ -150,6 +150,7 @@ const AboutPage = () => {
           setTargetName={setTargetName}
           setHoveredObj={setHoveredObj}
         />
+
         {/* <Experience
             focusOn={focusOn}
             setFocusOn={setFocusOn}

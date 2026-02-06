@@ -165,7 +165,7 @@ const Language: React.FC<{
   const onClick = (event: any) => {
     onClickHandler(
       event,
-      "Skills",
+      "Language",
       position,
       props.targetName,
       props.focusOn,
@@ -180,7 +180,7 @@ const Language: React.FC<{
   const onEnter = (e: ThreeEvent<PointerEvent>) => {
     onEnterHandler(
       e,
-      "Skills",
+      "Language",
       open,
       props.targetName,
       props.focusOn,

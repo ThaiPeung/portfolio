@@ -22,9 +22,9 @@ const SpaceBackground = () => {
   //   };
   // }, [scene, texture]);
 
-  useFrame((state: RootState, delta) => {
-    sphereRef!.current!.rotation.y += delta * 0.002;
-  });
+  // useFrame((state: RootState, delta) => {
+  //   sphereRef!.current!.rotation.y += delta * 0.002;
+  // });
 
   return (
     <mesh ref={sphereRef}>
