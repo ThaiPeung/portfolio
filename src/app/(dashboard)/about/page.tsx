@@ -33,6 +33,8 @@ const AboutPage = () => {
     Group<Object3DEventMap> | Object3D | null
   >(null); //-| Show outline
 
+  const luminanceThreshold = 30;
+
   //-| collect all renderable meshes inside the GLTF once
   const meshes = useMemo<Object3D[]>(() => {
     const arr: Object3D[] = [];
@@ -75,7 +77,7 @@ const AboutPage = () => {
         overflow: "hidden",
       }}
     >
-      {/* <OrbitControls /> */}
+      <OrbitControls />
 
       <Perf position="bottom-right" />
       <Environment preset="city" />
@@ -84,19 +86,19 @@ const AboutPage = () => {
 
       <SpaceBackground />
       <Suspense fallback={<ThreeLoader />}>
-        <CameraControl
+        {/* <CameraControl
           focusOn={focusOn}
           originalCameraPos={originalCameraPos}
           targetObj={targetObj}
           setTargetName={setTargetName}
-        />
+        /> */}
 
         <EffectComposer autoClear={false} multisampling={16}>
           <Bloom
-            intensity={11}
+            intensity={5}
             mipmapBlur
             luminanceSmoothing={2}
-            luminanceThreshold={50} //-| (journey) Since we are using <ToneMapping>, there is a difference and you can see everything glowing.
+            luminanceThreshold={luminanceThreshold} //-| (journey) Since we are using <ToneMapping>, there is a difference and you can see everything glowing.
           />
           <Outline
             selection={meshes}
@@ -119,7 +121,7 @@ const AboutPage = () => {
             setTargetName={setTargetName}
           /> */}
 
-        <MeteorShower />
+        <MeteorShower luminanceThreshold={luminanceThreshold}/>
 
         <Skills
           focusOn={focusOn}

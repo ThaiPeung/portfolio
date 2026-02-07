@@ -20,6 +20,7 @@ type Meteor = {
 };
 
 type MeteorShowerProps = {
+  luminanceThreshold: number;
   count?: number;
   //-| Spawn volume (tweak to match your scene scale)
   spawnBox?: {
@@ -59,14 +60,16 @@ function makeTailGradientTexture(width = 128) {
   return tex;
 }
 
-const meteorMaxLife = 3.5;
-
 const MeteorShower: React.FC<MeteorShowerProps> = ({
-  count = 8,
+  luminanceThreshold,
+  count = 10,
   spawnBox = { xMin: -25, xMax: 75, yMin: 15, yMax: 20, zMin: -20, zMax: 0 },
   dirJitter = { y: 0.3, z: 0.05 },
-  speedRange = { min: 50, max: 100 },
+  speedRange = { min: 50, max: 75 },
 }) => {
+  const meteorMaxLife = 1;
+  const colorBloom = luminanceThreshold + 5;
+
   const headRef = useRef<THREE.InstancedMesh>(null!);
   const tailRef = useRef<THREE.InstancedMesh>(null!);
 
@@ -119,7 +122,7 @@ const MeteorShower: React.FC<MeteorShowerProps> = ({
     //-| Add jitter so each meteor is a bit different
     direction
       .set(
-        THREE.MathUtils.randFloat(-0.9, -0.92),
+        THREE.MathUtils.randFloat(-0.9, -0.91),
         -THREE.MathUtils.randFloat(0.9, 1.3) -
           (initial ? 0 : Math.random() * dirJitter.y),
         THREE.MathUtils.randFloat(0.1, 0.3) +
@@ -163,7 +166,7 @@ const MeteorShower: React.FC<MeteorShowerProps> = ({
       //-| Respawn if expired or out of bounds
       if (
         meteor.life > meteor.maxLife
-        // || 
+        // ||
         // meteor.pos.y < -30 ||
         // meteor.pos.z > 80
       ) {
@@ -175,7 +178,9 @@ const MeteorShower: React.FC<MeteorShowerProps> = ({
 
       //-| Fade out over lifetime
       const time = THREE.MathUtils.clamp(meteor.life / meteor.maxLife, 0, 1);
-      const fade = 1 - time;
+
+      //-| bloom stays strong until ~80% life, then fades to 0 by the end
+      const fade = 1 - THREE.MathUtils.smoothstep(time, 0.8, 1.0);
 
       //-| ---------- HEAD INSTANCE ----------
       dummy.position.copy(meteor.pos);
@@ -210,7 +215,7 @@ const MeteorShower: React.FC<MeteorShowerProps> = ({
       tail.setMatrixAt(i, dummy.matrix);
 
       //-| Tail brightness can be slightly dimmer than head
-      tmpColor.setRGB((0.6 * fade), (0.7 * fade), (1.0 * fade));
+      tmpColor.setRGB(0.6 * fade, 0.7 * fade, 1.0 * fade);
       tail.setColorAt(i, tmpColor);
     }
 
@@ -230,7 +235,7 @@ const MeteorShower: React.FC<MeteorShowerProps> = ({
             transparent
             depthWrite={false}
             blending={THREE.AdditiveBlending}
-            color={[60, 60, 60]}
+            color={[colorBloom, colorBloom, colorBloom]}
           />
         </instancedMesh>
 
@@ -246,7 +251,7 @@ const MeteorShower: React.FC<MeteorShowerProps> = ({
             depthWrite={false}
             blending={THREE.AdditiveBlending}
             side={THREE.DoubleSide}
-            color={[60, 60, 60]}
+            color={[colorBloom, colorBloom, colorBloom]}
           />
         </instancedMesh>
       </group>
