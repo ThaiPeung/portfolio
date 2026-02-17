@@ -62,7 +62,7 @@ function makeTailGradientTexture(width = 128) {
 
 const MeteorShower: React.FC<MeteorShowerProps> = ({
   luminanceThreshold,
-  count = 10,
+  count = 6,
   spawnBox = { xMin: -25, xMax: 75, yMin: 15, yMax: 20, zMin: -20, zMax: 0 },
   dirJitter = { y: 0.3, z: 0.05 },
   speedRange = { min: 50, max: 75 },

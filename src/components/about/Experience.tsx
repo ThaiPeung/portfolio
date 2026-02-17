@@ -2,12 +2,18 @@
 
 import { Box, List, ListItem, ListItemText, Typography } from "@mui/material";
 import { Float, Html, useGLTF } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
+import { ThreeEvent, useFrame } from "@react-three/fiber";
 import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import * as THREE from "three";
-import { Vector3 } from "three";
+import { Group, Mesh, Object3D, Object3DEventMap, Vector3 } from "three";
 import { originalCameraPosType, targetNameType } from "./types";
-import { checkCurrentTargetName } from "./shared/handler";
+import {
+  checkCurrentTargetName,
+  onClickHandler,
+  onEnterHandler,
+  onLeaveHandler,
+} from "./shared/handler";
+import CustomCard2 from "../customComponents/customCard2";
 
 const Experience: React.FC<{
   focusOn: boolean;
@@ -16,15 +22,50 @@ const Experience: React.FC<{
   setTargetObj: Dispatch<SetStateAction<Vector3>>;
   targetName: string;
   setTargetName: Dispatch<SetStateAction<targetNameType>>;
+  setHoveredObj: Dispatch<
+    SetStateAction<Group<Object3DEventMap> | Object3D | null>
+  >;
 }> = (props) => {
   const position = new Vector3(-14, -5, 0);
-  const HTMLPosition = new Vector3(55, 20, 0);
+  const HTMLPosition = new Vector3(18, 12, 0);
 
-  const obj = useGLTF("./models/MacBook.gltf");
-  const currentTargetName = "Experience";
+  const obj = useGLTF("./models/Laptop.glb");
+  const ref = useRef<any>(null);
 
   const [open, setOpen] = useState(false);
   const [hover, setHover] = useState(false);
+
+  const onClick = (event: any) => {
+    onClickHandler(
+      event,
+      "Contact",
+      position,
+      props.targetName,
+      props.focusOn,
+      props.setFocusOn,
+      props.setTargetObj,
+      props.setTargetName,
+      setOpen,
+      props.setHoveredObj,
+    );
+  };
+
+  const onEnter = (e: ThreeEvent<PointerEvent>) => {
+    onEnterHandler(
+      e,
+      "Contact",
+      open,
+      props.targetName,
+      props.focusOn,
+      props.setHoveredObj,
+      setHover,
+      obj.scene,
+    );
+  };
+
+  const onLeave = (e: ThreeEvent<PointerEvent>) => {
+    onLeaveHandler(e, props.setHoveredObj, setHover);
+  };
 
   return (
     <>
@@ -35,47 +76,20 @@ const Experience: React.FC<{
         speed={open ? 0 : 1}
       >
         <primitive
+          ref={ref}
           position={position}
+          scale={0.35}
           object={obj.scene}
-          scale={1.6}
-          onClick={(event: any) => {
-            if (!props.focusOn) {
-              props.setFocusOn(true);
-              props.setTargetObj(position);
-              setOpen(true);
-              props.setTargetName("Education");
-            } else if (
-              props.focusOn &&
-              checkCurrentTargetName("Education", props.targetName)
-            ) {
-              props.setFocusOn(false);
-              setOpen(false);
-              props.setTargetName("");
-            }
-
-            //-| prevent the event from going futhere to object(s) behide the target object
-            event.stopPropagation();
-          }}
-          onPointerEnter={() => {
-            if (
-              !props.focusOn ||
-              checkCurrentTargetName("Education", props.targetName)
-            ) {
-              document.body.style.cursor = "pointer";
-              setHover(true);
-            }
-          }}
-          onPointerLeave={() => {
-            document.body.style.cursor = "default";
-            setHover(false);
-          }}
+          onClick={onClick}
+          onPointerEnter={onEnter}
+          onPointerLeave={onLeave}
         >
           {(!props.focusOn ||
             checkCurrentTargetName("Skills", props.targetName)) &&
             hover &&
             !open && (
               <Html
-                position={[3, 3, 0]}
+                position={HTMLPosition}
                 center
                 distanceFactor={6}
                 occlude={[]}
@@ -83,13 +97,7 @@ const Experience: React.FC<{
                   background: "none",
                 }}
               >
-                <Box
-                  sx={{
-                    padding: "20px",
-                    backgroundColor: "#072ac8",
-                    borderRadius: "20px",
-                  }}
-                >
+                <CustomCard2 height="max-content">
                   <Typography
                     sx={{
                       fontSize: "5rem",
@@ -99,7 +107,36 @@ const Experience: React.FC<{
                   >
                     Experience
                   </Typography>
-                </Box>
+                </CustomCard2>
+              </Html>
+            )}
+          {(props.focusOn ||
+            checkCurrentTargetName("Skills", props.targetName)) &&
+            open && (
+              <Html
+                position={HTMLPosition}
+                center
+                distanceFactor={6}
+                occlude={[]}
+                style={{
+                  background: "none",
+                }}
+              >
+                <CustomCard2
+                  height="max-content"
+                  width="800px"
+                  padding="3rem 3rem 5rem 3rem"
+                >
+                  <Typography
+                    sx={{
+                      fontSize: "3rem",
+                      fontWeight: "600",
+                      color: "#fcf300",
+                    }}
+                  >
+                    Experience
+                  </Typography>
+                </CustomCard2>
               </Html>
             )}
         </primitive>

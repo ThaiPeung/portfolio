@@ -24,6 +24,7 @@ import SpaceBackground from "@/components/about/SpaceBackground";
 import MeteorShower from "@/components/about/MeteorShower";
 import { Perf } from "r3f-perf";
 import { ToneMappingMode } from "postprocessing";
+import Experience from "@/components/about/Experience";
 
 const AboutPage = () => {
   const [focusOn, setFocusOn] = useState<boolean>(false);
@@ -77,8 +78,6 @@ const AboutPage = () => {
         overflow: "hidden",
       }}
     >
-      <OrbitControls />
-
       <Perf position="bottom-right" />
       <Environment preset="city" />
       {/* <directionalLight castShadow position={[1, 2, 3]} intensity={4.5} />
@@ -86,12 +85,13 @@ const AboutPage = () => {
 
       <SpaceBackground />
       <Suspense fallback={<ThreeLoader />}>
-        {/* <CameraControl
+        {/* <OrbitControls /> */}
+        <CameraControl
           focusOn={focusOn}
           originalCameraPos={originalCameraPos}
           targetObj={targetObj}
           setTargetName={setTargetName}
-        /> */}
+        />
 
         <EffectComposer autoClear={false} multisampling={16}>
           <Bloom
@@ -121,7 +121,7 @@ const AboutPage = () => {
             setTargetName={setTargetName}
           /> */}
 
-        <MeteorShower luminanceThreshold={luminanceThreshold}/>
+        <MeteorShower luminanceThreshold={luminanceThreshold} />
 
         <Skills
           focusOn={focusOn}
@@ -153,14 +153,15 @@ const AboutPage = () => {
           setHoveredObj={setHoveredObj}
         />
 
-        {/* <Experience
-            focusOn={focusOn}
-            setFocusOn={setFocusOn}
-            originalCameraPos={originalCameraPos}
-            setTargetObj={setTargetObj}
-            targetName={targetName}
-            setTargetName={setTargetName}
-          /> */}
+        <Experience
+          focusOn={focusOn}
+          setFocusOn={setFocusOn}
+          originalCameraPos={originalCameraPos}
+          setTargetObj={setTargetObj}
+          targetName={targetName}
+          setTargetName={setTargetName}
+          setHoveredObj={setHoveredObj}
+        />
 
         <Language
           focusOn={focusOn}
