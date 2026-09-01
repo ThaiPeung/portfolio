@@ -63,7 +63,6 @@ const AboutPage = () => {
 
   return (
     <Canvas
-      dpr={[2, 4]}
       className="r3f"
       camera={cameraSetting}
       flat

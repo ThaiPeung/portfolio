@@ -12,4 +12,6 @@ export type targetNameType =
   | "Summary"
   | "Education"
   | "Experience"
-  | "Language";
+  | "Language"
+  | "BBL"
+   ;

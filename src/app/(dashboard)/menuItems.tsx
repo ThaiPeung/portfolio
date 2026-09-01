@@ -30,6 +30,11 @@ export const MenuItems: menuItemsType[] = [
     icon: <InfoIcon />,
   },
   {
+    title: "TempCity",
+    path: "/tempCity",
+    icon: <InfoIcon />,
+  },
+  {
     title: "Earth",
     path: "/earth",
     icon: <PublicIcon />,

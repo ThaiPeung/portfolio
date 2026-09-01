@@ -110,35 +110,6 @@ const Experience: React.FC<{
                 </CustomCard2>
               </Html>
             )}
-          {(props.focusOn ||
-            checkCurrentTargetName("Skills", props.targetName)) &&
-            open && (
-              <Html
-                position={HTMLPosition}
-                center
-                distanceFactor={6}
-                occlude={[]}
-                style={{
-                  background: "none",
-                }}
-              >
-                <CustomCard2
-                  height="max-content"
-                  width="800px"
-                  padding="3rem 3rem 5rem 3rem"
-                >
-                  <Typography
-                    sx={{
-                      fontSize: "3rem",
-                      fontWeight: "600",
-                      color: "#fcf300",
-                    }}
-                  >
-                    Experience
-                  </Typography>
-                </CustomCard2>
-              </Html>
-            )}
         </primitive>
       </Float>
     </>

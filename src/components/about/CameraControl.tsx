@@ -8,7 +8,7 @@ const CameraControl: React.FC<{
   focusOn: boolean;
   originalCameraPos: originalCameraPosType;
   targetObj: Vector3;
-  setTargetName: Dispatch<SetStateAction<targetNameType>>;
+  setTargetName?: Dispatch<SetStateAction<targetNameType>>;
 }> = (props) => {
   //-| Smoothed cameras setup
   const [smoothedCameraPosition] = useState(props.originalCameraPos.vector);

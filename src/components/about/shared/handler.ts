@@ -65,9 +65,7 @@ export const onEnterHandler = (
 
 export const onLeaveHandler = (
   e: ThreeEvent<PointerEvent>,
-  setHoveredObj: Dispatch<
-    SetStateAction<Group<Object3DEventMap> | Object3D | null>
-  >,
+  setHoveredObj: Dispatch<SetStateAction<Group<Object3DEventMap> | Object3D | null>>,
   setHover: Dispatch<SetStateAction<boolean>>
 ) => {
   e.stopPropagation();
